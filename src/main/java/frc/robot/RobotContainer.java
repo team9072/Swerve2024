@@ -98,7 +98,7 @@ public class RobotContainer {
 
     // Reset field oriented
     m_driverController.leftTrigger().onTrue(new RunCommand(() -> {
-      m_robotDrive.m_gyro.reset();
+      //m_robotDrive.m_gyro.reset();
     }));
   }
 

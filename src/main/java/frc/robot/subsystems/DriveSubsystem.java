@@ -72,7 +72,7 @@ public class DriveSubsystem extends SubsystemBase {
     // Reset and calibrate
     m_gyro.reset();
     // m_gyro.calibrate(); * 2024 library has no calibrate function?
-    m_gyro.setAngleAdjustment(180); // Flips it around 
+    //m_gyro.setAngleAdjustment(180); // Flips it around 
   }
 
   @Override
