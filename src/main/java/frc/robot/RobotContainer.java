@@ -10,6 +10,9 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -24,6 +27,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -98,7 +103,33 @@ public class RobotContainer {
 
     // Reset field oriented
     m_driverController.leftTrigger().onTrue(new RunCommand(() -> {
-      //m_robotDrive.m_gyro.reset();
+      // m_robotDrive.m_gyro.reset();
+    }));
+
+    // D-Pad turning (def doesnt work)
+    m_driverController.povUp().onTrue(new RunCommand(() -> {
+      ExecutorService executor = Executors.newFixedThreadPool(9); // Just 1?
+      executor.submit(() -> {
+        // Normalize the degree
+        double angle = m_robotDrive.m_gyro.getAngle() % 360;
+
+        while (true) {
+          if (angle < 180) {
+            m_robotDrive.drive(0, 0, -.25, false, false);
+          } else {
+            m_robotDrive.drive(0, 0, .25, false, false);
+          }
+
+          if (Math.abs(angle) > 175 && Math.abs(angle) < 185) {
+            m_robotDrive.drive(0, 0, 0, false, false);
+            break;
+          };
+
+          angle = m_robotDrive.m_gyro.getAngle() % 360;
+        }
+
+        executor.shutdown();
+      });
     }));
   }
 
