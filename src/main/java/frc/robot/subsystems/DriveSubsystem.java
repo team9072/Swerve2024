@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
-  private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
+  public final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
       DriveConstants.kFrontLeftDrivingCanId,
       DriveConstants.kFrontLeftTurningCanId,
       DriveConstants.kFrontLeftChassisAngularOffset);
@@ -97,6 +97,17 @@ public class DriveSubsystem extends SubsystemBase {
         );
   }
 
+  public void turnTo(double degrees) {
+    /*
+     *     m_frontLeft.m_drivingPIDController.setReference(rot, CANSparkMax.ControlType.kPosition);    
+    m_frontRight.m_drivingPIDController.setReference(rot, CANSparkMax.ControlType.kPosition);
+    m_rearLeft.m_drivingPIDController.setReference(rot, CANSparkMax.ControlType.kPosition);
+    m_rearRight.m_drivingPIDController.setReference(rot, CANSparkMax.ControlType.kPosition);
+     */
+
+     
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("pitch", m_gyro.getPitch());
@@ -106,6 +117,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     // custom dashboard testing
     SmartDashboard.putBoolean("hasNote", true);
+
+    // turning 
+    SmartDashboard.putNumber("rot front", m_frontLeft.m_turningEncoder.getZeroOffset());
 
     // Update the odometry in the periodic block
     m_odometry.update(
@@ -156,11 +170,11 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
     // Lock wheels when not moving
-    if (xSpeed == 0 && ySpeed == 0 && rot == 0) {
+    /*if (xSpeed == 0 && ySpeed == 0 && rot == 0) {
       DriverStation.reportWarning("No movement, locked wheels", false);
       setX();
       return;
-    }
+    }*/
 
     double xSpeedCommanded;
     double ySpeedCommanded;

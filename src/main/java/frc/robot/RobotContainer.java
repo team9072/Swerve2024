@@ -4,20 +4,22 @@
 
 package frc.robot;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
+import org.photonvision.PhotonCamera;
+
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -33,13 +35,16 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  public final DriveSubsystem m_robotDrive = new DriveSubsystem();
   public final ArmSubsystem m_arm = new ArmSubsystem();
 
   // The driver's controller
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   CommandXboxController m_armController = new CommandXboxController(OIConstants.kArmControllerPort);
 
+  // Other variables here
+  PhotonCamera m_camera = new PhotonCamera("BW3 (1)");
+  
   public RobotContainer() {
 
     // Build an auto chooser. This will use Commands.none() as the default option.
@@ -97,34 +102,39 @@ public class RobotContainer {
         }));
 
     // Reset field oriented
-    m_driverController.leftTrigger().onTrue(new RunCommand(() -> {
-      // m_robotDrive.m_gyro.reset();
+    m_driverController.x().onTrue(new RunCommand(() -> {
+      m_robotDrive.m_gyro.reset();
     }));
 
-    // D-Pad turning (def doesnt work)
-    m_driverController.povUp().onTrue(new RunCommand(() -> {
-      ExecutorService executor = Executors.newFixedThreadPool(9); // Just 1?
-      executor.submit(() -> {
-        // Normalize the degree
-        double angle = m_robotDrive.m_gyro.getAngle() % 360;
+    // D-Pad turning (trash)
+    m_driverController.povUp().whileTrue(new RunCommand(() -> {
+      // Normalize the degree
+      double angle = m_robotDrive.m_gyro.getAngle() % 360;
 
-        while (true) {
-          if (angle < 180) {
-            m_robotDrive.drive(0, 0, -.25, false, false);
-          } else {
-            m_robotDrive.drive(0, 0, .25, false, false);
-          }
-
-          if (Math.abs(angle) > 175 && Math.abs(angle) < 185) {
-            m_robotDrive.drive(0, 0, 0, false, false);
-            break;
-          };
-
-          angle = m_robotDrive.m_gyro.getAngle() % 360;
+      // Still needs to position to 180 deg
+      if (!(Math.abs(angle) > 175 && Math.abs(angle) < 185)) {
+        if (angle < 180) {
+          m_robotDrive.drive(0, 0, -.45, false, false);
+        } else {
+          m_robotDrive.drive(0, 0, .45, false, false);
         }
+      }
+    }));
 
-        executor.shutdown();
-      });
+    // better turning
+    m_driverController.povDown().whileTrue(new RunCommand(() -> {
+      System.out.println("abs pos: " + m_robotDrive.m_frontLeft.m_turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
+      System.out.println("rel pos: " + m_robotDrive.m_frontLeft.m_turningEncoder.getPosition());
+    }));
+
+    // arm intake testing
+    m_driverController.y().whileTrue(new RunCommand(()-> {
+      m_arm.m_intaker.set(.2);
+      m_arm.m_followIntaker.set(.2);
+    }))
+    .whileFalse(new RunCommand(() -> {
+      m_arm.m_intaker.set(0);
+      m_arm.m_followIntaker.set(0);
     }));
   }
 
