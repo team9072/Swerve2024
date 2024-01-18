@@ -15,9 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.subsystems.ArmSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -69,15 +66,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    // Temp: auto selection here
-    m_robotContainer.autoPath = chooser.getSelected();
-
-    // Runs the Scheduler. This is responsible for polling buttons, adding
-    // newly-scheduled
-    // commands, running already-scheduled commands, removing finished or
-    // interrupted commands,
-    // and running subsystem periodic() methods. This must be called from the
-    // robot's periodic
+    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
+    // commands, running already-scheduled commands, removing finished or interrupted commands,
+    // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
   }
@@ -97,58 +88,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    // Auto: Shoots preloaded cube, goes down, goes to other cube, comes back and
-    // shoots (and parks)
-    Command shootTopCube = m_robotContainer.m_arm.getShootCommand(ArmSubsystem.IntakerMode.SHOOT_TOP);
-    Command shootMiddleCube = m_robotContainer.m_arm.getShootCommand(ArmSubsystem.IntakerMode.SHOOT_MIDDLE);
-    Command resetArm = m_robotContainer.m_arm.setArmPosition(-44);
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    if (!m_robotContainer.autoPath.contains("Cubes")) {
-      // Balance path just shoots its preloaded cube and balances
-      m_autonomousCommand = shootTopCube
-          .andThen(m_robotContainer.getAutonomousCommand());
-    } else if (m_robotContainer.autoPath.equals("paths/TwoCubes.wpilib.json")) {
-      m_autonomousCommand = shootTopCube
-          .andThen(
-              resetArm,
-              new WaitCommand(0.5),
-              m_robotContainer.m_arm.getToggleIntakerCommand(),
-              Commands.parallel(
-                  m_robotContainer.getAutonomousCommand(),
-                  Commands.sequence(
-                      new WaitCommand(3),
-                      m_robotContainer.m_arm.getToggleIntakerCommand(),
-                      m_robotContainer.m_arm.setArmPosition(-1),
-                      new WaitCommand(2),
-                      shootMiddleCube)));
-    } else if (m_robotContainer.autoPath.equals("paths/ThreeCubes.wpilib.json")) {
-      /*
-       * m_autonomousCommand = shootTopCube
-       * .andThen(
-       * resetArm,
-       * new WaitCommand(0.5),
-       * m_robotContainer.m_arm.getToggleIntakerCommand(),
-       * Commands.parallel(
-       * m_robotContainer.getAutonomousCommand(),
-       * Commands.sequence(
-       * new WaitCommand(3),
-       * m_robotContainer.m_arm.getToggleIntakerCommand(),
-       * m_robotContainer.m_arm.setArmPosition(-1),
-       * new WaitCommand(2),
-       * shootMiddleCube,
-       * new WaitCommand(.75),
-       * m_robotContainer.m_arm.getToggleIntakerCommand(),
-       * m_robotContainer.m_arm.setArmPosition(-1),
-       * new WaitCommand(2)
-       * )
-       * )
-       * );
-       */
-    }
-
-    // Schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-      m_robotContainer.m_arm.setArmPosition(-1).andThen(m_autonomousCommand).schedule();
+      m_autonomousCommand.schedule();
     }
   }
 
