@@ -105,8 +105,8 @@ public class RobotContainer {
         }));
 
     // Reset field oriented
-    m_driverController.leftTrigger().onTrue(new RunCommand(() -> {
-      // m_robotDrive.m_gyro.reset();
+    m_driverController.x().onTrue(new RunCommand(() -> {
+      m_robotDrive.m_gyro.reset();
     }));
 
     // D-Pad turning (trash)
