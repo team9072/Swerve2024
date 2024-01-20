@@ -19,6 +19,9 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.photonvision.PhotonCamera;
 
 import frc.robot.Constants.OIConstants;
@@ -107,19 +110,30 @@ public class RobotContainer {
       m_robotDrive.m_gyro.reset();
     }));
 
-    // D-Pad turning (trash)
-    m_driverController.povUp().whileTrue(new RunCommand(() -> {
-      // Normalize the degree
-      double angle = m_robotDrive.m_gyro.getAngle() % 360;
+    // D-pad turning (trash)
+    // Could try a run command that stops when angle is reached
+    m_driverController.povUp().onTrue(new InstantCommand(() -> {
+      ExecutorService executor = Executors.newFixedThreadPool(1);
+      executor.submit(() -> {
+        // Normalize the degree
+        double angle = m_robotDrive.m_gyro.getAngle() % 360;
 
-      // Still needs to position to 180 deg
-      if (!(Math.abs(angle) > 175 && Math.abs(angle) < 185)) {
-        if (angle < 180) {
-          m_robotDrive.drive(0, 0, -.45, false, false);
-        } else {
-          m_robotDrive.drive(0, 0, .45, false, false);
+        while (true) {
+          if (angle < 180) {
+            m_robotDrive.drive(0, 0, -.25, false, false);
+          } else {
+            m_robotDrive.drive(0, 0, .25, false, false);
+          }
+
+          // 180 degrees
+          if (Math.abs(angle) > 175 && Math.abs(angle) < 185) {
+            m_robotDrive.drive(0, 0, 0, false, false);
+            break;
+          };
+
+          angle = m_robotDrive.m_gyro.getAngle() % 360;
         }
-      }
+      });
     }));
 
     // better turning
