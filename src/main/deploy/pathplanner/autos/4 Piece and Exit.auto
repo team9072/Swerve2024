@@ -1,0 +1,74 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4188888528152999,
+      "y": 5.493438956802725
+    },
+    "rotation": 0.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Wait 1s & Shoot"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Shoot & G1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Wait 1s & Shoot"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "G1-S-G2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Wait 1s & Shoot"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "G2-S!-G3-S!"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Wait 1s & Shoot"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "G3-Exit"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.36734973943881427,
-      "y": 2.898543048266067
+      "x": 1.3351518646165252,
+      "y": 5.6414596241514765
     },
     "rotation": 0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2 Piece V1 (S&G)"
+            "pathName": "Some meters forward"
           }
         }
       ]
