@@ -14,13 +14,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Some meters forward"
+            "pathName": "forwardPath"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Arc and Rotate"
+            "pathName": "Cut"
           }
         }
       ]

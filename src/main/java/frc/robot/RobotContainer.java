@@ -53,7 +53,7 @@ public class RobotContainer {
   
   public RobotContainer() {
     // Register auto commands
-    NamedCommands.registerCommand("Wait 1s & Shoot", new WaitCommand(1));
+    //NamedCommands.registerCommand("Wait 1s & Shoot", new WaitCommand(1));
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     //autoChooser = AutoBuilder.buildAutoChooser();
@@ -164,7 +164,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("Forward");
+    return new PathPlannerAuto("ForwardArc");
    //return autoChooser.getSelected();
   }
 }
