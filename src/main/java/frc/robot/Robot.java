@@ -7,8 +7,10 @@ package frc.robot;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,6 +34,9 @@ public class Robot extends TimedRobot {
   // Temp: auto selection here
   SendableChooser<String> chooser = new SendableChooser<>();
 
+  private final Field2d m_field = new Field2d();
+
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -45,6 +50,7 @@ public class Robot extends TimedRobot {
     chooser.addOption("Two Cubes", "paths/TwoCubes.wpilib.json");
     chooser.addOption("Community", "paths/Community.wpilib.json");
     SmartDashboard.putData("Auto Path", chooser);
+    SmartDashboard.putData("Field", m_field);
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
@@ -69,6 +75,8 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    m_robotContainer.m_robotDrive.updateOdometry();
+    m_field.setRobotPose(m_robotContainer.m_robotDrive.m_odometry.getPoseMeters());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

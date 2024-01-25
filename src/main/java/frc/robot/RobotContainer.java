@@ -71,7 +71,7 @@ public class RobotContainer {
                 MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
                 MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true, true),
+                true, true, false),
             m_robotDrive));
 
     // m_arm.setDefaultCommand(
@@ -125,14 +125,14 @@ public class RobotContainer {
 
         while (true) {
           if (angle < 180) {
-            m_robotDrive.drive(0, 0, -.45, false, false);
+            m_robotDrive.drive(0, 0, -.45, false, false, false);
           } else {
-            m_robotDrive.drive(0, 0, .45, false, false);
+            m_robotDrive.drive(0, 0, .45, false, false, false);
           }
 
           // 180 degrees
           if (Math.abs(angle) > 175 && Math.abs(angle) < 185) {
-            m_robotDrive.drive(0, 0, 0, false, false);
+            m_robotDrive.drive(0, 0, 0, false, false, false);
             break;
           };
 
@@ -164,7 +164,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("ForwardArc");
+    //m_robotDrive.m_gyro.reset();
+    return new PathPlannerAuto("ForwardCut");
    //return autoChooser.getSelected();
   }
 }

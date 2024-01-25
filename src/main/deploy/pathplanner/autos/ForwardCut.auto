@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2748661086294606,
-      "y": 5.524300973413978
+      "x": 1.4129651008117177,
+      "y": 5.524739769858686
     },
     "rotation": 0
   },
@@ -14,19 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "forwardPath"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Cut"
+            "pathName": "Spin"
           }
         }
       ]

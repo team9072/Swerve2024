@@ -138,10 +138,10 @@ public final class Constants {
     // PathFlowerConfig for PathPlanner's AutoBuilder
     public static final HolonomicPathFollowerConfig AutoPathFollowerConfig =
     new HolonomicPathFollowerConfig(
-      new PIDConstants(0.04, 0, 0), // Translation PID constants
-      new PIDConstants(0.01, 0.0, 0.0), // Rotation PID constants
+      new PIDConstants(5, 0, 0), // Translation PID constants
+      new PIDConstants(.5, 0, 0.05), // Rotation PID constants
       3.0, // Max module speed, in m/s
-      4.4577, // Drive base radius in meters. Distance from robot center to furthest module.
+      Units.inchesToMeters(26.5), // Drive base radius in meters. Distance from robot center to furthest module.
       new ReplanningConfig() // Default path replanning config. See the API for the options here
     );
   }
