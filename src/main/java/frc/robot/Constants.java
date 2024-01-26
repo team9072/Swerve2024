@@ -47,16 +47,20 @@ public final class Constants {
     public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
     public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
 
-    // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(26.5);
-    // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(26.5);
+    // Chassis configuration (24x24)
+    public static final double kTrackWidth = Units.inchesToMeters(24);
+    // Distance between centers of right and left wheels on robot (24*24)
+    public static final double kWheelBase = Units.inchesToMeters(24);
+    // Distance from center to furthest wheel (*diagonal*)
+    public static final double kCenterToWheel = Units.inchesToMeters(Math.sqrt(144 + 144)); // 12^2 + 12^2 PT
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
         new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+        new Translation2d(-kWheelBase / 2, kTrackWidth / 2), 
         new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+
+    public static final double kDiagonalMeters = Units.inchesToMeters(33.941);
 
     // Angular offsets of the modules relative to the chassis in radians
     public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
@@ -139,9 +143,9 @@ public final class Constants {
     public static final HolonomicPathFollowerConfig AutoPathFollowerConfig =
     new HolonomicPathFollowerConfig(
       new PIDConstants(5, 0, 0), // Translation PID constants
-      new PIDConstants(.5, 0, 0.05), // Rotation PID constants
+      new PIDConstants(.5, 0, 0), // Rotation PID constants
       3.0, // Max module speed, in m/s
-      Units.inchesToMeters(26.5), // Drive base radius in meters. Distance from robot center to furthest module.
+      DriveConstants.kCenterToWheel, // Drive base radius in meters. Distance from robot center to furthest module.
       new ReplanningConfig() // Default path replanning config. See the API for the options here
     );
   }

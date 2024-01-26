@@ -7,7 +7,6 @@ package frc.robot;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -125,8 +124,6 @@ public class Robot extends TimedRobot {
     PhotonTrackedTarget target = result.getBestTarget();
 
     if (target != null) {
-
-      // TODO: correct positioning
 
       double distance = PhotonUtils.calculateDistanceToTargetMeters(
           Units.inchesToMeters(8.5), Units.inchesToMeters(6.5), 0, Units.degreesToRadians(target.getPitch()));

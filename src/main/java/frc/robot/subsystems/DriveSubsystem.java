@@ -18,12 +18,10 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -64,7 +62,7 @@ public class DriveSubsystem extends SubsystemBase {
   // Odometry class for tracking robot pose
   public SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
-      getHeadingOdometry(),
+      getHeadingOdometry(), // Rotation2d.fromDegrees(m_gyro.getAngle())
       new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -80,7 +78,7 @@ public class DriveSubsystem extends SubsystemBase {
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
         this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-        this::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         AutoConstants.AutoPathFollowerConfig,
         () -> {
@@ -167,7 +165,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetPose(Pose2d pose) {
     m_odometry.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        getHeadingOdometry(),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -284,16 +282,10 @@ public class DriveSubsystem extends SubsystemBase {
    * @param speeds The robot relative ChasisSpeeds
    */
   public void driveRobotRelative(ChassisSpeeds speeds) {
-    //SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
-    //setModuleStates(targetStates);
-
-    SwerveModuleState[] swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond,
-                Rotation2d.fromDegrees(-m_gyro.getAngle())));
-                setModuleStates(swerveModuleStates);
-    //this.drive(-speeds.vxMetersPerSecond, -speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, true, false, true);
+    this.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false, false, true);
   }
 
-  public SwerveModuleState[] getModuleStates(){
+  public SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
     states[0] = m_frontLeft.getState();
     states[1] = m_frontRight.getState();    
@@ -303,11 +295,9 @@ public class DriveSubsystem extends SubsystemBase {
     return states;
   }
 
-  // below but for field relative
-  public ChassisSpeeds getSpeeds(){
-    SwerveModuleState[] states = getModuleStates();
-    return DriveConstants.kDriveKinematics.toChassisSpeeds(states); // robot relative
-    //return ChassisSpeeds.fromFieldRelativeSpeeds(DriveConstants.kDriveKinematics.toChassisSpeeds(states), Rotation2d.fromDegrees(m_gyro.getAngle()));
+  public ChassisSpeeds getFieldRelativeSpeeds() {
+    var states = getModuleStates();
+    return ChassisSpeeds.fromFieldRelativeSpeeds(DriveConstants.kDriveKinematics.toChassisSpeeds(states), Rotation2d.fromDegrees(m_gyro.getAngle()));
   }
   /**
    * Get the robot's current speed relative to the robot
@@ -322,8 +312,9 @@ public class DriveSubsystem extends SubsystemBase {
         m_rearRight.getState());
   }
 
+  // Get heading for odometry
   public Rotation2d getHeadingOdometry() {
-    return Rotation2d.fromDegrees(Math.IEEEremainder(m_gyro.getAngle(), 360));
+    return Rotation2d.fromDegrees(Math.IEEEremainder(m_gyro.getAngle() * (DriveConstants.kGyroReversed ? -1.0 : 1.0), 360));
   }
 
   /**
@@ -369,7 +360,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees();
+    return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 
   /**
