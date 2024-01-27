@@ -12,6 +12,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+//DECRAPATED kept for reerence
 public class ArmSubsystem extends SubsystemBase {
     private static final int kCanID = 13;
     private static final MotorType kMotorType = MotorType.kBrushless;

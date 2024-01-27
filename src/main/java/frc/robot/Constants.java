@@ -27,6 +27,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   // Constants for the arm
+  // DECRAPATED
   public static final class ArmConstants {
     public static final double kIntakerSpeed = .3;
     public static final double kRotationSpeed = .3;
@@ -35,6 +36,27 @@ public final class Constants {
     public static final double kBottomShootSpeed = .1;
     public static final double kMiddleShootSpeed = .3;
     public static final double kTopShootSpeed = .8;
+  }
+
+  public static final class UTBIntakerConstants {
+    // Constants for the under the bumper intaker
+    // TODO: propper can ids and speeds
+    public static final int kIntakeMotor1CANId = 0;
+    public static final int kIntakeMotor2CANId = 0;
+
+    public static final double kIntakeMotorSpeed = 0.3;
+  }
+
+  public static final class FeederConstants {
+    // Constants for the feeder that sits between the intake and shooter
+    // TODO: propper can ids and speeds
+    public static final int kFeederMotor1CANId = 0;
+    public static final int kFeederMotor2CANId = 0;
+
+    public static final int kFeederBeamBreak1CANId = 0;
+
+    public static final double kFeederIntakeSpeed = 0.3;
+    public static final double kFeederShootSpeed = 1;
   }
 
   public static final class DriveConstants {
