@@ -18,12 +18,10 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -104,8 +102,6 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearLeft.m_drivingPIDController.setReference(rot, CANSparkMax.ControlType.kPosition);
     m_rearRight.m_drivingPIDController.setReference(rot, CANSparkMax.ControlType.kPosition);
      */
-
-     
   }
 
   @Override
@@ -175,10 +171,8 @@ public class DriveSubsystem extends SubsystemBase {
       setX();
       return;
     }*/
-
     double xSpeedCommanded;
     double ySpeedCommanded;
-
     if (rateLimit) {
       // Convert XY to polar for rate limiting
       double inputTranslationDir = Math.atan2(ySpeed, xSpeed);

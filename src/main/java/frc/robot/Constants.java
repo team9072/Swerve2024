@@ -45,18 +45,19 @@ public final class Constants {
     public static final int kIntakeMotor2CANId = 0;
 
     public static final double kIntakeMotorSpeed = 0.3;
+    public static final double kReverseMotorSpeed = -0.3;
   }
 
   public static final class FeederConstants {
     // Constants for the feeder that sits between the intake and shooter
     // TODO: propper can ids and speeds
-    public static final int kFeederMotor1CANId = 0;
-    public static final int kFeederMotor2CANId = 0;
+    public static final int kFeederMotorCANId = 0;
 
-    public static final int kFeederBeamBreak1CANId = 0;
+    public static final int kBeamBreak1CANId = 0;
 
-    public static final double kFeederIntakeSpeed = 0.3;
-    public static final double kFeederShootSpeed = 1;
+    public static final double kIntakeSpeed = 0.3;
+    public static final double kReverseSpeed = -0.3;
+    public static final double kShootSpeed = 1;
   }
 
   public static final class DriveConstants {
