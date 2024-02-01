@@ -1,20 +1,28 @@
-package frc.robot.subsystems.note_handling;
+package frc.robot.subsystems.attachment;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.Constants.UTBIntakerConstants;
 
 public class UTBIntakerSubsystem extends Intaker {
     
-    private CANSparkMax m_intakeMotor1;
-    private CANSparkMax m_intakeMotor2;
+    private final CANSparkMax m_intakeMotor1;
+    private final CANSparkMax m_intakeMotor2;
 
     private IntakerMotorState m_state = IntakerMotorState.kStopped;
 
     public UTBIntakerSubsystem() {
         m_intakeMotor1 = new CANSparkMax(UTBIntakerConstants.kIntakeMotor1CANId, MotorType.kBrushless);
         m_intakeMotor2 = new CANSparkMax(UTBIntakerConstants.kIntakeMotor2CANId, MotorType.kBrushless);
+
+        m_intakeMotor1.restoreFactoryDefaults();
+        m_intakeMotor2.restoreFactoryDefaults();
+
+        // set coast mode to prevent damage
+        m_intakeMotor1.setIdleMode(IdleMode.kCoast);
+        m_intakeMotor2.setIdleMode(IdleMode.kCoast);
     }
 
     @Override

@@ -57,7 +57,16 @@ public final class Constants {
 
     public static final double kIntakeSpeed = 0.3;
     public static final double kReverseSpeed = -0.3;
-    public static final double kShootSpeed = 1;
+    public static final double kShootSpeed = 0.5;
+  }
+
+  public static final class ShooterConstants {
+    // Constants for shooter
+    // TODO: propper can ids nd speeds
+    public static final int kShooterMotor1CANId = 0;
+    public static final int kShooterMotor2CANId = 0;
+
+    public static final double kShootSpeed = 0.5;
   }
 
   public static final class DriveConstants {

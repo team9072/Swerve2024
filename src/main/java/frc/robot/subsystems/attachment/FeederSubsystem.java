@@ -1,8 +1,9 @@
-package frc.robot.subsystems.note_handling;
+package frc.robot.subsystems.attachment;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FeederConstants;
@@ -18,7 +19,7 @@ public class FeederSubsystem extends SubsystemBase {
 
     private final CANSparkMax m_feederMotor;
     // TODO: replace with propper sensor class
-    private boolean m_beamBreakSensor;
+    private final boolean m_beamBreakSensor;
 
     private FeederState m_state = FeederState.kStopped;
 
@@ -27,6 +28,9 @@ public class FeederSubsystem extends SubsystemBase {
      */
     public FeederSubsystem() {
         m_feederMotor = new CANSparkMax(FeederConstants.kFeederMotorCANId, MotorType.kBrushless);
+
+        m_feederMotor.restoreFactoryDefaults();
+        m_feederMotor.setIdleMode(IdleMode.kBrake);
 
         m_beamBreakSensor = false;
     }
