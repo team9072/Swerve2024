@@ -164,7 +164,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("ForwardArc");
-   //return autoChooser.getSelected();
+   return autoChooser.getSelected();
   }
 }
