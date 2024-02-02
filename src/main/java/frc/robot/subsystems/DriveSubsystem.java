@@ -74,7 +74,7 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
     // Reset and calibrate
     m_gyro.reset();
-
+    m_gyro.setAngleAdjustment(180);
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
         this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -108,7 +108,6 @@ public class DriveSubsystem extends SubsystemBase {
      * m_rearRight.m_drivingPIDController.setReference(rot,
      * CANSparkMax.ControlType.kPosition);
      */
-
   }
 
   @Override
@@ -197,7 +196,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     double xSpeedCommanded;
     double ySpeedCommanded;
-
     if (rateLimit) {
       // Convert XY to polar for rate limiting
       double inputTranslationDir = Math.atan2(ySpeed, xSpeed);
