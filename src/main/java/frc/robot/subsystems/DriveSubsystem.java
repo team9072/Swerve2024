@@ -47,7 +47,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
-  public AHRS m_gyro = new AHRS(I2C.Port.kMXP);
+  private final AHRS m_gyro = new AHRS(I2C.Port.kMXP);
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -313,8 +313,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   // Get heading for odometry
-  public Rotation2d getHeadingOdometry() {
-    return Rotation2d.fromDegrees(Math.IEEEremainder(m_gyro.getAngle() * (DriveConstants.kGyroReversed ? -1.0 : 1.0), 360));
+  private Rotation2d getHeadingOdometry() {
+    return Rotation2d.fromDegrees(Math.IEEEremainder(m_gyro.getAngle() * (DriveConstants.kGyroReversed ? -1.0 : 1.0) - DriveConstants.kGyroAdjustment, 360));
   }
 
   /**
@@ -360,7 +360,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+    return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees() * (DriveConstants.kGyroReversed ? -1.0 : 1.0) - DriveConstants.kGyroAdjustment;
   }
 
   /**
