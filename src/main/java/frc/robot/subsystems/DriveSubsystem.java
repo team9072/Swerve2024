@@ -248,7 +248,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param speeds The robot relative ChasisSpeeds
    */
   public void driveRobotRelative(ChassisSpeeds speeds){
-    this.drive(-speeds.vxMetersPerSecond,-speeds.vyMetersPerSecond,speeds.omegaRadiansPerSecond,false,false);
+    this.drive(-speeds.vxMetersPerSecond,speeds.vyMetersPerSecond,speeds.omegaRadiansPerSecond,false,false);
   }
   
   /**
