@@ -73,7 +73,7 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
     // Reset and calibrate
     m_gyro.reset();
-
+    m_gyro.setAngleAdjustment(180);
     AutoBuilder.configureHolonomic(
                 this::getPose, // Robot pose supplier
                 this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -248,7 +248,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param speeds The robot relative ChasisSpeeds
    */
   public void driveRobotRelative(ChassisSpeeds speeds){
-    this.drive(speeds.vxMetersPerSecond,speeds.vyMetersPerSecond,speeds.omegaRadiansPerSecond,false,false);
+    this.drive(-speeds.vxMetersPerSecond,-speeds.vyMetersPerSecond,speeds.omegaRadiansPerSecond,false,false);
   }
   
   /**
