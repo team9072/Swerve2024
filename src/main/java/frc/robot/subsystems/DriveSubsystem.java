@@ -47,7 +47,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
-  public AHRS m_gyro = new AHRS(I2C.Port.kMXP);
+  private final AHRS m_gyro = new AHRS(I2C.Port.kMXP);
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -55,13 +55,14 @@ public class DriveSubsystem extends SubsystemBase {
   private double m_currentTranslationMag = 0.0;
 
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
-  //private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
+  // private SlewRateLimiter m_rotLimiter = new
+  // SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+  public SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(m_gyro.getAngle()),
+      getHeadingOdometry(), // Rotation2d.fromDegrees(m_gyro.getAngle())
       new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -75,32 +76,37 @@ public class DriveSubsystem extends SubsystemBase {
     m_gyro.reset();
     m_gyro.setAngleAdjustment(180);
     AutoBuilder.configureHolonomic(
-                this::getPose, // Robot pose supplier
-                this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-                AutoConstants.AutoPathFollowerConfig,
-                () -> {
-                    // Boolean supplier that controls when the path will be mirrored for the red alliance
-                    // This will flip the path being followed to the red side of the field.
-                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+        this::getPose, // Robot pose supplier
+        this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+        this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        AutoConstants.AutoPathFollowerConfig,
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red
+          // alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                    var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    }
-                    return false;
-                },
-                this // Reference to this subsystem to set requirements
-        );
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this // Reference to this subsystem to set requirements
+    );
   }
 
   public void turnTo(double degrees) {
     /*
-     *     m_frontLeft.m_drivingPIDController.setReference(rot, CANSparkMax.ControlType.kPosition);    
-    m_frontRight.m_drivingPIDController.setReference(rot, CANSparkMax.ControlType.kPosition);
-    m_rearLeft.m_drivingPIDController.setReference(rot, CANSparkMax.ControlType.kPosition);
-    m_rearRight.m_drivingPIDController.setReference(rot, CANSparkMax.ControlType.kPosition);
+     * m_frontLeft.m_drivingPIDController.setReference(rot,
+     * CANSparkMax.ControlType.kPosition);
+     * m_frontRight.m_drivingPIDController.setReference(rot,
+     * CANSparkMax.ControlType.kPosition);
+     * m_rearLeft.m_drivingPIDController.setReference(rot,
+     * CANSparkMax.ControlType.kPosition);
+     * m_rearRight.m_drivingPIDController.setReference(rot,
+     * CANSparkMax.ControlType.kPosition);
      */
   }
 
@@ -114,18 +120,32 @@ public class DriveSubsystem extends SubsystemBase {
     // custom dashboard testing
     SmartDashboard.putBoolean("hasNote", true);
 
-    // turning 
+    // turning
     SmartDashboard.putNumber("rot front", m_frontLeft.m_turningEncoder.getZeroOffset());
+
+    SmartDashboard.putBoolean("UPDATING", true);
 
     // Update the odometry in the periodic block
     m_odometry.update(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        getHeadingOdometry(),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
-       });
+        });
+  }
+
+  public void updateOdometry() {
+            // Update the odometry in the periodic block
+            m_odometry.update(
+              getHeadingOdometry(),
+              new SwerveModulePosition[] {
+                  m_frontLeft.getPosition(),
+                  m_frontRight.getPosition(),
+                  m_rearLeft.getPosition(),
+                  m_rearRight.getPosition()
+              });
   }
 
   /**
@@ -144,7 +164,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetPose(Pose2d pose) {
     m_odometry.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        getHeadingOdometry(),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -164,13 +184,16 @@ public class DriveSubsystem extends SubsystemBase {
    *                      field.
    * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit, boolean isAuto) {
     // Lock wheels when not moving
-    /*if (xSpeed == 0 && ySpeed == 0 && rot == 0) {
-      DriverStation.reportWarning("No movement, locked wheels", false);
-      setX();
-      return;
-    }*/
+    /*
+     * if (xSpeed == 0 && ySpeed == 0 && rot == 0) {
+     * DriverStation.reportWarning("No movement, locked wheels", false);
+     * setX();
+     * return;
+     * }
+     */
+
     double xSpeedCommanded;
     double ySpeedCommanded;
     if (rateLimit) {
@@ -178,46 +201,47 @@ public class DriveSubsystem extends SubsystemBase {
       double inputTranslationDir = Math.atan2(ySpeed, xSpeed);
       double inputTranslationMag = Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2));
 
-      // Calculate the direction slew rate based on an estimate of the lateral acceleration
+      // Calculate the direction slew rate based on an estimate of the lateral
+      // acceleration
       double directionSlewRate;
       if (m_currentTranslationMag != 0.0) {
         directionSlewRate = Math.abs(DriveConstants.kDirectionSlewRate / m_currentTranslationMag);
       } else {
-        directionSlewRate = 500.0; //some high number that means the slew rate is effectively instantaneous
+        directionSlewRate = 500.0; // some high number that means the slew rate is effectively instantaneous
       }
-      
 
       double currentTime = WPIUtilJNI.now() * 1e-6;
       double elapsedTime = currentTime - m_prevTime;
       double angleDif = SwerveUtils.AngleDifference(inputTranslationDir, m_currentTranslationDir);
-      if (angleDif < 0.45*Math.PI) {
-        m_currentTranslationDir = SwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir, directionSlewRate * elapsedTime);
+      if (angleDif < 0.45 * Math.PI) {
+        m_currentTranslationDir = SwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir,
+            directionSlewRate * elapsedTime);
         m_currentTranslationMag = m_magLimiter.calculate(inputTranslationMag);
-      }
-      else if (angleDif > 0.85*Math.PI) {
-        if (m_currentTranslationMag > 1e-4) { //some small number to avoid floating-point errors with equality checking
+      } else if (angleDif > 0.85 * Math.PI) {
+        if (m_currentTranslationMag > 1e-4) { // some small number to avoid floating-point errors with equality checking
           // keep currentTranslationDir unchanged
           m_currentTranslationMag = m_magLimiter.calculate(0.0);
-        }
-        else {
+        } else {
           m_currentTranslationDir = SwerveUtils.WrapAngle(m_currentTranslationDir + Math.PI);
           m_currentTranslationMag = m_magLimiter.calculate(inputTranslationMag);
         }
-      }
-      else {
-        m_currentTranslationDir = SwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir, directionSlewRate * elapsedTime);
+      } else {
+        m_currentTranslationDir = SwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir,
+            directionSlewRate * elapsedTime);
         m_currentTranslationMag = m_magLimiter.calculate(0.0);
       }
       m_prevTime = currentTime;
 
-      // Disables slew rate by using the original input values instead (not tested as of 12/31)
-      // xSpeedCommanded = m_currentTranslationMag * Math.cos(m_currentTranslationDir);
-      // ySpeedCommanded = m_currentTranslationMag * Math.sin(m_currentTranslationDir);
+      // Disables slew rate by using the original input values instead (not tested as
+      // of 12/31)
+      // xSpeedCommanded = m_currentTranslationMag *
+      // Math.cos(m_currentTranslationDir);
+      // ySpeedCommanded = m_currentTranslationMag *
+      // Math.sin(m_currentTranslationDir);
       // m_currentRotation = m_rotLimiter.calculate(rot);
       xSpeedCommanded = inputTranslationMag * Math.cos(inputTranslationDir);
       ySpeedCommanded = inputTranslationMag * Math.sin(inputTranslationDir);
       m_currentRotation = rot;
-
 
     } else {
       xSpeedCommanded = xSpeed;
@@ -225,15 +249,22 @@ public class DriveSubsystem extends SubsystemBase {
       m_currentRotation = rot;
     }
 
-    // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
-    double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
-    double rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
+    double xSpeedDelivered = xSpeedCommanded * 1;
+    double ySpeedDelivered = ySpeedCommanded * 1;
+    double rotDelivered = m_currentRotation * 1;
+
+    if (!isAuto) {
+      // Convert the commanded speeds into the correct units for the drivetrain
+      xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
+      ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
+      rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
+    }
 
     // Field relative: negate x and y speeds so it's not inverted
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeedDelivered, -ySpeedDelivered, rotDelivered, Rotation2d.fromDegrees(-m_gyro.getAngle()))
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeedDelivered, -ySpeedDelivered, rotDelivered,
+                Rotation2d.fromDegrees(-m_gyro.getAngle()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -245,23 +276,43 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Drive the robot using a robot relative ChasisSpeeds
+   * 
    * @param speeds The robot relative ChasisSpeeds
    */
-  public void driveRobotRelative(ChassisSpeeds speeds){
-    this.drive(-speeds.vxMetersPerSecond,speeds.vyMetersPerSecond,speeds.omegaRadiansPerSecond,false,false);
+  public void driveRobotRelative(ChassisSpeeds speeds) {
+    this.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false, false, true);
   }
-  
+
+  public SwerveModuleState[] getModuleStates() {
+    SwerveModuleState[] states = new SwerveModuleState[4];
+    states[0] = m_frontLeft.getState();
+    states[1] = m_frontRight.getState();    
+    states[2] = m_rearLeft.getState();
+    states[3] = m_rearRight.getState();
+
+    return states;
+  }
+
+  public ChassisSpeeds getFieldRelativeSpeeds() {
+    var states = getModuleStates();
+    return ChassisSpeeds.fromFieldRelativeSpeeds(DriveConstants.kDriveKinematics.toChassisSpeeds(states), Rotation2d.fromDegrees(m_gyro.getAngle()));
+  }
   /**
    * Get the robot's current speed relative to the robot
+   * 
    * @return The robot relative ChasisSpeeds
    */
-  public ChassisSpeeds getRobotRelativeSpeeds(){
+  public ChassisSpeeds getRobotRelativeSpeeds() {
     return DriveConstants.kDriveKinematics.toChassisSpeeds(
-      m_frontLeft.getState(),
-      m_frontRight.getState(),
-      m_rearLeft.getState(),
-      m_rearRight.getState()
-    );
+        m_frontLeft.getState(),
+        m_frontRight.getState(),
+        m_rearLeft.getState(),
+        m_rearRight.getState());
+  }
+
+  // Get heading for odometry
+  private Rotation2d getHeadingOdometry() {
+    return Rotation2d.fromDegrees(Math.IEEEremainder(m_gyro.getAngle() * (DriveConstants.kGyroReversed ? -1.0 : 1.0) - DriveConstants.kGyroAdjustment, 360));
   }
 
   /**
@@ -307,7 +358,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees();
+    return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees() * (DriveConstants.kGyroReversed ? -1.0 : 1.0) - DriveConstants.kGyroAdjustment;
   }
 
   /**

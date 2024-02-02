@@ -9,6 +9,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -27,6 +28,9 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  private final Field2d m_field = new Field2d();
+
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -58,6 +62,8 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    m_robotContainer.m_robotDrive.updateOdometry();
+    m_field.setRobotPose(m_robotContainer.m_robotDrive.getPose());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -106,8 +112,6 @@ public class Robot extends TimedRobot {
     PhotonTrackedTarget target = result.getBestTarget();
 
     if (target != null) {
-
-      // TODO: correct positioning
 
       double distance = PhotonUtils.calculateDistanceToTargetMeters(
           Units.inchesToMeters(8.5), Units.inchesToMeters(6.5), 0, Units.degreesToRadians(target.getPitch()));
