@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
@@ -27,7 +26,6 @@ import java.util.concurrent.Executors;
 import org.photonvision.PhotonCamera;
 
 import frc.robot.Constants.OIConstants;
-import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 
 /*
@@ -42,15 +40,14 @@ public class RobotContainer {
 
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  public final ArmSubsystem m_arm = new ArmSubsystem();
 
-  // The driver's controller
+  // The driver's controllers
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
-  CommandXboxController m_armController = new CommandXboxController(OIConstants.kArmControllerPort);
+  CommandXboxController m_attachmentController = new CommandXboxController(OIConstants.kArmControllerPort);
 
-  // Other variables here
+  // Photonvision Variables
   PhotonCamera m_camera = new PhotonCamera("BW3 (1)");
-  
+
   public RobotContainer() {
     // Register auto commands
     NamedCommands.registerCommand("Wait 1s & Shoot", new WaitCommand(1));
@@ -74,9 +71,6 @@ public class RobotContainer {
                 true, true),
             m_robotDrive));
 
-    // m_arm.setDefaultCommand(
-    // Commands.run(() -> m_arm.setRotationSpeed(m_armController.getLeftY()), m_arm)
-    // );
   }
 
   /**
@@ -92,13 +86,6 @@ public class RobotContainer {
     m_driverController.rightBumper().whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
         m_robotDrive));
-    m_armController.b().onTrue(m_arm.getToggleIntakerCommand());
-    m_armController.povUp().onTrue(m_arm.getShootCommand(ArmSubsystem.IntakerMode.SHOOT_TOP));
-    m_armController.povLeft().onTrue(m_arm.getShootCommand(ArmSubsystem.IntakerMode.SHOOT_MIDDLE));
-    m_armController.povDown().onTrue(m_arm.getShootCommand(ArmSubsystem.IntakerMode.SHOOT_BOTTOM));
-
-    m_armController.y().onTrue(m_arm.setArmPosition(-1));
-    m_armController.x().onTrue(m_arm.setArmPosition(-44));
 
     // Drive speeds
     m_driverController.rightTrigger().whileTrue(new RunCommand(
@@ -134,7 +121,8 @@ public class RobotContainer {
           if (Math.abs(angle) > 175 && Math.abs(angle) < 185) {
             m_robotDrive.drive(0, 0, 0, false, false);
             break;
-          };
+          }
+          ;
 
           angle = m_robotDrive.m_gyro.getAngle() % 360;
         }
@@ -143,28 +131,18 @@ public class RobotContainer {
 
     // better turning
     m_driverController.povDown().whileTrue(new RunCommand(() -> {
-      System.out.println("abs pos: " + m_robotDrive.m_frontLeft.m_turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
+      System.out.println(
+          "abs pos: " + m_robotDrive.m_frontLeft.m_turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
       System.out.println("rel pos: " + m_robotDrive.m_frontLeft.m_turningEncoder.getPosition());
-    }));
-
-    // arm intake testing
-    m_driverController.y().whileTrue(new RunCommand(()-> {
-      m_arm.m_intaker.set(-.4);
-      m_arm.m_followIntaker.set(-.4);
-    }))
-    .whileFalse(new RunCommand(() -> {
-      m_arm.m_intaker.set(0);
-      m_arm.m_followIntaker.set(0);
     }));
   }
 
-/**
+  /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("ForwardArc");
-   //return autoChooser.getSelected();
+    return autoChooser.getSelected();
   }
 }

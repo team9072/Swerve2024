@@ -116,12 +116,6 @@ public class Robot extends TimedRobot {
       SmartDashboard.putNumber("Tag Distance", distance);
 
     }
-
-    // Data
-    // SmartDashboard.putNumber("Encoder Position",
-    // m_robotContainer.m_arm.getEncoderValue());
-    // SmartDashboard.putNumber("Encoder Velocity",
-    // m_robotContainer.m_armController.getAbsoluteEncoder(Type.kDutyCycle).getVelocity());
   }
 
   @Override
