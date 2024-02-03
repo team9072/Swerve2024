@@ -7,12 +7,15 @@ package frc.robot;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.VisionConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -30,6 +33,7 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   private final Field2d m_field = new Field2d();
+  private final Field2d m_estimationField = new Field2d();
 
 
   /**
@@ -44,6 +48,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     SmartDashboard.putData("Field", m_field);
+    SmartDashboard.putData("Pose Estimation", m_estimationField);
   }
 
   /**
@@ -107,18 +112,28 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    var result = m_robotContainer.m_camera.getLatestResult();
-    System.out.println(result.hasTargets());
+    var result = VisionConstants.frontCam.getLatestResult();
     PhotonTrackedTarget target = result.getBestTarget();
 
     if (target != null) {
 
       double distance = PhotonUtils.calculateDistanceToTargetMeters(
-          Units.inchesToMeters(8.5), Units.inchesToMeters(6.5), 0, Units.degreesToRadians(target.getPitch()));
+          Units.inchesToMeters(8), Units.inchesToMeters(57),
+          Units.degreesToRadians(30), Units.degreesToRadians(target.getPitch()));
 
       
-      SmartDashboard.putNumber("Tag Distance", distance);
+      SmartDashboard.putNumber("Horizontal Tag Distance", distance);
 
+      var pose = VisionConstants.frontCamPoseEstimator.update();
+
+      if (pose.isPresent()) {
+        Pose2d estimatedPose = pose.get().estimatedPose.toPose2d();
+
+        m_estimationField.setRobotPose(estimatedPose);
+        m_robotContainer.m_robotDrive.updateOdometryWithVision(estimatedPose);
+      } else {
+        m_estimationField.setRobotPose(new Pose2d());
+      }
     }
   }
 
