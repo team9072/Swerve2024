@@ -27,6 +27,10 @@ import org.photonvision.PhotonCamera;
 
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.attachment.AttachmentHandler;
+import frc.robot.subsystems.attachment.FeederSubsystem;
+import frc.robot.subsystems.attachment.ShooterSubsystem;
+import frc.robot.subsystems.attachment.UTBIntakerSubsystem;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -40,10 +44,14 @@ public class RobotContainer {
 
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  public final AttachmentHandler m_attatchment = new AttachmentHandler(
+      new UTBIntakerSubsystem(),
+      new FeederSubsystem(),
+      new ShooterSubsystem());
 
   // The driver's controllers
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
-  CommandXboxController m_attachmentController = new CommandXboxController(OIConstants.kArmControllerPort);
+  CommandXboxController m_attachmentController = new CommandXboxController(OIConstants.kAttatchmentsControllerPort);
 
   // Photonvision Variables
   PhotonCamera m_camera = new PhotonCamera("BW3 (1)");
@@ -83,6 +91,8 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+    // Base controls
+
     m_driverController.rightBumper().whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
         m_robotDrive));
@@ -134,6 +144,17 @@ public class RobotContainer {
           "abs pos: " + m_robotDrive.m_frontLeft.m_turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
       System.out.println("rel pos: " + m_robotDrive.m_frontLeft.m_turningEncoder.getPosition());
     }));
+
+    // Attatchment controls
+
+    m_driverController.rightTrigger().onTrue(m_attatchment.getShootCommand());
+
+    m_attachmentController.rightTrigger()
+        .onTrue(m_attatchment.getSpinShooterCommand())
+        .onFalse(m_attatchment.getStopShooterCommand());
+
+    m_attachmentController.x().onTrue(m_attatchment.getStartIntakersCommand());
+    m_attachmentController.a().onTrue(m_attatchment.getStopIntakersCommand());
   }
 
   /**
@@ -142,6 +163,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-   return autoChooser.getSelected();
+    return autoChooser.getSelected();
   }
 }

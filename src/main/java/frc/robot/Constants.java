@@ -26,18 +26,6 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  // Constants for the arm
-  // DECRAPATED
-  public static final class ArmConstants {
-    public static final double kIntakerSpeed = .3;
-    public static final double kRotationSpeed = .3;
-    public static final double kShootSpeed = .9;
-
-    public static final double kBottomShootSpeed = .1;
-    public static final double kMiddleShootSpeed = .3;
-    public static final double kTopShootSpeed = .8;
-  }
-
   public static final class UTBIntakerConstants {
     // Constants for the under the bumper intaker
     // TODO: propper can ids and speeds
@@ -53,7 +41,7 @@ public final class Constants {
     // TODO: propper can ids and speeds
     public static final int kFeederMotorCANId = 0;
 
-    public static final int kBeamBreak1CANId = 0;
+    public static final int kBeamBreakDIOId = 0;
 
     public static final double kIntakeSpeed = 0.3;
     public static final double kReverseSpeed = -0.3;
@@ -67,6 +55,8 @@ public final class Constants {
     public static final int kShooterMotor2CANId = 0;
 
     public static final double kShootSpeed = 0.5;
+    // shooting time in seconds
+    public static final double kShootTime = 3;
   }
 
   public static final class DriveConstants {
@@ -167,7 +157,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
-    public static final int kArmControllerPort = 1;
+    public static final int kAttatchmentsControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
   }
 

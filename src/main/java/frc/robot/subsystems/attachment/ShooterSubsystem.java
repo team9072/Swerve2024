@@ -1,9 +1,11 @@
 package frc.robot.subsystems.attachment;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
@@ -18,7 +20,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private CANSparkMax m_motor2;
     private ShooterState m_state = ShooterState.kStopped;
 
-    ShooterSubsystem() {
+    public ShooterSubsystem() {
         m_motor1 = new CANSparkMax(ShooterConstants.kShooterMotor1CANId, MotorType.kBrushless);
         m_motor2 = new CANSparkMax(ShooterConstants.kShooterMotor2CANId, MotorType.kBrushless);
 
@@ -30,6 +32,15 @@ public class ShooterSubsystem extends SubsystemBase {
         m_motor2.setIdleMode(IdleMode.kCoast);
     }
 
+    @Override
+    public void periodic() {
+        // TODO flywheel velocity PID
+    }
+
+    /**
+     * set the state of the shooter
+     * @param state the new state to set
+     */
     public void setState(ShooterState state) {
         m_state = state;
 
@@ -43,5 +54,55 @@ public class ShooterSubsystem extends SubsystemBase {
         m_motor2.set(speed);
     }
 
+    /**
+     * set the state of the shooter
+     * @param state the new state to set
+     * @return a command to set the state of the shooter
+     */
+    public Command getSetStateCommand(ShooterState state) {
+        return this.runOnce(() -> setState(state));
+    }
 
+    /**
+     * get the current state of the shooter
+     * @return the state of the shooter
+     */
+    public ShooterState getState() {
+        return m_state;
+    }
+
+    /**
+     * Start revving the motors up to shoot
+     */
+    public void startSpinning() {
+        setState(ShooterState.kSpinning);
+    }
+
+    /**
+     * Start revving the motors up to shoot
+     * @return A command to rev up the motors
+     */
+    public Command getStartSpinningCommand() {
+        return this.runOnce(this::startSpinning);
+    }
+
+    /**
+     * Stop the shooter motors
+     */
+    public void stop() {
+        setState(ShooterState.kStopped);
+    }
+
+    /**
+     * Stop the shooter motors
+     * @return A command to stop the shooter motors
+     */
+    public Command getStopCommand() {
+        return this.runOnce(this::stop);
+    }
+
+    public boolean isShooterReady() {
+        //TODO: check shooter rpm
+        return true;
+    }
 }
