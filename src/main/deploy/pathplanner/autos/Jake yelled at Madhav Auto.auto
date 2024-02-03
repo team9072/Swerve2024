@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3,
-      "y": 5.52
+      "x": 1.3771774811958186,
+      "y": 5.596361216475402
     },
     "rotation": 0
   },
@@ -14,19 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "forwardPath"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.01
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ArcRotate"
+            "pathName": "jake yelled at Madhav"
           }
         }
       ]

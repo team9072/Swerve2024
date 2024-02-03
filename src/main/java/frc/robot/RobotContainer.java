@@ -65,8 +65,8 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         Commands.run(
             () -> m_robotDrive.drive(
-                MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true, true, false),
             m_robotDrive));
@@ -98,8 +98,7 @@ public class RobotContainer {
 
     // Reset field oriented
     m_driverController.x().onTrue(new InstantCommand(() -> {
-      m_robotDrive.getHeading();
-      System.out.println("reset");
+      m_robotDrive.resetGyro();
     }));
 
     // D-pad turning (trash)
@@ -108,7 +107,7 @@ public class RobotContainer {
       ExecutorService executor = Executors.newFixedThreadPool(1);
       executor.submit(() -> {
         // Normalize the degree
-        double angle = m_robotDrive.getHeading() % 360;
+        double angle = m_robotDrive.getHeading().getDegrees() % 360.0;
 
         while (true) {
           if (angle < 180) {
@@ -124,7 +123,7 @@ public class RobotContainer {
           }
           ;
 
-          angle = m_robotDrive.getHeading() % 360;
+          angle = m_robotDrive.getHeading().getDegrees() % 360.0;
         }
       });
     }));
