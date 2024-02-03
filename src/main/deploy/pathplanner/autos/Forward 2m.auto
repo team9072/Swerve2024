@@ -16,18 +16,6 @@
           "data": {
             "pathName": "forwardPath"
           }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.01
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ArcRotate"
-          }
         }
       ]
     }

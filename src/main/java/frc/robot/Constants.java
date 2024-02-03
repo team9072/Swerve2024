@@ -100,18 +100,18 @@ public final class Constants {
     public static final double kBackLeftChassisAngularOffset = Math.PI;
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
     
-    public static final int kFrontLeftDrivingCanId = 7;
-    public static final int kRearLeftDrivingCanId = 5;
-    public static final int kFrontRightDrivingCanId = 4;
-    public static final int kRearRightDrivingCanId = 1;
+    public static final int kFrontLeftDrivingCanId = 1;
+    public static final int kRearLeftDrivingCanId = 4;
+    public static final int kFrontRightDrivingCanId = 5;
+    public static final int kRearRightDrivingCanId = 7;
 
-    public static final int kFrontLeftTurningCanId = 8;
-    public static final int kRearLeftTurningCanId = 6;
-    public static final int kFrontRightTurningCanId = 3;
-    public static final int kRearRightTurningCanId = 2;
+    public static final int kFrontLeftTurningCanId = 2;
+    public static final int kRearLeftTurningCanId = 3;
+    public static final int kFrontRightTurningCanId = 6;
+    public static final int kRearRightTurningCanId = 8;
 
     public static final boolean kGyroReversed = true;
-    public static final double kGyroAdjustment = 180;
+    public static final double kGyroAdjustment = 0.0;
   }
 
   public static final class ModuleConstants {
@@ -176,7 +176,7 @@ public final class Constants {
     public static final HolonomicPathFollowerConfig AutoPathFollowerConfig =
     new HolonomicPathFollowerConfig(
       new PIDConstants(5, 0, 0), // Translation PID constants
-      new PIDConstants(.5, 0, 0), // Rotation PID constants
+      new PIDConstants(5, 0, 0), // Rotation PID constants
       3.0, // Max module speed, in m/s
       DriveConstants.kCenterToWheel, // Drive base radius in meters. Distance from robot center to furthest module.
       new ReplanningConfig() // Default path replanning config. See the API for the options here

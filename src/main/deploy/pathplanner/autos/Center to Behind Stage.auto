@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.922968457460224,
-      "y": 5.627174362115617
+      "x": 1.3983141750744656,
+      "y": 5.534588312284395
     },
     "rotation": 0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SpininPlaceMostly"
+            "pathName": "Center to behind Stage"
           }
         }
       ]
