@@ -23,8 +23,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.photonvision.PhotonCamera;
-
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.attachment.AttachmentHandler;
@@ -52,9 +50,6 @@ public class RobotContainer {
   // The driver's controllers
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   CommandXboxController m_attachmentController = new CommandXboxController(OIConstants.kAttatchmentsControllerPort);
-
-  // Photonvision Variables
-  PhotonCamera m_camera = new PhotonCamera("BW3 (1)");
 
   public RobotContainer() {
     // Register auto commands

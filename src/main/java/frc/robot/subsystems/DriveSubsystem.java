@@ -7,17 +7,18 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -60,10 +61,11 @@ public class DriveSubsystem extends SubsystemBase {
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
   // Odometry class for tracking robot pose
-  public SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+  public SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
       getHeadingOdometry(),
-      getModulePositions());
+      getModulePositions(),
+      new Pose2d());
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -130,8 +132,14 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetGyro() {
     Pose2d newPose = new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(0));
-    System.out.println("zero");
     resetPose(newPose);
+  }
+
+  /**
+   * Update the odometry with an estimation from the vision system
+   */
+  public void updateOdometryWithVision(Pose2d pose) {
+    m_odometry.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
   }
 
   private void updateOdometry() {
@@ -147,7 +155,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The pose.
    */
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return m_odometry.getEstimatedPosition();
   }
 
   /**
@@ -248,8 +256,6 @@ public class DriveSubsystem extends SubsystemBase {
       ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
       rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
     }
-
-    System.out.println(rotDelivered);
 
     // Field relative: negate x and y speeds so it's not inverted
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
