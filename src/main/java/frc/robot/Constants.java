@@ -50,8 +50,8 @@ public final class Constants {
   public static final class UTBIntakerConstants {
     // Constants for the under the bumper intaker
     // TODO: propper can ids and speeds
-    public static final int kIntakeMotor1CANId = 0;
-    public static final int kIntakeMotor2CANId = 0;
+    public static final int kIntakeMotor1CANId = 13;
+    public static final int kIntakeMotor2CANId = 14;
 
     public static final double kIntakeMotorSpeed = 0.3;
     public static final double kReverseMotorSpeed = -0.3;
@@ -60,7 +60,7 @@ public final class Constants {
   public static final class FeederConstants {
     // Constants for the feeder that sits between the intake and shooter
     // TODO: propper can ids and speeds
-    public static final int kFeederMotorCANId = 0;
+    public static final int kFeederMotorCANId = 9;
 
     public static final int kBeamBreak1CANId = 0;
 
@@ -71,9 +71,9 @@ public final class Constants {
 
   public static final class ShooterConstants {
     // Constants for shooter
-    // TODO: propper can ids nd speeds
-    public static final int kShooterMotor1CANId = 0;
-    public static final int kShooterMotor2CANId = 0;
+    // TODO: propper can ids and speeds
+    public static final int kShooterMotor1CANId = 11;
+    public static final int kShooterMotor2CANId = 12;
 
     public static final double kShootSpeed = 0.5;
   }
