@@ -126,7 +126,6 @@ public class RobotContainer {
             m_robotDrive.drive(0, 0, 0, false, false, false);
             break;
           }
-          ;
 
           angle = m_robotDrive.getHeading().getDegrees() % 360.0;
         }
@@ -142,11 +141,11 @@ public class RobotContainer {
 
     // Attatchment controls
 
-    m_driverController.rightTrigger().onTrue(m_attatchment.getShootCommand());
-
-    m_attachmentController.rightTrigger()
+    m_attachmentController.rightBumper()
         .onTrue(m_attatchment.getSpinShooterCommand())
         .onFalse(m_attatchment.getStopShooterCommand());
+
+    m_attachmentController.rightTrigger().onTrue(m_attatchment.getShootCommand());
 
     m_attachmentController.x().onTrue(m_attatchment.getStartIntakersCommand());
     m_attachmentController.a().onTrue(m_attatchment.getStopIntakersCommand());
