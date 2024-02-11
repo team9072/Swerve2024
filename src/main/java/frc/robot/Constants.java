@@ -200,9 +200,9 @@ public final class Constants {
     // The layout of the apriltags for pose estimation
     public static final AprilTagFieldLayout aprilTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
-    public static final PhotonCamera frontCam = new PhotonCamera("BW3 (1)");
+    //public static final PhotonCamera frontCam = new PhotonCamera("BW3 (1)");
     // Camera is backward and rotated 30 degrees up
     public static final Transform3d frontCamOffset = new Transform3d(new Translation3d(-0.273, 0, 0.2032), new Rotation3d(0, -Units.degreesToRadians(30), Math.PI));
-    public static final PhotonPoseEstimator frontCamPoseEstimator = new PhotonPoseEstimator(aprilTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCam, frontCamOffset);
+    //public static final PhotonPoseEstimator frontCamPoseEstimator = new PhotonPoseEstimator(aprilTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCam, frontCamOffset);
   }
 }
