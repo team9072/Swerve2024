@@ -129,7 +129,37 @@ public class RobotContainer {
           "abs pos: " + m_robotDrive.m_frontLeft.m_turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
       System.out.println("rel pos: " + m_robotDrive.m_frontLeft.m_turningEncoder.getPosition());
     }));
+  
+    // Attatchment controls
+
+    m_attachmentController.rightBumper()
+        .onTrue(m_attatchment.getSpinShooterCommand())
+        .onFalse(m_attatchment.getStopShooterCommand());
+
+    /*
+     * m_attachmentController.rightTrigger().onTrue(m_attatchment.getShootCommand())
+     * ;
+     */
+
+    m_attachmentController.povUp().onTrue(jankyIntake(0.2, false));
+    m_attachmentController.povUp().onFalse(m_attatchment.getStopIntakersCommand());
+
+    m_attachmentController.povRight().onTrue(jankyIntake(0.4, false));
+    m_attachmentController.povRight().onFalse(m_attatchment.getStopIntakersCommand());
+
+    m_attachmentController.povDown().onTrue(jankyIntake(0.6, false));
+    m_attachmentController.povDown().onFalse(m_attatchment.getStopIntakersCommand());
+
+    m_attachmentController.povLeft().onTrue(jankyIntake(0.8, false));
+    m_attachmentController.povLeft().onFalse(m_attatchment.getStopIntakersCommand());
+
+    m_attachmentController.x().onTrue(jankyIntake(1, false));
+    m_attachmentController.x().onFalse(m_attatchment.getStopIntakersCommand());
+
+    m_attachmentController.y().onTrue(jankyIntake(0.5, true));
+    m_attachmentController.y().onFalse(m_attatchment.getStopIntakersCommand());
   }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
