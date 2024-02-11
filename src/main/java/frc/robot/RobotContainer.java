@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import frc.robot.Constants.UTBIntakerConstants;;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.attachment.AttachmentHandler;
@@ -178,7 +179,7 @@ public class RobotContainer {
       UTBIntakerConstants.kIntakeMotorSpeed = speed;
       UTBIntakerConstants.kReverseMotorSpeed = -speed;
     });
-
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
