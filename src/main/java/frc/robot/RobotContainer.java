@@ -171,7 +171,13 @@ public class RobotContainer {
     m_attachmentController.y().onTrue(jankyIntake(0.5, true));
     m_attachmentController.y().onFalse(m_attatchment.getStopIntakersCommand());
   }
-
+  
+  private Command jankyIntake(double speed, boolean reverse) {
+    // TODO: Bad freakin code never change constants
+    Command changeSpeedCommand = new InstantCommand(() -> {
+      UTBIntakerConstants.kIntakeMotorSpeed = speed;
+      UTBIntakerConstants.kReverseMotorSpeed = -speed;
+    });
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
