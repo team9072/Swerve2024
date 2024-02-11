@@ -25,6 +25,10 @@ import java.util.concurrent.Executors;
 
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.attachment.AttachmentHandler;
+import frc.robot.subsystems.attachment.FeederSubsystem;
+import frc.robot.subsystems.attachment.ShooterSubsystem;
+import frc.robot.subsystems.attachment.UTBIntakerSubsystem;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
