@@ -179,6 +179,10 @@ public class RobotContainer {
       UTBIntakerConstants.kIntakeMotorSpeed = speed;
       UTBIntakerConstants.kReverseMotorSpeed = -speed;
     });
+
+    return changeSpeedCommand
+        .andThen(reverse ? m_attatchment.getReverseIntakersCommand() : m_attatchment.getStartIntakersCommand());
+  }
   
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
