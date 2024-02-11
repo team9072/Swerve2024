@@ -40,9 +40,17 @@ public class RobotContainer {
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
   // The driver's controllers
-  CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
-  CommandXboxController m_attachmentController = new CommandXboxController(OIConstants.kArmControllerPort);
+  public final AttachmentHandler m_attatchment = new AttachmentHandler(
+      new UTBIntakerSubsystem(),
+      new FeederSubsystem(),
+      new ShooterSubsystem());
 
+  // The driver's controllers
+  CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
+  CommandXboxController m_attachmentController = new CommandXboxController(OIConstants.kAttatchmentsControllerPort);
+
+
+  
   public RobotContainer() {
     // Register auto commands
     NamedCommands.registerCommand("Wait 1s & Shoot", new WaitCommand(1));
