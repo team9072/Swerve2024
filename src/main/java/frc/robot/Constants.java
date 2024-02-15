@@ -41,9 +41,8 @@ public final class Constants {
     public static final int kIntakeMotor1CANId = 13;
     public static final int kIntakeMotor2CANId = 14;
 
-    //TODO: Bad freakin code dont change constants
-    public static double kIntakeMotorSpeed = 0.8;
-    public static double kReverseMotorSpeed = -0.8;
+    public static final double kIntakeMotorSpeed = 0.8;
+    public static final double kReverseMotorSpeed = -0.8;
   }
 
   public static final class FeederConstants {
@@ -53,9 +52,8 @@ public final class Constants {
 
     public static final int kBeamBreakDIOId = 0;
 
-    //TODO: Bad freakin code dont change constants
-    public static double kIntakeSpeed = 1;
-    public static double kReverseSpeed = -1;
+    public static final double kIntakeSpeed = 1;
+    public static final double kReverseSpeed = -1;
     public static final double kShootSpeed = 0.5;
   }
 

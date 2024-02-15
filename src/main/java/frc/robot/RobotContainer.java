@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import frc.robot.Constants.UTBIntakerConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.attachment.AttachmentHandler;
@@ -91,6 +90,8 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+    // Base controls
+
     m_driverController.rightBumper().whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
         m_robotDrive));
@@ -129,7 +130,6 @@ public class RobotContainer {
             m_robotDrive.drive(0, 0, 0, false, false, false);
             break;
           }
-          ;
 
           angle = m_robotDrive.getHeading().getDegrees() % 360.0;
         }
@@ -154,34 +154,11 @@ public class RobotContainer {
      * ;
      */
 
-    m_attachmentController.povUp().onTrue(jankyIntake(0.2, false));
-    m_attachmentController.povUp().onFalse(m_attatchment.getStopIntakersCommand());
-
-    m_attachmentController.povRight().onTrue(jankyIntake(0.4, false));
-    m_attachmentController.povRight().onFalse(m_attatchment.getStopIntakersCommand());
-
-    m_attachmentController.povDown().onTrue(jankyIntake(0.6, false));
-    m_attachmentController.povDown().onFalse(m_attatchment.getStopIntakersCommand());
-
-    m_attachmentController.povLeft().onTrue(jankyIntake(0.8, false));
-    m_attachmentController.povLeft().onFalse(m_attatchment.getStopIntakersCommand());
-
-    m_attachmentController.x().onTrue(jankyIntake(1, false));
+    m_attachmentController.x().onTrue(m_attatchment.getStartIntakersCommand());
     m_attachmentController.x().onFalse(m_attatchment.getStopIntakersCommand());
 
-    m_attachmentController.y().onTrue(jankyIntake(0.5, true));
+    m_attachmentController.y().onTrue(m_attatchment.getReverseIntakersCommand());
     m_attachmentController.y().onFalse(m_attatchment.getStopIntakersCommand());
-  }
-  
-  private Command jankyIntake(double speed, boolean reverse) {
-    // TODO: Bad freakin code never change constants
-    Command changeSpeedCommand = new InstantCommand(() -> {
-      UTBIntakerConstants.kIntakeMotorSpeed = speed;
-      UTBIntakerConstants.kReverseMotorSpeed = -speed;
-    });
-
-    return changeSpeedCommand
-        .andThen(reverse ? m_attatchment.getReverseIntakersCommand() : m_attatchment.getStartIntakersCommand());
   }
   
   /**
@@ -190,6 +167,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-   return autoChooser.getSelected();
+    return autoChooser.getSelected();
   }
 }
