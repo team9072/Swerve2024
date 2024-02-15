@@ -31,7 +31,7 @@ public class FeederSubsystem extends SubsystemBase {
         m_feederMotor = new CANSparkMax(FeederConstants.kFeederMotorCANId, MotorType.kBrushless);
 
         m_feederMotor.restoreFactoryDefaults();
-        m_feederMotor.setIdleMode(IdleMode.kBrake);
+        m_feederMotor.setIdleMode(IdleMode.kCoast);
 
         m_beamBreakSensor = false;
     }
@@ -134,6 +134,6 @@ public class FeederSubsystem extends SubsystemBase {
      * @return A command to start the feeder forward at shooting speed
      */
     public Command getstartShootingCommand() {
-        return this.runOnce(this::stop);
+        return this.runOnce(this::startShooting);
     }
 }

@@ -42,6 +42,8 @@ public class RobotContainer {
 
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
+
+  // The driver's controllers
   public final AttachmentHandler m_attatchment = new AttachmentHandler(
       new UTBIntakerSubsystem(),
       new FeederSubsystem(),
@@ -51,6 +53,8 @@ public class RobotContainer {
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   CommandXboxController m_attachmentController = new CommandXboxController(OIConstants.kAttatchmentsControllerPort);
 
+
+  
   public RobotContainer() {
     // Register auto commands
     NamedCommands.registerCommand("Wait 1s & Shoot", new WaitCommand(1));
@@ -138,19 +142,25 @@ public class RobotContainer {
           "abs pos: " + m_robotDrive.m_frontLeft.m_turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
       System.out.println("rel pos: " + m_robotDrive.m_frontLeft.m_turningEncoder.getPosition());
     }));
-
+  
     // Attatchment controls
 
     m_attachmentController.rightBumper()
         .onTrue(m_attatchment.getSpinShooterCommand())
         .onFalse(m_attatchment.getStopShooterCommand());
 
-    m_attachmentController.rightTrigger().onTrue(m_attatchment.getShootCommand());
+    /*
+     * m_attachmentController.rightTrigger().onTrue(m_attatchment.getShootCommand())
+     * ;
+     */
 
     m_attachmentController.x().onTrue(m_attatchment.getStartIntakersCommand());
-    m_attachmentController.a().onTrue(m_attatchment.getStopIntakersCommand());
-  }
+    m_attachmentController.x().onFalse(m_attatchment.getStopIntakersCommand());
 
+    m_attachmentController.y().onTrue(m_attatchment.getReverseIntakersCommand());
+    m_attachmentController.y().onFalse(m_attatchment.getStopIntakersCommand());
+  }
+  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

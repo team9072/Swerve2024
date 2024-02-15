@@ -299,12 +299,6 @@ public class DriveSubsystem extends SubsystemBase {
     };
   }
 
-  private ChassisSpeeds getFieldRelativeSpeeds() {
-    var states = getModuleStates();
-    return ChassisSpeeds.fromFieldRelativeSpeeds(DriveConstants.kDriveKinematics.toChassisSpeeds(states),
-        getHeading());
-  }
-
   /**
    * Get the robot's current speed relative to the robot
    * 
@@ -349,7 +343,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /** Resets the drive encoders to currently read a position of 0. */
-  private void resetEncoders() {
+  public void resetdrivingEncoders() {
     m_frontLeft.resetEncoders();
     m_rearLeft.resetEncoders();
     m_frontRight.resetEncoders();
