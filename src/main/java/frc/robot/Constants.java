@@ -54,7 +54,7 @@ public final class Constants {
 
     public static final double kIntakeSpeed = 1;
     public static final double kReverseSpeed = -1;
-    public static final double kShootSpeed = 0.5;
+    public static final double kShootSpeed = 1;
   }
 
   public static final class ShooterConstants {
