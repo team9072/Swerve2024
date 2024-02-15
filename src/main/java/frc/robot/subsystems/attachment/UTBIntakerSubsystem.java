@@ -32,6 +32,12 @@ public class UTBIntakerSubsystem extends Intaker {
     }
 
     @Override
+    public void setIntakerPosition(IntakerPosition position) {
+        // UTB is always down and can't be raised;
+        return;
+    }
+
+    @Override
     public IntakerMotorState getMotorState() {
         return m_state;
     }

@@ -25,6 +25,10 @@ import java.util.concurrent.Executors;
 
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.attachment.AttachmentHandler;
+import frc.robot.subsystems.attachment.FeederSubsystem;
+import frc.robot.subsystems.attachment.ShooterSubsystem;
+import frc.robot.subsystems.attachment.UTBIntakerSubsystem;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -40,8 +44,14 @@ public class RobotContainer {
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
   // The driver's controllers
+  public final AttachmentHandler m_attatchment = new AttachmentHandler(
+      new UTBIntakerSubsystem(),
+      new FeederSubsystem(),
+      new ShooterSubsystem());
+
+  // The driver's controllers
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
-  CommandXboxController m_attachmentController = new CommandXboxController(OIConstants.kArmControllerPort);
+  CommandXboxController m_attachmentController = new CommandXboxController(OIConstants.kAttatchmentsControllerPort);
 
   public RobotContainer() {
     // Register auto commands
@@ -78,6 +88,8 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+    // Base controls
+
     m_driverController.rightBumper().whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
         m_robotDrive));
@@ -116,7 +128,6 @@ public class RobotContainer {
             m_robotDrive.drive(0, 0, 0, false, false, false);
             break;
           }
-          ;
 
           angle = m_robotDrive.getHeading().getDegrees() % 360.0;
         }
@@ -129,6 +140,34 @@ public class RobotContainer {
           "abs pos: " + m_robotDrive.m_frontLeft.m_turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
       System.out.println("rel pos: " + m_robotDrive.m_frontLeft.m_turningEncoder.getPosition());
     }));
+
+    // Attatchment controls
+
+    m_attachmentController.leftBumper()
+        .onTrue(m_attatchment.getSpinShooterCommand())
+        .onFalse(m_attatchment.getStopShooterCommand());
+
+    m_attachmentController.b()
+        .onTrue(m_attatchment.getStartIntakersCommand())
+        .onFalse(m_attatchment.getStopIntakersCommand());
+
+    m_attachmentController.y()
+        .onTrue(m_attatchment.getReverseIntakersCommand())
+        .onFalse(m_attatchment.getStopIntakersCommand());
+
+    // Attatchment controls for driver
+
+    m_driverController.leftBumper()
+        .onTrue(m_attatchment.getSpinShooterCommand())
+        .onFalse(m_attatchment.getStopShooterCommand());
+
+    m_driverController.b()
+        .onTrue(m_attatchment.getStartIntakersCommand())
+        .onFalse(m_attatchment.getStopIntakersCommand());
+
+    m_driverController.y()
+        .onTrue(m_attatchment.getReverseIntakersCommand())
+        .onFalse(m_attatchment.getStopIntakersCommand());
   }
 
   /**
@@ -137,6 +176,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-   return autoChooser.getSelected();
+    return autoChooser.getSelected();
   }
 }

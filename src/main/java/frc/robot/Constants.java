@@ -35,47 +35,37 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  // Constants for the arm
-  // DECRAPATED
-  public static final class ArmConstants {
-    public static final double kIntakerSpeed = .3;
-    public static final double kRotationSpeed = .3;
-    public static final double kShootSpeed = .9;
-
-    public static final double kBottomShootSpeed = .1;
-    public static final double kMiddleShootSpeed = .3;
-    public static final double kTopShootSpeed = .8;
-  }
-
   public static final class UTBIntakerConstants {
     // Constants for the under the bumper intaker
-    // TODO: propper can ids and speeds
+    // TODO: propper speeds
     public static final int kIntakeMotor1CANId = 13;
     public static final int kIntakeMotor2CANId = 14;
 
-    public static final double kIntakeMotorSpeed = 0.3;
-    public static final double kReverseMotorSpeed = -0.3;
+    public static final double kIntakeMotorSpeed = 0.8;
+    public static final double kReverseMotorSpeed = -0.8;
   }
 
   public static final class FeederConstants {
     // Constants for the feeder that sits between the intake and shooter
-    // TODO: propper can ids and speeds
-    public static final int kFeederMotorCANId = 9;
+    // TODO: propper speeds
+    public static final int kFeederMotorCANId = 10;
 
-    public static final int kBeamBreak1CANId = 0;
+    public static final int kBeamBreakDIOId = 0;
 
-    public static final double kIntakeSpeed = 0.3;
-    public static final double kReverseSpeed = -0.3;
-    public static final double kShootSpeed = 0.5;
+    public static final double kIntakeSpeed = 1;
+    public static final double kReverseSpeed = -1;
+    public static final double kShootSpeed = 1;
   }
 
   public static final class ShooterConstants {
     // Constants for shooter
-    // TODO: propper can ids and speeds
+    // TODO: propper speeds
     public static final int kShooterMotor1CANId = 11;
     public static final int kShooterMotor2CANId = 12;
 
-    public static final double kShootSpeed = 0.5;
+    public static final double kShootSpeed = 1;
+    // shooting time in seconds
+    public static final double kShootTime = 3;
   }
 
   public static final class DriveConstants {
@@ -110,12 +100,12 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
     
     public static final int kFrontLeftDrivingCanId = 1;
-    public static final int kRearLeftDrivingCanId = 4;
-    public static final int kFrontRightDrivingCanId = 5;
-    public static final int kRearRightDrivingCanId = 7;
+    public static final int kFrontRightDrivingCanId = 2;
+    public static final int kRearLeftDrivingCanId = 3;
+    public static final int kRearRightDrivingCanId = 4;
 
-    public static final int kFrontLeftTurningCanId = 2;
-    public static final int kRearLeftTurningCanId = 3;
+    public static final int kFrontLeftTurningCanId = 5;
+    public static final int kRearLeftTurningCanId =7;
     public static final int kFrontRightTurningCanId = 6;
     public static final int kRearRightTurningCanId = 8;
 
@@ -176,7 +166,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
-    public static final int kArmControllerPort = 1;
+    public static final int kAttatchmentsControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
   }
 
