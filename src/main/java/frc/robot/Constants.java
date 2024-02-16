@@ -49,12 +49,15 @@ public final class Constants {
     // Constants for the feeder that sits between the intake and shooter
     // TODO: propper speeds
     public static final int kFeederMotorCANId = 10;
+    public static final int kPivotCANId = 9;
 
-    public static final int kBeamBreakDIOId = 0;
+    public static final int kBeamBreakDIOId = 1;
 
-    public static final double kIntakeSpeed = 1;
-    public static final double kReverseSpeed = -1;
+    public static final double kIntakeSpeed = 0.9;
+    public static final double kReverseSpeed = -0.9;
     public static final double kShootSpeed = 1;
+
+    public static final double kPivotSpeed = 0.2;
   }
 
   public static final class ShooterConstants {
@@ -79,11 +82,11 @@ public final class Constants {
     public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
 
     // Chassis configuration (24x24)
-    public static final double kTrackWidth = Units.inchesToMeters(24);
+    public static final double kTrackWidth = Units.inchesToMeters(22);
     // Distance between centers of right and left wheels on robot (24*24)
-    public static final double kWheelBase = Units.inchesToMeters(24);
+    public static final double kWheelBase = Units.inchesToMeters(22);
     // Distance from center to furthest wheel (*diagonal*)
-    public static final double kCenterToWheel = Units.inchesToMeters(Math.sqrt(144 + 144)); // 12^2 + 12^2 PT
+    public static final double kCenterToWheel = Units.inchesToMeters(Math.sqrt(121 + 121)); // 11^2 + 11^2 PT
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -190,9 +193,9 @@ public final class Constants {
     // The layout of the apriltags for pose estimation
     public static final AprilTagFieldLayout aprilTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
-    //public static final PhotonCamera frontCam = new PhotonCamera("BW3 (1)");
-    // Camera is backward and rotated 30 degrees up
-    public static final Transform3d frontCamOffset = new Transform3d(new Translation3d(-0.273, 0, 0.2032), new Rotation3d(0, -Units.degreesToRadians(30), Math.PI));
-    //public static final PhotonPoseEstimator frontCamPoseEstimator = new PhotonPoseEstimator(aprilTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCam, frontCamOffset);
+    public static final PhotonCamera frontCam = new PhotonCamera("BW3 (1)");
+    // Camera is backward and rotated 22 degrees up
+    public static final Transform3d rearCamOffset = new Transform3d(new Translation3d(Units.inchesToMeters(-6.5), Units.inchesToMeters(8.25), -Units.inchesToMeters(-11)), new Rotation3d(0, Units.degreesToRadians(-22), Math.PI));
+    public static final PhotonPoseEstimator frontCamPoseEstimator = new PhotonPoseEstimator(aprilTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCam, rearCamOffset);
   }
 }

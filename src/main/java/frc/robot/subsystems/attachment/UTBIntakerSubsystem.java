@@ -54,5 +54,4 @@ public class UTBIntakerSubsystem extends Intaker {
         m_intakeMotor1.set(speed);
         m_intakeMotor2.set(speed);
     }
-
 }

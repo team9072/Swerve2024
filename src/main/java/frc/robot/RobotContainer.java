@@ -9,21 +9,25 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.attachment.AttachmentHandler;
 import frc.robot.subsystems.attachment.FeederSubsystem;
@@ -53,13 +57,17 @@ public class RobotContainer {
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   CommandXboxController m_attachmentController = new CommandXboxController(OIConstants.kAttatchmentsControllerPort);
 
+  private final Field2d m_field = new Field2d();
+  private final Field2d m_estimationField = new Field2d();
+
   public RobotContainer() {
-    // Register auto commands
-    NamedCommands.registerCommand("Wait 1s & Shoot", new WaitCommand(1));
+    registerPathplannerCommands();
 
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    SmartDashboard.putData("Field", m_field);
+    SmartDashboard.putData("Pose Estimation", m_estimationField);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -76,6 +84,20 @@ public class RobotContainer {
                 true, true, false),
             m_robotDrive));
 
+  }
+
+  /**
+   * Register named commands used in pathplanner autos
+   */
+  private void registerPathplannerCommands() {
+    NamedCommands.registerCommand("disableBeamBreak", new InstantCommand(() -> m_attatchment.setStopOnBeamBreakEnabled(false)));
+    NamedCommands.registerCommand("enableBeamBreak", new InstantCommand(() -> m_attatchment.setStopOnBeamBreakEnabled(true)));
+
+    NamedCommands.registerCommand("startIntakers", m_attatchment.getStartIntakersCommand());
+    NamedCommands.registerCommand("stopIntakers", m_attatchment.getStopIntakersCommand());
+
+    NamedCommands.registerCommand("startShooter", m_attatchment.getSpinShooterCommand());
+    NamedCommands.registerCommand("stopShooter", m_attatchment.getStopShooterCommand());
   }
 
   /**
@@ -168,6 +190,32 @@ public class RobotContainer {
     m_driverController.y()
         .onTrue(m_attatchment.getReverseIntakersCommand())
         .onFalse(m_attatchment.getStopIntakersCommand());
+  }
+
+  public void periodic() {
+    SmartDashboard.putBoolean("beam", m_attatchment.m_feeder.getBeamBreakState());
+    m_field.setRobotPose(m_robotDrive.getPose());
+
+    var result = VisionConstants.frontCam.getLatestResult();
+    PhotonTrackedTarget target = result.getBestTarget();
+
+    if (target != null) {
+      var pose = VisionConstants.frontCamPoseEstimator.update();
+
+      if (pose.isPresent()) {
+        Pose2d estimatedPose = pose.get().estimatedPose.toPose2d();
+
+        m_estimationField.setRobotPose(estimatedPose);
+        m_robotDrive.updateOdometryWithVision(estimatedPose);
+      } else {
+        m_estimationField.setRobotPose(new Pose2d());
+      }
+    }
+  }
+
+  public void prepareTeleop() {
+    m_attatchment.stopShooter();
+    m_attatchment.stopIntakers();
   }
 
   /**

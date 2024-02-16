@@ -4,17 +4,9 @@
 
 package frc.robot;
 
-import org.photonvision.PhotonUtils;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.VisionConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -31,10 +23,6 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private final Field2d m_field = new Field2d();
-  private final Field2d m_estimationField = new Field2d();
-
-
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -46,8 +34,6 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    SmartDashboard.putData("Field", m_field);
-    SmartDashboard.putData("Pose Estimation", m_estimationField);
   }
 
   /**
@@ -67,7 +53,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-    //m_field.setRobotPose(m_robotContainer.m_robotDrive.getPose());
+    m_robotContainer.periodic();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -106,34 +92,13 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    m_robotContainer.prepareTeleop();
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-   /*  var result = VisionConstants.frontCam.getLatestResult();
-    PhotonTrackedTarget target = result.getBestTarget();
-
-    if (target != null) {
-
-      double distance = PhotonUtils.calculateDistanceToTargetMeters(
-          Units.inchesToMeters(8), Units.inchesToMeters(57),
-          Units.degreesToRadians(30), Units.degreesToRadians(target.getPitch()));
-
-      
-      SmartDashboard.putNumber("Horizontal Tag Distance", distance);
-
-      var pose = VisionConstants.frontCamPoseEstimator.update();
-
-      if (pose.isPresent()) {
-        Pose2d estimatedPose = pose.get().estimatedPose.toPose2d();
-
-        m_estimationField.setRobotPose(estimatedPose);
-        m_robotContainer.m_robotDrive.updateOdometryWithVision(estimatedPose);
-      } else {
-        m_estimationField.setRobotPose(new Pose2d());
-      }
-    }*/
   }
 
   @Override

@@ -115,9 +115,6 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("imu yaw", m_gyro.getYaw());
     SmartDashboard.putNumber("robot heading", getHeading().getDegrees());
 
-    // custom dashboard testing
-    SmartDashboard.putBoolean("hasNote", true);
-
     // turning
     SmartDashboard.putNumber("rot front", m_frontLeft.m_turningEncoder.getZeroOffset());
 

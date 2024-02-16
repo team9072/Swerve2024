@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FeederConstants;
@@ -15,33 +16,34 @@ public class FeederSubsystem extends SubsystemBase {
         kReversed,
         kStopped,
         kIntaking,
-        kShooting();
+        kShooting;
+    }
+
+    public enum FeederPivotPosition {
+        kIntakePosition,
+        kAmpPosition,
+        kSpeakerPosition;
     }
 
     private final CANSparkMax m_feederMotor;
-    // TODO: replace with propper sensor class
-    private final boolean m_beamBreakSensor;
+    private final CANSparkMax m_pivotMotor;
+    private final DigitalInput m_beamBreakSensor;
 
     private FeederState m_state = FeederState.kStopped;
+    private FeederPivotPosition m_position = FeederPivotPosition.kIntakePosition;
+    private double m_pivotSetpoint = 0;
 
     /**
      * Create a new feeder subsystem
      */
     public FeederSubsystem() {
         m_feederMotor = new CANSparkMax(FeederConstants.kFeederMotorCANId, MotorType.kBrushless);
+        m_pivotMotor = new CANSparkMax(FeederConstants.kFeederMotorCANId, MotorType.kBrushless);
 
         m_feederMotor.restoreFactoryDefaults();
-        m_feederMotor.setIdleMode(IdleMode.kCoast);
+        m_feederMotor.setIdleMode(IdleMode.kBrake);
 
-        m_beamBreakSensor = false;
-    }
-
-    /**
-     * Get the state of the beam break sensor
-     * @return true if a note is detected, or fale otherwise
-     */
-    public boolean getBeamBreakState() {
-        return m_beamBreakSensor;
+        m_beamBreakSensor = new DigitalInput(FeederConstants.kBeamBreakDIOId);
     }
 
     /**
@@ -59,6 +61,14 @@ public class FeederSubsystem extends SubsystemBase {
         };
 
         m_feederMotor.set(speed);
+    }
+
+    /**
+     * Get the state of the beam break sensor
+     * @return true if a note is detected, or fale otherwise
+     */
+    public boolean getBeamBreakState() {
+        return !m_beamBreakSensor.get();
     }
 
     /**

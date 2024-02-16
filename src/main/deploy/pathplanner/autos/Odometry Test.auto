@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4129651008117177,
-      "y": 5.524739769858686
+      "x": 1.519958300580108,
+      "y": 6.976721957682256
     },
     "rotation": 0
   },
@@ -14,12 +14,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Spin"
+            "pathName": "Odometry Test"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Testing",
   "choreoAuto": false
 }

@@ -11,11 +11,13 @@ import frc.robot.subsystems.attachment.ShooterSubsystem.ShooterState;
 
 public class AttachmentHandler extends SubsystemBase {
     private final UTBIntakerSubsystem m_UTBIntaker;
-    private final FeederSubsystem m_feeder;
+    //TODO: Make private
+    public final FeederSubsystem m_feeder;
     private final ShooterSubsystem m_shooter;
 
     // state variables
-    private boolean hasNote;
+    private boolean m_hasNote;
+    private boolean m_stopOnBeamBreak;
 
     public AttachmentHandler(UTBIntakerSubsystem utbIntaker, FeederSubsystem feeder, ShooterSubsystem shooter) {
         m_UTBIntaker = utbIntaker;
@@ -26,16 +28,24 @@ public class AttachmentHandler extends SubsystemBase {
     @Override
     public void periodic() {
         if (m_feeder.getBeamBreakState()) {
-            if (!hasNote) {
+            if (m_stopOnBeamBreak && !m_hasNote) {
                 // on get note stop intake
                 m_UTBIntaker.stop();
                 m_feeder.stop();
             }
 
-            hasNote = true;
+            m_hasNote = true;
         } else {
-            hasNote = false;
+            m_hasNote = false;
         }
+    }
+
+    /**
+     * Set wether the beam break will stop the intaker or not
+     * @param beamBreakEnabled should the beam berak sensor stop the inkakers
+     */
+    public void setStopOnBeamBreakEnabled(boolean beamBreakEnabled) {
+        m_stopOnBeamBreak = beamBreakEnabled;
     }
 
     /**
@@ -77,7 +87,7 @@ public class AttachmentHandler extends SubsystemBase {
      * Will stop the intakers even if the feeder is shooting
      */
     public void stopIntakers() {
-        getStartIntakersCommand().schedule();
+        getStopIntakersCommand().schedule();
     }
 
     /**
