@@ -26,7 +26,7 @@ public class FeederSubsystem extends SubsystemBase {
     }
 
     private final CANSparkMax m_feederMotor;
-    private final CANSparkMax m_pivotMotor;
+    //private final CANSparkMax m_pivotMotor;
     private final DigitalInput m_beamBreakSensor;
 
     private FeederState m_state = FeederState.kStopped;
@@ -38,7 +38,7 @@ public class FeederSubsystem extends SubsystemBase {
      */
     public FeederSubsystem() {
         m_feederMotor = new CANSparkMax(FeederConstants.kFeederMotorCANId, MotorType.kBrushless);
-        m_pivotMotor = new CANSparkMax(FeederConstants.kFeederMotorCANId, MotorType.kBrushless);
+        //m_pivotMotor = new CANSparkMax(FeederConstants.kPivotMotorCANId, MotorType.kBrushless);
 
         m_feederMotor.restoreFactoryDefaults();
         m_feederMotor.setIdleMode(IdleMode.kBrake);

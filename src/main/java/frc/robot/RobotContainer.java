@@ -10,6 +10,7 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -27,6 +28,7 @@ import java.util.concurrent.Executors;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.TargetConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.attachment.AttachmentHandler;
@@ -116,6 +118,15 @@ public class RobotContainer {
         () -> m_robotDrive.setX(),
         m_robotDrive));
 
+    // auto aiming
+    m_driverController.leftTrigger().whileTrue(Commands.run(
+            () -> m_robotDrive.driveWithHeading(
+                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+                getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle(),
+                true, true, false),
+            m_robotDrive));
+
     // Drive speeds
     m_driverController.rightTrigger().whileTrue(new RunCommand(
         () -> {
@@ -192,21 +203,26 @@ public class RobotContainer {
         .onFalse(m_attatchment.getStopIntakersCommand());
   }
 
+  public Translation2d getAimingVector(Translation2d target) {
+    return m_robotDrive.getPose().getTranslation().minus(target);
+  }
+
   public void periodic() {
     SmartDashboard.putBoolean("beam", m_attatchment.m_feeder.getBeamBreakState());
     m_field.setRobotPose(m_robotDrive.getPose());
 
-    var result = VisionConstants.frontCam.getLatestResult();
+    var result = VisionConstants.rearCam.getLatestResult();
     PhotonTrackedTarget target = result.getBestTarget();
 
     if (target != null) {
-      var pose = VisionConstants.frontCamPoseEstimator.update();
+      var pose = VisionConstants.rearCamPoseEstimator.update();
 
       if (pose.isPresent()) {
         Pose2d estimatedPose = pose.get().estimatedPose.toPose2d();
+        double timestamp = pose.get().timestampSeconds;
 
         m_estimationField.setRobotPose(estimatedPose);
-        m_robotDrive.updateOdometryWithVision(estimatedPose);
+        m_robotDrive.updateOdometryWithVision(estimatedPose, timestamp);
       } else {
         m_estimationField.setRobotPose(new Pose2d());
       }

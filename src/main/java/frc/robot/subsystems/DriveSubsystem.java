@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -18,7 +19,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -61,11 +61,15 @@ public class DriveSubsystem extends SubsystemBase {
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
   // Odometry class for tracking robot pose
-  public SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
+  private final SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
       getHeadingOdometry(),
       getModulePositions(),
       new Pose2d());
+
+  private final PIDController m_translationPID = new PIDController(DriveConstants.kTranslationPID.kP, DriveConstants.kTranslationPID.kI, DriveConstants.kTranslationPID.kD);
+  private final PIDController m_rotationPID = new PIDController(DriveConstants.kRotationPID.kP, DriveConstants.kRotationPID.kI, DriveConstants.kRotationPID.kD);
+
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -92,6 +96,8 @@ public class DriveSubsystem extends SubsystemBase {
         },
         this // Reference to this subsystem to set requirements
     );
+
+    m_rotationPID.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   public void turnTo(double degrees) {
@@ -135,8 +141,8 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Update the odometry with an estimation from the vision system
    */
-  public void updateOdometryWithVision(Pose2d pose) {
-    m_odometry.addVisionMeasurement(getPose(), Timer.getFPGATimestamp());
+  public void updateOdometryWithVision(Pose2d pose, double timestamp) {
+    m_odometry.addVisionMeasurement(pose, timestamp);
   }
 
   private void updateOdometry() {
@@ -263,6 +269,21 @@ public class DriveSubsystem extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
     setModuleStates(swerveModuleStates);
+  }
+
+  /**
+   * Method to drive the robot using joystick info.
+   *
+   * @param xSpeed        Speed of the robot in the x direction (forward).
+   * @param ySpeed        Speed of the robot in the y direction (sideways).
+   * @param rot           Rotation to set the robot to in radians
+   * @param fieldRelative Whether the provided x and y speeds are relative to the
+   *                      field.
+   * @param rateLimit     Whether to enable rate limiting for smoother control.
+   */
+  public void driveWithHeading(double xSpeed, double ySpeed, Rotation2d rot, boolean fieldRelative, boolean rateLimit, boolean isAuto) {
+    double rotSpeed = m_rotationPID.calculate(getPose().getRotation().getRadians(), rot.getRadians());
+    drive(xSpeed, ySpeed, rotSpeed, fieldRelative, rateLimit, isAuto);
   }
 
   /**

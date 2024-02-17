@@ -49,7 +49,7 @@ public final class Constants {
     // Constants for the feeder that sits between the intake and shooter
     // TODO: propper speeds
     public static final int kFeederMotorCANId = 10;
-    public static final int kPivotCANId = 9;
+    public static final int kPivotMotorCANId = 9;
 
     public static final int kBeamBreakDIOId = 1;
 
@@ -114,6 +114,9 @@ public final class Constants {
 
     public static final boolean kGyroReversed = true;
     public static final double kGyroAdjustment = 0.0;
+
+    public static final PIDConstants kTranslationPID = new PIDConstants(5, 0, 0); // Translation PID constants
+    public static final PIDConstants kRotationPID = new PIDConstants(2, 0, 0); // Rotation PID constants
   }
 
   public static final class ModuleConstants {
@@ -193,9 +196,16 @@ public final class Constants {
     // The layout of the apriltags for pose estimation
     public static final AprilTagFieldLayout aprilTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
-    public static final PhotonCamera frontCam = new PhotonCamera("BW3 (1)");
+    public static final PhotonCamera rearCam = new PhotonCamera("BW3");
     // Camera is backward and rotated 22 degrees up
     public static final Transform3d rearCamOffset = new Transform3d(new Translation3d(Units.inchesToMeters(-6.5), Units.inchesToMeters(8.25), -Units.inchesToMeters(-11)), new Rotation3d(0, Units.degreesToRadians(-22), Math.PI));
-    public static final PhotonPoseEstimator frontCamPoseEstimator = new PhotonPoseEstimator(aprilTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCam, rearCamOffset);
+    public static final PhotonPoseEstimator rearCamPoseEstimator = new PhotonPoseEstimator(aprilTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, rearCam, rearCamOffset);
+  }
+
+  public static final class TargetConstants {
+    // Apriltag #7
+    public static final Translation2d kBlueSpeakerTarget = new Translation2d(-0.04, 5.55);
+    // Apriltag #4
+    public static final Translation2d kRedSpeakerTarget = new Translation2d(16.58, 5.55);
   }
 }
