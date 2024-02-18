@@ -182,28 +182,26 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(double xSpeed, double ySpeed, double rotSpeed, boolean fieldRelative, boolean rateLimit) {
     double xSpeedCommanded;
     double ySpeedCommanded;
+    double rotSpeedCommanded;
+
     if (rateLimit) {
       ChassisSpeeds limitedSpeeds = limitSlewRate(xSpeed, ySpeed, rotSpeed);
 
       xSpeedCommanded = limitedSpeeds.vxMetersPerSecond;
       ySpeedCommanded = limitedSpeeds.vyMetersPerSecond;
-      m_currentRotation = limitedSpeeds.omegaRadiansPerSecond;
+      rotSpeedCommanded = limitedSpeeds.omegaRadiansPerSecond;
     } else {
       xSpeedCommanded = xSpeed;
       ySpeedCommanded = ySpeed;
-      m_currentRotation = rotSpeed;
+      rotSpeedCommanded = rotSpeed;
     }
 
-    double xSpeedDelivered = xSpeedCommanded * 1;
-    double ySpeedDelivered = ySpeedCommanded * 1;
-    double rotDelivered = m_currentRotation * 1;
-
     // Convert the commanded speeds into the correct units for the drivetrain
-    xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
-    ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
-    rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
+    double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
+    double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
+    double rotSpeedDelivered = rotSpeedCommanded * DriveConstants.kMaxAngularSpeed;
 
-    setSwerveSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, fieldRelative);
+    setSwerveSpeeds(xSpeedDelivered, ySpeedDelivered, rotSpeedDelivered, fieldRelative);
   }
 
   /**
@@ -221,11 +219,29 @@ public class DriveSubsystem extends SubsystemBase {
     double rotSpeed = m_rotationPID.calculate(
         getHeading().getRadians(),
         new TrapezoidProfile.State(targetRotation.getRadians(), 0));
+    
+    double xSpeedCommanded;
+    double ySpeedCommanded;
+    double rotSpeedCommanded;
+
+    if (rateLimit) {
+      ChassisSpeeds limitedSpeeds = limitSlewRate(xSpeed, ySpeed, rotSpeed);
+
+      xSpeedCommanded = limitedSpeeds.vxMetersPerSecond;
+      ySpeedCommanded = limitedSpeeds.vyMetersPerSecond;
+      rotSpeedCommanded = limitedSpeeds.omegaRadiansPerSecond;
+    } else {
+      xSpeedCommanded = xSpeed;
+      ySpeedCommanded = ySpeed;
+      rotSpeedCommanded = rotSpeed;
+    }
 
     // Convert the translational speeds into the correct units for the drivetrain
-    xSpeed = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
-    ySpeed = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
-    setSwerveSpeeds(xSpeed, ySpeed, rotSpeed, fieldRelative);
+    double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
+    double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
+    double rotSpeedDelivered = rotSpeedCommanded;
+
+    setSwerveSpeeds(xSpeedDelivered, ySpeedDelivered, rotSpeedDelivered, fieldRelative);
   }
 
   private ChassisSpeeds limitSlewRate(double xSpeed, double ySpeed, double rotSpeed) {
@@ -264,8 +280,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
     m_prevTime = currentTime;
 
-    // Disables slew rate by using the original input values instead (not tested as
-    // of 12/31)
+    // Disables slew rate by using the original input values instead
     // xSpeedCommanded = m_currentTranslationMag *
     // Math.cos(m_currentTranslationDir);
     // ySpeedCommanded = m_currentTranslationMag *

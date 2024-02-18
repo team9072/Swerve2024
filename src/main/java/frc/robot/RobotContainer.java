@@ -78,7 +78,7 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true, true),
+                true, false),
             m_robotDrive));
 
   }
@@ -121,7 +121,7 @@ public class RobotContainer {
             -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
             -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
             getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle(),
-            true, true),
+            true, false),
         m_robotDrive));
 
     // Drive speeds
@@ -142,25 +142,25 @@ public class RobotContainer {
     m_driverController.povUp().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
         -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
         -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-        Rotation2d.fromDegrees(0), true, true),
+        Rotation2d.fromDegrees(0), true, false),
         m_robotDrive));
 
     m_driverController.povRight().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
         -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
         -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-        Rotation2d.fromDegrees(-90), true, true),
+        Rotation2d.fromDegrees(-90), true, false),
         m_robotDrive));
 
     m_driverController.povDown().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
         -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
         -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-        Rotation2d.fromDegrees(180), true, true),
+        Rotation2d.fromDegrees(180), true, false),
         m_robotDrive));
 
     m_driverController.povLeft().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
         -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
         -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-        Rotation2d.fromDegrees(90), true, true),
+        Rotation2d.fromDegrees(90), true, false),
         m_robotDrive));
 
     // Attatchment controls
