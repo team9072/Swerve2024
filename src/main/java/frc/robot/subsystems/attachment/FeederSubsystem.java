@@ -67,61 +67,14 @@ public class FeederSubsystem extends SubsystemBase {
         m_pivotPID.setIZone(FeederConstants.PivotPID.kIz);
         m_pivotPID.setFF(FeederConstants.PivotPID.kFF);
         m_pivotPID.setOutputRange(FeederConstants.PivotPID.kMinOutput, FeederConstants.PivotPID.kMaxOutput);
-
-        // display PID coefficients on SmartDashboard
-        SmartDashboard.putNumber("P Gain", FeederConstants.PivotPID.kP);
-        SmartDashboard.putNumber("I Gain", FeederConstants.PivotPID.kI);
-        SmartDashboard.putNumber("D Gain", FeederConstants.PivotPID.kD);
-        SmartDashboard.putNumber("I Zone", FeederConstants.PivotPID.kIz);
-        SmartDashboard.putNumber("Feed Forward", FeederConstants.PivotPID.kFF);
-        SmartDashboard.putNumber("Max Output", FeederConstants.PivotPID.kMaxOutput);
-        SmartDashboard.putNumber("Min Output", FeederConstants.PivotPID.kMinOutput);
-        SmartDashboard.putNumber("Set Rotations", 0);
     }
 
     @Override
     public void periodic() {
-        double kP = 0, kI = 0, kD = 0, kIz = 0, kFF = 0, kMinOutput = 0, kMaxOutput = 0;
-
-        // read PID coefficients from SmartDashboard
-        double p = SmartDashboard.getNumber("P Gain", 0);
-        double i = SmartDashboard.getNumber("I Gain", 0);
-        double d = SmartDashboard.getNumber("D Gain", 0);
-        double iz = SmartDashboard.getNumber("I Zone", 0);
-        double ff = SmartDashboard.getNumber("Feed Forward", 0);
-        double max = SmartDashboard.getNumber("Max Output", 0);
-        double min = SmartDashboard.getNumber("Min Output", 0);
-
-        if ((p != kP)) {
-            m_pivotPID.setP(p);
-            kP = p;
-        }
-        if ((i != kI)) {
-            m_pivotPID.setI(i);
-            kI = i;
-        }
-        if ((d != kD)) {
-            m_pivotPID.setD(d);
-            kD = d;
-        }
-        if ((iz != kIz)) {
-            m_pivotPID.setIZone(iz);
-            kIz = iz;
-        }
-        if ((ff != kFF)) {
-            m_pivotPID.setFF(ff);
-            kFF = ff;
-        }
-        if ((max != kMaxOutput) || (min != kMinOutput)) {
-            m_pivotPID.setOutputRange(min, max);
-            kMinOutput = min;
-            kMaxOutput = max;
-        }
-
         m_pivotPID.setReference(m_pivotSetpoint, CANSparkMax.ControlType.kPosition);
 
-        SmartDashboard.putNumber("SetPoint", m_pivotSetpoint);
-        SmartDashboard.putNumber("ProcessVariable", m_pivotEncoder.getPosition());
+        SmartDashboard.putNumber("pivot setpoint", m_pivotSetpoint);
+        SmartDashboard.putNumber("pivot position", m_pivotEncoder.getPosition());
     }
 
     /**

@@ -122,18 +122,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("imu pitch", m_gyro.getPitch());
-    SmartDashboard.putNumber("imu angle", m_gyro.getAngle());
-    SmartDashboard.putNumber("imu rate", m_gyro.getRate());
-    SmartDashboard.putNumber("imu yaw", m_gyro.getYaw());
     SmartDashboard.putNumber("robot heading", getHeading().getDegrees());
-
-    // turning
-    SmartDashboard.putNumber("rot front", m_frontLeft.m_turningEncoder.getZeroOffset());
-
-    SmartDashboard.putBoolean("UPDATING", true);
-
-    // Update the odometry in the periodic block
     updateOdometry();
   }
 
