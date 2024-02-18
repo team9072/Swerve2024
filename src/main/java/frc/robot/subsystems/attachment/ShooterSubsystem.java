@@ -75,36 +75,6 @@ public class ShooterSubsystem extends SubsystemBase {
         return m_state;
     }
 
-    /**
-     * Start revving the motors up to shoot
-     */
-    public void startSpinning() {
-        setState(ShooterState.kSpinning);
-    }
-
-    /**
-     * Start revving the motors up to shoot
-     * @return A command to rev up the motors
-     */
-    public Command getStartSpinningCommand() {
-        return this.runOnce(this::startSpinning);
-    }
-
-    /**
-     * Stop the shooter motors
-     */
-    public void stop() {
-        setState(ShooterState.kStopped);
-    }
-
-    /**
-     * Stop the shooter motors
-     * @return A command to stop the shooter motors
-     */
-    public Command getStopCommand() {
-        return this.runOnce(this::stop);
-    }
-
     public boolean isShooterReady() {
         //TODO: check shooter rpm
         return true;

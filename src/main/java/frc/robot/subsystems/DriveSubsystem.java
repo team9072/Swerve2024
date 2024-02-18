@@ -7,7 +7,7 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
@@ -67,9 +68,7 @@ public class DriveSubsystem extends SubsystemBase {
       getModulePositions(),
       new Pose2d());
 
-  private final PIDController m_translationPID = new PIDController(DriveConstants.kTranslationPID.kP, DriveConstants.kTranslationPID.kI, DriveConstants.kTranslationPID.kD);
-  private final PIDController m_rotationPID = new PIDController(DriveConstants.kRotationPID.kP, DriveConstants.kRotationPID.kI, DriveConstants.kRotationPID.kD);
-
+  private final ProfiledPIDController m_rotationPID;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -97,6 +96,14 @@ public class DriveSubsystem extends SubsystemBase {
         this // Reference to this subsystem to set requirements
     );
 
+    m_rotationPID = new ProfiledPIDController(
+        DriveConstants.kRotationPID.kP, DriveConstants.kRotationPID.kI, DriveConstants.kRotationPID.kD,
+        new TrapezoidProfile.Constraints(
+            DriveConstants.kAutoAimMaxAngularSpeed,
+            DriveConstants.kAutoAimMaxAngularAccel),
+        0.02);
+
+    m_rotationPID.setIntegratorRange(-DriveConstants.kRotationPID.iZone, DriveConstants.kRotationPID.iZone);
     m_rotationPID.enableContinuousInput(-Math.PI, Math.PI);
   }
 
@@ -178,112 +185,128 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @param xSpeed        Speed of the robot in the x direction (forward).
    * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
+   * @param rotSpeed      Angular rate of the robot.
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit,
-      boolean isAuto) {
-    // Lock wheels when not moving
-    /*
-     * if (xSpeed == 0 && ySpeed == 0 && rot == 0) {
-     * DriverStation.reportWarning("No movement, locked wheels", false);
-     * setX();
-     * return;
-     * }
-     */
-
+  public void drive(double xSpeed, double ySpeed, double rotSpeed, boolean fieldRelative, boolean rateLimit) {
     double xSpeedCommanded;
     double ySpeedCommanded;
     if (rateLimit) {
-      // Convert XY to polar for rate limiting
-      double inputTranslationDir = Math.atan2(ySpeed, xSpeed);
-      double inputTranslationMag = Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2));
+      ChassisSpeeds limitedSpeeds = limitSlewRate(xSpeed, ySpeed, rotSpeed);
 
-      // Calculate the direction slew rate based on an estimate of the lateral
-      // acceleration
-      double directionSlewRate;
-      if (m_currentTranslationMag != 0.0) {
-        directionSlewRate = Math.abs(DriveConstants.kDirectionSlewRate / m_currentTranslationMag);
-      } else {
-        directionSlewRate = 500.0; // some high number that means the slew rate is effectively instantaneous
-      }
-
-      double currentTime = WPIUtilJNI.now() * 1e-6;
-      double elapsedTime = currentTime - m_prevTime;
-      double angleDif = SwerveUtils.AngleDifference(inputTranslationDir, m_currentTranslationDir);
-      if (angleDif < 0.45 * Math.PI) {
-        m_currentTranslationDir = SwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir,
-            directionSlewRate * elapsedTime);
-        m_currentTranslationMag = m_magLimiter.calculate(inputTranslationMag);
-      } else if (angleDif > 0.85 * Math.PI) {
-        if (m_currentTranslationMag > 1e-4) { // some small number to avoid floating-point errors with equality checking
-          // keep currentTranslationDir unchanged
-          m_currentTranslationMag = m_magLimiter.calculate(0.0);
-        } else {
-          m_currentTranslationDir = SwerveUtils.WrapAngle(m_currentTranslationDir);
-          m_currentTranslationMag = m_magLimiter.calculate(inputTranslationMag);
-        }
-      } else {
-        m_currentTranslationDir = SwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir,
-            directionSlewRate * elapsedTime);
-        m_currentTranslationMag = m_magLimiter.calculate(0.0);
-      }
-      m_prevTime = currentTime;
-
-      // Disables slew rate by using the original input values instead (not tested as
-      // of 12/31)
-      // xSpeedCommanded = m_currentTranslationMag *
-      // Math.cos(m_currentTranslationDir);
-      // ySpeedCommanded = m_currentTranslationMag *
-      // Math.sin(m_currentTranslationDir);
-      // m_currentRotation = m_rotLimiter.calculate(rot);
-      xSpeedCommanded = inputTranslationMag * Math.cos(inputTranslationDir);
-      ySpeedCommanded = inputTranslationMag * Math.sin(inputTranslationDir);
-      m_currentRotation = rot;
-
+      xSpeedCommanded = limitedSpeeds.vxMetersPerSecond;
+      ySpeedCommanded = limitedSpeeds.vyMetersPerSecond;
+      m_currentRotation = limitedSpeeds.omegaRadiansPerSecond;
     } else {
       xSpeedCommanded = xSpeed;
       ySpeedCommanded = ySpeed;
-      m_currentRotation = rot;
+      m_currentRotation = rotSpeed;
     }
 
     double xSpeedDelivered = xSpeedCommanded * 1;
     double ySpeedDelivered = ySpeedCommanded * 1;
     double rotDelivered = m_currentRotation * 1;
 
-    if (!isAuto) {
-      // Convert the commanded speeds into the correct units for the drivetrain
-      xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
-      ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
-      rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
-    }
+    // Convert the commanded speeds into the correct units for the drivetrain
+    xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
+    ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
+    rotDelivered = m_currentRotation * DriveConstants.kMaxAngularSpeed;
 
-    // Field relative: negate x and y speeds so it's not inverted
-    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
-        fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
-                getHeading())
-            : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    setModuleStates(swerveModuleStates);
+    setSwerveSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, fieldRelative);
   }
 
   /**
    * Method to drive the robot using joystick info.
    *
-   * @param xSpeed        Speed of the robot in the x direction (forward).
-   * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Rotation to set the robot to in radians
+   * @param xSpeed         Speed of the robot in the x direction (forward).
+   * @param ySpeed         Speed of the robot in the y direction (sideways).
+   * @param targetRotation Rotation to set the robot to in radians
+   * @param fieldRelative  Whether the provided x and y speeds are relative to the
+   *                       field.
+   * @param rateLimit      Whether to enable rate limiting for smoother control.
+   */
+  public void driveWithHeading(double xSpeed, double ySpeed, Rotation2d targetRotation, boolean fieldRelative,
+      boolean rateLimit) {
+    double rotSpeed = m_rotationPID.calculate(
+        getHeading().getRadians(),
+        new TrapezoidProfile.State(targetRotation.getRadians(), 0));
+
+    // Convert the translational speeds into the correct units for the drivetrain
+    xSpeed = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    ySpeed = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    setSwerveSpeeds(xSpeed, ySpeed, rotSpeed, fieldRelative);
+  }
+
+  private ChassisSpeeds limitSlewRate(double xSpeed, double ySpeed, double rotSpeed) {
+    // Convert XY to polar for rate limiting
+    double inputTranslationDir = Math.atan2(ySpeed, xSpeed);
+    double inputTranslationMag = Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2));
+
+    // Calculate the direction slew rate based on an estimate of the lateral
+    // acceleration
+    double directionSlewRate;
+    if (m_currentTranslationMag != 0.0) {
+      directionSlewRate = Math.abs(DriveConstants.kDirectionSlewRate / m_currentTranslationMag);
+    } else {
+      directionSlewRate = 500.0; // some high number that means the slew rate is effectively instantaneous
+    }
+
+    double currentTime = WPIUtilJNI.now() * 1e-6;
+    double elapsedTime = currentTime - m_prevTime;
+    double angleDif = SwerveUtils.AngleDifference(inputTranslationDir, m_currentTranslationDir);
+    if (angleDif < 0.45 * Math.PI) {
+      m_currentTranslationDir = SwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir,
+          directionSlewRate * elapsedTime);
+      m_currentTranslationMag = m_magLimiter.calculate(inputTranslationMag);
+    } else if (angleDif > 0.85 * Math.PI) {
+      if (m_currentTranslationMag > 1e-4) { // some small number to avoid floating-point errors with equality checking
+        // keep currentTranslationDir unchanged
+        m_currentTranslationMag = m_magLimiter.calculate(0.0);
+      } else {
+        m_currentTranslationDir = SwerveUtils.WrapAngle(m_currentTranslationDir);
+        m_currentTranslationMag = m_magLimiter.calculate(inputTranslationMag);
+      }
+    } else {
+      m_currentTranslationDir = SwerveUtils.StepTowardsCircular(m_currentTranslationDir, inputTranslationDir,
+          directionSlewRate * elapsedTime);
+      m_currentTranslationMag = m_magLimiter.calculate(0.0);
+    }
+    m_prevTime = currentTime;
+
+    // Disables slew rate by using the original input values instead (not tested as
+    // of 12/31)
+    // xSpeedCommanded = m_currentTranslationMag *
+    // Math.cos(m_currentTranslationDir);
+    // ySpeedCommanded = m_currentTranslationMag *
+    // Math.sin(m_currentTranslationDir);
+    // m_currentRotation = m_rotLimiter.calculate(rot);
+    double limitedXSpeed = inputTranslationMag * Math.cos(inputTranslationDir);
+    double limitedYSpeed = inputTranslationMag * Math.sin(inputTranslationDir);
+    double limitedRotSpeed = rotSpeed;
+
+    return new ChassisSpeeds(limitedXSpeed, limitedYSpeed, limitedRotSpeed);
+  }
+
+  /**
+   * Set the speeds of the swerve modules
+   * 
+   * @param xSpeed        Forward speed of the robot in m/s.
+   * @param ySpeed        Sideways speed of the robot in m/s.
+   * @param rotSpeed      Angular rate of the robot in rad/s.
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
-   * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
-  public void driveWithHeading(double xSpeed, double ySpeed, Rotation2d rot, boolean fieldRelative, boolean rateLimit, boolean isAuto) {
-    double rotSpeed = m_rotationPID.calculate(getPose().getRotation().getRadians(), rot.getRadians());
-    drive(xSpeed, ySpeed, rotSpeed, fieldRelative, rateLimit, isAuto);
+  private void setSwerveSpeeds(double xSpeed, double ySpeed, double rotSpeed, boolean fieldRelative) {
+    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
+        fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed,
+                getHeading())
+            : new ChassisSpeeds(xSpeed, ySpeed, rotSpeed));
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+    setModuleStates(swerveModuleStates);
   }
 
   /**
@@ -291,21 +314,11 @@ public class DriveSubsystem extends SubsystemBase {
    * 
    * @param speeds The robot relative ChasisSpeeds
    */
-  public void driveRobotRelative(ChassisSpeeds speeds) {
+  private void driveRobotRelative(ChassisSpeeds speeds) {
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
     setModuleStates(swerveModuleStates);
-  }
-
-  private SwerveModuleState[] getModuleStates() {
-    SwerveModuleState[] states = new SwerveModuleState[4];
-    states[0] = m_frontLeft.getState();
-    states[1] = m_frontRight.getState();
-    states[2] = m_rearLeft.getState();
-    states[3] = m_rearRight.getState();
-
-    return states;
   }
 
   private SwerveModulePosition[] getModulePositions() {

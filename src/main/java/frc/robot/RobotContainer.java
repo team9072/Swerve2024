@@ -83,7 +83,7 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true, true, false),
+                true, true),
             m_robotDrive));
 
   }
@@ -124,7 +124,7 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
                 getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle(),
-                true, true, false),
+                true, true),
             m_robotDrive));
 
     // Drive speeds
@@ -151,14 +151,14 @@ public class RobotContainer {
 
         while (true) {
           if (angle < 180) {
-            m_robotDrive.drive(0, 0, -.45, false, false, false);
+            m_robotDrive.drive(0, 0, -.45, false, false);
           } else {
-            m_robotDrive.drive(0, 0, .45, false, false, false);
+            m_robotDrive.drive(0, 0, .45, false, false);
           }
 
           // 180 degrees
           if (Math.abs(angle) > 175 && Math.abs(angle) < 185) {
-            m_robotDrive.drive(0, 0, 0, false, false, false);
+            m_robotDrive.drive(0, 0, 0, false, false);
             break;
           }
 
@@ -188,6 +188,18 @@ public class RobotContainer {
         .onTrue(m_attatchment.getReverseIntakersCommand())
         .onFalse(m_attatchment.getStopIntakersCommand());
 
+    m_attachmentController.povUp().onTrue(
+      new InstantCommand(() -> m_attatchment.m_feeder.setPrecisePosition(60)));
+
+    m_attachmentController.povDown().onTrue(
+      new InstantCommand(() -> m_attatchment.m_feeder.setPrecisePosition(0)));
+
+    m_attachmentController.povLeft().onTrue(
+      new InstantCommand(() -> m_attatchment.m_feeder.setPrecisePosition(40)));
+
+    m_attachmentController.povRight().onTrue(
+      new InstantCommand(() -> m_attatchment.m_feeder.setPrecisePosition(20)));
+    
     // Attatchment controls for driver
 
     m_driverController.leftBumper()
@@ -227,11 +239,16 @@ public class RobotContainer {
         m_estimationField.setRobotPose(new Pose2d());
       }
     }
+
+    double angle = m_robotDrive.getHeading().getDegrees() - getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle().getDegrees();
+    SmartDashboard.putNumber("auto angle diff", Math.round(angle));
+
   }
 
   public void prepareTeleop() {
     m_attatchment.stopShooter();
     m_attatchment.stopIntakers();
+    m_attatchment.setStopOnBeamBreakEnabled(true);
   }
 
   /**

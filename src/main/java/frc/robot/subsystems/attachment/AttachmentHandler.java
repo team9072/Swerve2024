@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.subsystems.attachment.FeederSubsystem.FeederState;
+import frc.robot.subsystems.attachment.Intaker.IntakerMotorState;
 import frc.robot.subsystems.attachment.ShooterSubsystem.ShooterState;
 
 public class AttachmentHandler extends SubsystemBase {
@@ -16,8 +18,8 @@ public class AttachmentHandler extends SubsystemBase {
     private final ShooterSubsystem m_shooter;
 
     // state variables
-    private boolean m_hasNote;
-    private boolean m_stopOnBeamBreak;
+    private boolean m_hasNote = false;
+    private boolean m_stopOnBeamBreak = true;
 
     public AttachmentHandler(UTBIntakerSubsystem utbIntaker, FeederSubsystem feeder, ShooterSubsystem shooter) {
         m_UTBIntaker = utbIntaker;
@@ -30,8 +32,7 @@ public class AttachmentHandler extends SubsystemBase {
         if (m_feeder.getBeamBreakState()) {
             if (m_stopOnBeamBreak && !m_hasNote) {
                 // on get note stop intake
-                m_UTBIntaker.stop();
-                m_feeder.stop();
+                stopIntakers();
             }
 
             m_hasNote = true;
@@ -76,9 +77,9 @@ public class AttachmentHandler extends SubsystemBase {
      */
     public Command getStartIntakersCommand() {
         return Commands.parallel(
-            m_UTBIntaker.getIntakeCommand(),
+            m_UTBIntaker.getSetMotorStateCommand(IntakerMotorState.kIntaking),
             //TODO: OTB Intaker
-            m_feeder.getIntakeCommand()
+            m_feeder.getSetStateCommand(FeederState.kIntaking)
         );
     }
 
@@ -97,9 +98,9 @@ public class AttachmentHandler extends SubsystemBase {
      */
     public Command getStopIntakersCommand() {
         return Commands.parallel(
-            m_UTBIntaker.getStopCommand(),
+            m_UTBIntaker.getSetMotorStateCommand(IntakerMotorState.kStopped),
             //TODO: OTB Intaker
-            m_feeder.getStopCommand().asProxy()
+            m_feeder.getSetStateCommand(FeederState.kStopped).asProxy()
         );
     }
 
@@ -118,9 +119,9 @@ public class AttachmentHandler extends SubsystemBase {
      */
     public Command getReverseIntakersCommand() {
         return Commands.parallel(
-            m_UTBIntaker.getReverseCommand(),
+            m_UTBIntaker.getSetMotorStateCommand(IntakerMotorState.kReversed),
             //TODO: OTB Intaker
-            m_feeder.getReverseCommand()
+            m_feeder.getSetStateCommand(FeederState.kReversed)
         );
     }
 
@@ -169,10 +170,10 @@ public class AttachmentHandler extends SubsystemBase {
         return Commands.sequence(
             new WaitUntilCommand(m_shooter::isShooterReady),
             m_shooter.getSetStateCommand(ShooterState.kShooting),
-            m_feeder.getstartShootingCommand(),
+            m_feeder.getSetStateCommand(FeederState.kShooting),
             new WaitCommand(ShooterConstants.kShootTime),
-            m_shooter.getStopCommand(),
-            m_feeder.getStopCommand()
+            m_shooter.getSetStateCommand(ShooterState.kStopped),
+            m_feeder.getSetStateCommand(FeederState.kStopped)
         ).withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }
 }

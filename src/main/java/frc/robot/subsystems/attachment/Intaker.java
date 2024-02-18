@@ -40,77 +40,11 @@ public abstract class Intaker extends SubsystemBase {
     public abstract void setMotorState(IntakerMotorState state);
 
     /**
-     * Raise the intaker so it is inside the frame
+     * Get a command to set the motor state
+     * @param state the new motor state
+     * @return A command that sets the state to the provided value
      */
-    public void raiseIntaker() {
-        setIntakerPosition(IntakerPosition.kUp);
-    }
-
-    /**
-     * Raise the intaker so it is inside the frame
-     * @return A command to raise the intaker
-     */
-    public Command getRaiseIntakerCommand() {
-        return this.runOnce(this::raiseIntaker);
-    }
-
-    /**
-     * Drop the intaker so it can intake notes
-     */
-    public void dropIntaker() {
-        setIntakerPosition(IntakerPosition.kDown);
-    }
-
-    /**
-     * Drop the intaker so it can intake notes
-     * @return A command to drop the intaker
-     */
-    public Command getDropIntakerCommand() {
-        return this.runOnce(this::dropIntaker);
-    }
-
-    /**
-     * Start intaking
-     */
-    public void intake() {
-        setMotorState(IntakerMotorState.kIntaking);
-    }
-
-    /**
-     * Start intaking
-     * @return A command to start intaking
-     */
-    public Command getIntakeCommand() {
-        return this.runOnce(this::intake);
-    }
-
-    /**
-     * Stop the intake motors
-     */
-    public void stop() {
-        setMotorState(IntakerMotorState.kStopped);
-    }
-
-    /**
-     * Stop the intake motors
-     * @return A command to stop the intake motors
-     */
-    public Command getStopCommand() {
-        return this.runOnce(this::stop);
-    }
-
-    /**
-     * Start the intaker in reverse
-     */
-    public void reverse() {
-        setMotorState(IntakerMotorState.kReversed);
-    }
-
-    /**
-     * Start the intaker in reverse
-     * @return A command to start the intaker in reverse
-     */
-    public Command getReverseCommand() {
-        return this.runOnce(this::reverse);
+    public Command getSetMotorStateCommand(IntakerMotorState state) {
+        return runOnce(() -> setMotorState(state));
     }
 }
