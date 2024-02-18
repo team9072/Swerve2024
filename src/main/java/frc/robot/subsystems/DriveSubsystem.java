@@ -57,8 +57,7 @@ public class DriveSubsystem extends SubsystemBase {
   private double m_currentTranslationMag = 0.0;
 
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
-  // private SlewRateLimiter m_rotLimiter = new
-  // SlewRateLimiter(DriveConstants.kRotationalSlewRate);
+  private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
   // Odometry class for tracking robot pose
@@ -219,7 +218,7 @@ public class DriveSubsystem extends SubsystemBase {
     double rotSpeed = m_rotationPID.calculate(
         getHeading().getRadians(),
         new TrapezoidProfile.State(targetRotation.getRadians(), 0));
-    
+
     double xSpeedCommanded;
     double ySpeedCommanded;
     double rotSpeedCommanded;
@@ -244,6 +243,13 @@ public class DriveSubsystem extends SubsystemBase {
     setSwerveSpeeds(xSpeedDelivered, ySpeedDelivered, rotSpeedDelivered, fieldRelative);
   }
 
+  /**
+   * Limit the slew rate of the robot to reduce wear
+   * @param xSpeed   Speed of the robot in the x direction (forward).
+   * @param ySpeed   Speed of the robot in the y direction (sideways).
+   * @param rotSpeed Angular rate of the robot.
+   * @return a new limited ChassisSpeeds with the updated values
+   */
   private ChassisSpeeds limitSlewRate(double xSpeed, double ySpeed, double rotSpeed) {
     // Convert XY to polar for rate limiting
     double inputTranslationDir = Math.atan2(ySpeed, xSpeed);
@@ -270,7 +276,7 @@ public class DriveSubsystem extends SubsystemBase {
         // keep currentTranslationDir unchanged
         m_currentTranslationMag = m_magLimiter.calculate(0.0);
       } else {
-        m_currentTranslationDir = SwerveUtils.WrapAngle(m_currentTranslationDir);
+        m_currentTranslationDir = SwerveUtils.WrapAngle(m_currentTranslationDir + Math.PI);
         m_currentTranslationMag = m_magLimiter.calculate(inputTranslationMag);
       }
     } else {
@@ -279,16 +285,11 @@ public class DriveSubsystem extends SubsystemBase {
       m_currentTranslationMag = m_magLimiter.calculate(0.0);
     }
     m_prevTime = currentTime;
+    m_currentRotation = m_rotLimiter.calculate(rotSpeed);
 
-    // Disables slew rate by using the original input values instead
-    // xSpeedCommanded = m_currentTranslationMag *
-    // Math.cos(m_currentTranslationDir);
-    // ySpeedCommanded = m_currentTranslationMag *
-    // Math.sin(m_currentTranslationDir);
-    // m_currentRotation = m_rotLimiter.calculate(rot);
-    double limitedXSpeed = inputTranslationMag * Math.cos(inputTranslationDir);
-    double limitedYSpeed = inputTranslationMag * Math.sin(inputTranslationDir);
-    double limitedRotSpeed = rotSpeed;
+    double limitedXSpeed = inputTranslationMag * Math.cos(m_currentTranslationDir);
+    double limitedYSpeed = inputTranslationMag * Math.sin(m_currentTranslationDir);
+    double limitedRotSpeed = m_currentRotation;
 
     return new ChassisSpeeds(limitedXSpeed, limitedYSpeed, limitedRotSpeed);
   }
