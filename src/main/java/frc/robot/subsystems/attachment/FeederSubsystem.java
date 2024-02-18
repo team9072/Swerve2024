@@ -2,8 +2,6 @@ package frc.robot.subsystems.attachment;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import javax.print.attribute.standard.MediaSize.NA;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;

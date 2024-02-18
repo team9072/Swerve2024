@@ -6,10 +6,10 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -17,13 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -92,8 +87,10 @@ public class RobotContainer {
    * Register named commands used in pathplanner autos
    */
   private void registerPathplannerCommands() {
-    NamedCommands.registerCommand("disableBeamBreak", new InstantCommand(() -> m_attatchment.setStopOnBeamBreakEnabled(false)));
-    NamedCommands.registerCommand("enableBeamBreak", new InstantCommand(() -> m_attatchment.setStopOnBeamBreakEnabled(true)));
+    NamedCommands.registerCommand("disableBeamBreak",
+        Commands.runOnce(() -> m_attatchment.setStopOnBeamBreakEnabled(false)));
+    NamedCommands.registerCommand("enableBeamBreak",
+        Commands.runOnce(() -> m_attatchment.setStopOnBeamBreakEnabled(true)));
 
     NamedCommands.registerCommand("startIntakers", m_attatchment.getStartIntakersCommand());
     NamedCommands.registerCommand("stopIntakers", m_attatchment.getStopIntakersCommand());
@@ -114,65 +111,57 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Base controls
 
-    m_driverController.rightBumper().whileTrue(new RunCommand(
+    m_driverController.rightBumper().whileTrue(Commands.run(
         () -> m_robotDrive.setX(),
         m_robotDrive));
 
     // auto aiming
     m_driverController.leftTrigger().whileTrue(Commands.run(
-            () -> m_robotDrive.driveWithHeading(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle(),
-                true, true),
-            m_robotDrive));
+        () -> m_robotDrive.driveWithHeading(
+            -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+            getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle(),
+            true, true),
+        m_robotDrive));
 
     // Drive speeds
-    m_driverController.rightTrigger().whileTrue(new RunCommand(
+    m_driverController.rightTrigger().whileTrue(Commands.run(
         () -> {
           Constants.DriveConstants.kMaxSpeedMetersPerSecond = 4.8 * 0.5;
         }))
-        .whileFalse(new RunCommand(() -> {
+        .whileFalse(Commands.run(() -> {
           Constants.DriveConstants.kMaxSpeedMetersPerSecond = 4.8 * 1.3;
         }));
 
     // Reset field oriented
-    m_driverController.x().onTrue(new InstantCommand(() -> {
+    m_driverController.x().onTrue(Commands.runOnce(() -> {
       m_robotDrive.resetGyro();
     }));
 
-    // D-pad turning (trash)
-    // Could try a run command that stops when angle is reached
-    m_driverController.povUp().onTrue(new InstantCommand(() -> {
-      ExecutorService executor = Executors.newFixedThreadPool(1);
-      executor.submit(() -> {
-        // Normalize the degree
-        double angle = m_robotDrive.getHeading().getDegrees() % 360.0;
+    // D-pad turning
+    m_driverController.povUp().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
+        -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+        -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+        Rotation2d.fromDegrees(0), true, true),
+        m_robotDrive));
 
-        while (true) {
-          if (angle < 180) {
-            m_robotDrive.drive(0, 0, -.45, false, false);
-          } else {
-            m_robotDrive.drive(0, 0, .45, false, false);
-          }
+    m_driverController.povRight().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
+        -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+        -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+        Rotation2d.fromDegrees(-90), true, true),
+        m_robotDrive));
 
-          // 180 degrees
-          if (Math.abs(angle) > 175 && Math.abs(angle) < 185) {
-            m_robotDrive.drive(0, 0, 0, false, false);
-            break;
-          }
+    m_driverController.povDown().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
+        -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+        -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+        Rotation2d.fromDegrees(180), true, true),
+        m_robotDrive));
 
-          angle = m_robotDrive.getHeading().getDegrees() % 360.0;
-        }
-      });
-    }));
-
-    // better turning
-    m_driverController.povDown().whileTrue(new RunCommand(() -> {
-      System.out.println(
-          "abs pos: " + m_robotDrive.m_frontLeft.m_turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
-      System.out.println("rel pos: " + m_robotDrive.m_frontLeft.m_turningEncoder.getPosition());
-    }));
+    m_driverController.povLeft().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
+        -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+        -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+        Rotation2d.fromDegrees(90), true, true),
+        m_robotDrive));
 
     // Attatchment controls
 
@@ -189,17 +178,17 @@ public class RobotContainer {
         .onFalse(m_attatchment.getStopIntakersCommand());
 
     m_attachmentController.povUp().onTrue(
-      new InstantCommand(() -> m_attatchment.m_feeder.setPrecisePosition(60)));
+        Commands.runOnce(() -> m_attatchment.m_feeder.setPrecisePosition(60)));
 
     m_attachmentController.povDown().onTrue(
-      new InstantCommand(() -> m_attatchment.m_feeder.setPrecisePosition(0)));
+        Commands.runOnce(() -> m_attatchment.m_feeder.setPrecisePosition(0)));
 
     m_attachmentController.povLeft().onTrue(
-      new InstantCommand(() -> m_attatchment.m_feeder.setPrecisePosition(40)));
+        Commands.runOnce(() -> m_attatchment.m_feeder.setPrecisePosition(40)));
 
     m_attachmentController.povRight().onTrue(
-      new InstantCommand(() -> m_attatchment.m_feeder.setPrecisePosition(20)));
-    
+        Commands.runOnce(() -> m_attatchment.m_feeder.setPrecisePosition(20)));
+
     // Attatchment controls for driver
 
     m_driverController.leftBumper()
@@ -240,7 +229,8 @@ public class RobotContainer {
       }
     }
 
-    double angle = m_robotDrive.getHeading().getDegrees() - getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle().getDegrees();
+    double angle = m_robotDrive.getHeading().getDegrees()
+        - getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle().getDegrees();
     SmartDashboard.putNumber("auto angle diff", Math.round(angle));
 
   }

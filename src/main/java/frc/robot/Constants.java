@@ -37,7 +37,6 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   public static final class UTBIntakerConstants {
     // Constants for the under the bumper intaker
-    // TODO: propper speeds
     public static final int kIntakeMotor1CANId = 13;
     public static final int kIntakeMotor2CANId = 14;
 
@@ -47,7 +46,6 @@ public final class Constants {
 
   public static final class FeederConstants {
     // Constants for the feeder that sits between the intake and shooter
-    // TODO: propper speeds
     public static final int kFeederMotorCANId = 10;
     public static final int kPivotMotorCANId = 9;
 
@@ -73,7 +71,6 @@ public final class Constants {
 
   public static final class ShooterConstants {
     // Constants for shooter
-    // TODO: propper speeds
     public static final int kShooterMotor1CANId = 11;
     public static final int kShooterMotor2CANId = 12;
 
@@ -130,7 +127,7 @@ public final class Constants {
     public static final double kGyroAdjustment = 0.0;
 
     public static final PIDConstants kTranslationPID = new PIDConstants(5, 0); // Translation PID constants
-    public static final PIDConstants kRotationPID = new PIDConstants(2.4, 0, 0); // Rotation PID constants
+    public static final PIDConstants kRotationPID = new PIDConstants(5, 0, 0); // Rotation PID constants
   }
 
   public static final class ModuleConstants {
