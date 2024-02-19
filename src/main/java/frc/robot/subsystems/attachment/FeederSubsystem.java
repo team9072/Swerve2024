@@ -27,7 +27,7 @@ public class FeederSubsystem extends SubsystemBase {
         kSpeakerPosition(FeederConstants.PivotLimits.kSpeakerMin, FeederConstants.PivotLimits.kSpeakerMax),
         kAmpPosition(FeederConstants.PivotLimits.kAmpPos, FeederConstants.PivotLimits.kAmpPos);
 
-        public double lowLimit, highLimit;
+        double lowLimit, highLimit;
 
         FeederPivotPosition(double low, double high) {
             lowLimit = Math.max(FeederConstants.PivotLimits.kGlobalMin, low);

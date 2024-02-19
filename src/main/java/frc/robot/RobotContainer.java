@@ -25,8 +25,8 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.TargetConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.AttachmentCoordinator;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.attachment.AttachmentHandler;
 import frc.robot.subsystems.attachment.FeederSubsystem;
 import frc.robot.subsystems.attachment.ShooterSubsystem;
 import frc.robot.subsystems.attachment.UTBIntakerSubsystem;
@@ -44,8 +44,7 @@ public class RobotContainer {
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
-  // The driver's controllers
-  public final AttachmentHandler m_attatchment = new AttachmentHandler(
+  public final AttachmentCoordinator m_attatchment = new AttachmentCoordinator(
       new UTBIntakerSubsystem(),
       new FeederSubsystem(),
       new ShooterSubsystem());
@@ -54,6 +53,7 @@ public class RobotContainer {
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   CommandXboxController m_attachmentController = new CommandXboxController(OIConstants.kAttatchmentsControllerPort);
 
+  // Fields for visualization and testing
   private final Field2d m_field = new Field2d();
   private final Field2d m_estimationField = new Field2d();
 
@@ -87,11 +87,6 @@ public class RobotContainer {
    * Register named commands used in pathplanner autos
    */
   private void registerPathplannerCommands() {
-    NamedCommands.registerCommand("disableBeamBreak",
-        Commands.runOnce(() -> m_attatchment.setStopOnBeamBreakEnabled(false)));
-    NamedCommands.registerCommand("enableBeamBreak",
-        Commands.runOnce(() -> m_attatchment.setStopOnBeamBreakEnabled(true)));
-
     NamedCommands.registerCommand("startIntakers", m_attatchment.getStartIntakersCommand());
     NamedCommands.registerCommand("stopIntakers", m_attatchment.getStopIntakersCommand());
 

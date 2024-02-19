@@ -241,5 +241,22 @@ public final class Constants {
     public static final Translation2d kBlueSpeakerTarget = new Translation2d(-0.04, 5.55);
     // Apriltag #4
     public static final Translation2d kRedSpeakerTarget = new Translation2d(16.58, 5.55);
+
+    // Apriltag #6
+    public static final Translation2d kBlueAmpTarget = new Translation2d(1.84, 8.20);
+    // Apriltag #5
+    public static final Translation2d kRedAmpTarget = new Translation2d(14.70, 8.20);
+
+    public enum AimingTarget {
+      kSpeaker(kBlueSpeakerTarget, kRedSpeakerTarget),
+      kAmp(kBlueAmpTarget, kRedAmpTarget);
+
+      Translation2d blue, red;
+
+      AimingTarget(Translation2d blue, Translation2d red) {
+        this.blue = blue;
+        this.red = red;
+      };
+    }
   }
 }
