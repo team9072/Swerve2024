@@ -55,8 +55,25 @@ public final class Constants {
     public static final double kReverseSpeed = -0.9;
     public static final double kShootSpeed = 1;
 
-    public static final double kPivotGearRatio = 1.0 / 250; //250 to 1 from motor to pivot
+    public static final double kPivotGearRatio = 1.0 / 250; // 250 to 1 from motor to pivot
     public static final double kPivotSpeed = 0.5;
+
+    public static final class PivotLimits {
+      // Pivot range is 0-60
+      public static final double kGlobalMin = 0;
+      public static final double kGlobalMax = 60;
+
+      // Intake is from 0-10
+      public static final double kIntakeMin = 0;
+      public static final double kIntakeMax = 10;
+
+      // Shooting is from the entire range
+      public static final double kSpeakerMin = kGlobalMin;
+      public static final double kSpeakerMax = kGlobalMax;
+
+      // Amp shots are at exactly 60
+      public static final double kAmpPos = 60;
+    }
 
     public static final class PivotPID {
       public static final double kP = 0.7;

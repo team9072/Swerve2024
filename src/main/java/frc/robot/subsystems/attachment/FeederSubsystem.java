@@ -23,9 +23,16 @@ public class FeederSubsystem extends SubsystemBase {
     }
 
     public enum FeederPivotPosition {
-        kIntakePosition,
-        kAmpPosition,
-        kSpeakerPosition;
+        kIntakePosition(FeederConstants.PivotLimits.kIntakeMin, FeederConstants.PivotLimits.kIntakeMax),
+        kSpeakerPosition(FeederConstants.PivotLimits.kSpeakerMin, FeederConstants.PivotLimits.kSpeakerMax),
+        kAmpPosition(FeederConstants.PivotLimits.kAmpPos, FeederConstants.PivotLimits.kAmpPos);
+
+        public double lowLimit, highLimit;
+
+        FeederPivotPosition(double low, double high) {
+            lowLimit = Math.max(FeederConstants.PivotLimits.kGlobalMin, low);
+            highLimit = Math.min(FeederConstants.PivotLimits.kGlobalMax, high);
+        }
     }
 
     private final CANSparkMax m_feederMotor;
@@ -36,7 +43,7 @@ public class FeederSubsystem extends SubsystemBase {
     private final DigitalInput m_beamBreakSensor;
 
     private FeederState m_state = FeederState.kStopped;
-    private FeederPivotPosition m_position = FeederPivotPosition.kIntakePosition;
+    private FeederPivotPosition m_pivotPosition = FeederPivotPosition.kIntakePosition;
     private double m_pivotSetpoint = 0;
 
     /**
@@ -95,18 +102,28 @@ public class FeederSubsystem extends SubsystemBase {
         m_feederMotor.set(speed);
     }
 
-    public void setPosition() {
-
+    /**
+     * Set the general mode of the shooter.
+     * This specifies the available ranges for the pivot.
+     * @param pos The new general position for the shooter
+     */
+    public void setPosition(FeederPivotPosition pos) {
+        m_pivotPosition = pos;
+        setPrecisePosition(m_pivotSetpoint);
     }
 
     /**
      * Set the specific setpoint for the feeder
+     * 
      * @param setpoint the new setpoint for the shooter
      */
     public void setPrecisePosition(double setpoint) {
-        if (Double.isNaN(setpoint)) { System.out.println("Got NAN pivot setpoint"); return; }
+        if (Double.isNaN(setpoint)) {
+            System.out.println("Got NAN pivot setpoint");
+            return;
+        }
 
-        m_pivotSetpoint = Math.max(0,  Math.min(setpoint, 60));
+        m_pivotSetpoint = Math.max(m_pivotPosition.lowLimit, Math.min(setpoint, m_pivotPosition.highLimit));
     }
 
     /**
