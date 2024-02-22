@@ -87,11 +87,13 @@ public class RobotContainer {
    * Register named commands used in pathplanner autos
    */
   private void registerPathplannerCommands() {
+    /*
     NamedCommands.registerCommand("startIntakers", m_attatchment.getStartIntakersCommand());
     NamedCommands.registerCommand("stopIntakers", m_attatchment.getStopIntakersCommand());
 
     NamedCommands.registerCommand("startShooter", m_attatchment.getSpinShooterCommand());
     NamedCommands.registerCommand("stopShooter", m_attatchment.getStopShooterCommand());
+    */
   }
 
   /**
@@ -160,6 +162,7 @@ public class RobotContainer {
 
     // Attatchment controls
 
+    /*
     m_attachmentController.leftBumper()
         .onTrue(m_attatchment.getSpinShooterCommand())
         .onFalse(m_attatchment.getStopShooterCommand());
@@ -197,6 +200,7 @@ public class RobotContainer {
     m_driverController.y()
         .onTrue(m_attatchment.getReverseIntakersCommand())
         .onFalse(m_attatchment.getStopIntakersCommand());
+        */
   }
 
   public Translation2d getAimingVector(Translation2d target) {
@@ -231,9 +235,11 @@ public class RobotContainer {
   }
 
   public void prepareTeleop() {
+    /*
     m_attatchment.stopShooter();
     m_attatchment.stopIntakers();
     m_attatchment.setStopOnBeamBreakEnabled(true);
+    */
   }
 
   /**
