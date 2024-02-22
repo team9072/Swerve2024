@@ -45,6 +45,8 @@ public class AttachmentCoordinator {
     }
 
     private void setState(AttatchmentState state) {
+        if (m_state == state) { return; }
+
         m_state = state;
 
         switch (m_state) {
