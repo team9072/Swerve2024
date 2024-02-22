@@ -170,6 +170,11 @@ public class RobotContainer {
 
     // Shoot
     m_driverController.rightTrigger()
+        .onTrue(m_attatchment.getStartFeedersCommand())
+        .onFalse(m_attatchment.getStopFeedersCommand());
+
+    // Spin Intaker
+    m_driverController.rightTrigger()
         .onTrue(m_attatchment.getStartIntakersCommand())
         .onFalse(m_attatchment.getStopIntakersCommand());
 
