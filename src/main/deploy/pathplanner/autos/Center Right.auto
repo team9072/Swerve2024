@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Subwoofer"
+            "pathName": "Subwoofer Bottom Shot Prep"
           }
         },
         {
@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Subwoofer to Center Right"
+            "pathName": "Subwoofer to W5"
           }
         },
         {
@@ -44,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Center Right to Subwoofer"
+            "pathName": "W5 to Subwoofer"
           }
         },
         {
