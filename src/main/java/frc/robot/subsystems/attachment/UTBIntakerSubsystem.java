@@ -11,7 +11,7 @@ public class UTBIntakerSubsystem extends Intaker {
     private final CANSparkMax m_intakeMotor1;
     private final CANSparkMax m_intakeMotor2;
 
-    private IntakerMotorState m_state = IntakerMotorState.kStopped;
+    private IntakerState m_state = IntakerState.kStopped;
 
     public UTBIntakerSubsystem() {
         m_intakeMotor1 = new CANSparkMax(UTBIntakerConstants.kIntakeMotor1CANId, MotorType.kBrushless);
@@ -38,11 +38,11 @@ public class UTBIntakerSubsystem extends Intaker {
     }
 
     @Override
-    public IntakerMotorState getMotorState() {
+    public IntakerState getMotorState() {
         return m_state;
     }
 
-    public void setMotorState(IntakerMotorState state) {
+    public void setState(IntakerState state) {
         m_state = state;
 
         double speed = switch (m_state) {

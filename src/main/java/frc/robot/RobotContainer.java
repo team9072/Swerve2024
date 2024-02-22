@@ -28,6 +28,7 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.AttachmentCoordinator;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.attachment.FeederSubsystem;
+import frc.robot.subsystems.attachment.PivotSubsystem;
 import frc.robot.subsystems.attachment.ShooterSubsystem;
 import frc.robot.subsystems.attachment.UTBIntakerSubsystem;
 
@@ -47,7 +48,8 @@ public class RobotContainer {
   public final AttachmentCoordinator m_attatchment = new AttachmentCoordinator(
       new UTBIntakerSubsystem(),
       new FeederSubsystem(),
-      new ShooterSubsystem());
+      new ShooterSubsystem(),
+      new PivotSubsystem());
 
   // The driver's controllers
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -176,16 +178,16 @@ public class RobotContainer {
         .onFalse(m_attatchment.getStopIntakersCommand());
 
     m_attachmentController.povUp().onTrue(
-        Commands.runOnce(() -> m_attatchment.m_feeder.setPrecisePosition(60)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(60)));
 
     m_attachmentController.povDown().onTrue(
-        Commands.runOnce(() -> m_attatchment.m_feeder.setPrecisePosition(0)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(0)));
 
     m_attachmentController.povLeft().onTrue(
-        Commands.runOnce(() -> m_attatchment.m_feeder.setPrecisePosition(40)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(40)));
 
     m_attachmentController.povRight().onTrue(
-        Commands.runOnce(() -> m_attatchment.m_feeder.setPrecisePosition(20)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(20)));
 
     // Attatchment controls for driver
 

@@ -30,10 +30,6 @@ public class ShooterSubsystem extends SubsystemBase {
         // set coast mode to prevent damage
         m_motor1.setIdleMode(IdleMode.kCoast);
         m_motor2.setIdleMode(IdleMode.kCoast);
-
-        // invert motors so the  spin correctly
-        m_motor1.setInverted(true);
-        m_motor2.setInverted(true);
     }
 
     @Override

@@ -9,7 +9,7 @@ public abstract class Intaker extends SubsystemBase {
         kUp
     }
 
-    public enum IntakerMotorState {
+    public enum IntakerState {
         kReversed,
         kStopped,
         kIntaking
@@ -31,20 +31,20 @@ public abstract class Intaker extends SubsystemBase {
      * get the state of the intaker
      * @return the state of the intaker motors
      */
-    public abstract IntakerMotorState getMotorState();
+    public abstract IntakerState getMotorState();
 
     /**
      * Set the state of the intaker motors
      * @param state the new state of the intaker motors
      */
-    public abstract void setMotorState(IntakerMotorState state);
+    public abstract void setState(IntakerState state);
 
     /**
      * Get a command to set the motor state
      * @param state the new motor state
      * @return A command that sets the state to the provided value
      */
-    public Command getSetMotorStateCommand(IntakerMotorState state) {
-        return runOnce(() -> setMotorState(state));
+    public Command getSetMotorStateCommand(IntakerState state) {
+        return runOnce(() -> setState(state));
     }
 }
