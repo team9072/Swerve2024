@@ -179,18 +179,6 @@ public class RobotContainer {
         .onTrue(m_attatchment.getReverseIntakersCommand())
         .onFalse(m_attatchment.getStopIntakersCommand());
 
-    m_attachmentController.povUp().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(60)));
-
-    m_attachmentController.povDown().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(0)));
-
-    m_attachmentController.povLeft().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(40)));
-
-    m_attachmentController.povRight().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(20)));
-
     // Attatchment controls for driver
 
     m_driverController.leftBumper()
@@ -235,6 +223,7 @@ public class RobotContainer {
         - getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle().getDegrees();
     SmartDashboard.putNumber("auto angle diff", Math.round(angle));
 
+    m_attatchment.m_pivot.setPrecisePosition(SmartDashboard.getNumber("Pivot Angle", 0));
   }
 
   public void prepareTeleop() {

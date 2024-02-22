@@ -24,24 +24,27 @@ public class PivotSubsystem extends SubsystemBase {
         }
     }
 
-    private final CANSparkMax m_pivotMotor;
-    private SparkPIDController m_pivotPID;
-    private RelativeEncoder m_pivotEncoder;
+    private final CANSparkMax m_rightPivotMotor;
+    private final SparkPIDController m_pivotPID;
+    private final RelativeEncoder m_pivotEncoder;
 
-    private PivotPosition m_pivotPosition = PivotPosition.kIntakePosition;
+    private PivotPosition m_pivotPosition = PivotPosition.kSpeakerPosition;
     private double m_pivotSetpoint = 0;
 
     public PivotSubsystem() {
-        m_pivotMotor = new CANSparkMax(PivotConstants.kPivotMotorCANId, MotorType.kBrushless);
+        m_rightPivotMotor = new CANSparkMax(PivotConstants.kRightPivotMotorCANId, MotorType.kBrushless);
 
-        m_pivotMotor.restoreFactoryDefaults();
-        m_pivotMotor.setIdleMode(IdleMode.kBrake);
+        m_rightPivotMotor.restoreFactoryDefaults();
+        m_rightPivotMotor.setIdleMode(IdleMode.kBrake);
+        m_rightPivotMotor.setInverted(true);
 
-        m_pivotPID = m_pivotMotor.getPIDController();
+        m_pivotPID = m_rightPivotMotor.getPIDController();
+
         // set false to not pop off chain by going wrong way
         m_pivotPID.setPositionPIDWrappingEnabled(false);
 
-        m_pivotEncoder = m_pivotMotor.getEncoder();
+        m_pivotEncoder = m_rightPivotMotor.getEncoder();
+        m_pivotPID.setFeedbackDevice(m_pivotEncoder);
 
         // set pivot PID coefficients
         m_pivotPID.setP(PivotConstants.PivotPID.kP);
@@ -82,5 +85,13 @@ public class PivotSubsystem extends SubsystemBase {
         }
 
         m_pivotSetpoint = Math.max(m_pivotPosition.lowLimit, Math.min(setpoint, m_pivotPosition.highLimit));
+    }
+
+    public double getPrecisePosition() {
+        return m_pivotSetpoint;
+    }
+
+    public boolean isPivotReady() {
+        return Math.abs(m_pivotSetpoint - m_pivotEncoder.getPosition()) < PivotConstants.kPositionDeadzone;
     }
 }

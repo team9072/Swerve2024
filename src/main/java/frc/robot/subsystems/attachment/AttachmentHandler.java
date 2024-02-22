@@ -16,7 +16,8 @@ public class AttachmentHandler extends SubsystemBase {
     //TODO: Make private
     public final FeederSubsystem m_feeder;
     private final ShooterSubsystem m_shooter;
-    private final PivotSubsystem m_pivot;
+    //TODO: Make private
+    public final PivotSubsystem m_pivot;
 
     // state variables
     private boolean m_hasNote = false;

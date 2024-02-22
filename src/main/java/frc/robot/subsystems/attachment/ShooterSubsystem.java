@@ -21,8 +21,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private ShooterState m_state = ShooterState.kStopped;
 
     public ShooterSubsystem() {
-        m_motor1 = new CANSparkMax(ShooterConstants.kShooterMotor1CANId, MotorType.kBrushless);
-        m_motor2 = new CANSparkMax(ShooterConstants.kShooterMotor2CANId, MotorType.kBrushless);
+        m_motor1 = new CANSparkMax(ShooterConstants.kRightShooterMotorCANId, MotorType.kBrushless);
+        m_motor2 = new CANSparkMax(ShooterConstants.kLeftShooterMotorCANId, MotorType.kBrushless);
 
         m_motor1.restoreFactoryDefaults();
         m_motor2.restoreFactoryDefaults();
