@@ -113,11 +113,12 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Base controls
 
+    // Set X wheels
     m_driverController.rightBumper().whileTrue(Commands.run(
         () -> m_robotDrive.setX(),
         m_robotDrive));
 
-    // auto aiming
+    // Auto aiming
     m_driverController.leftTrigger().whileTrue(Commands.run(
         () -> m_robotDrive.driveWithHeading(
             -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
@@ -127,7 +128,7 @@ public class RobotContainer {
         m_robotDrive));
 
     // Drive speeds
-    m_driverController.rightTrigger().whileTrue(Commands.run(
+    m_driverController.leftBumper().whileTrue(Commands.run(
         () -> {
           Constants.DriveConstants.kMaxSpeedMetersPerSecond = 4.8 * 0.5;
         }))
@@ -165,6 +166,18 @@ public class RobotContainer {
         Rotation2d.fromDegrees(90), true, false),
         m_robotDrive));
 
+    // Attatchment controls for driver
+
+    // Shoot
+    m_driverController.rightTrigger()
+        .onTrue(m_attatchment.getStartIntakersCommand())
+        .onFalse(m_attatchment.getStopIntakersCommand());
+
+    // Unjam
+    m_driverController.y()
+        .onTrue(m_attatchment.getReverseIntakersCommand())
+        .onFalse(m_attatchment.getStopIntakersCommand());
+
     // Attatchment controls
 
     m_attachmentController.leftBumper()
@@ -179,6 +192,7 @@ public class RobotContainer {
         .onTrue(m_attatchment.getReverseIntakersCommand())
         .onFalse(m_attatchment.getStopIntakersCommand());
 
+    // Arm/pivot positioning
     m_attachmentController.povUp().onTrue(
         Commands.runOnce(() -> m_attatchment.setPivotPosition(60)));
 
@@ -190,20 +204,6 @@ public class RobotContainer {
 
     m_attachmentController.povRight().onTrue(
         Commands.runOnce(() -> m_attatchment.setPivotPosition(20)));
-
-    // Attatchment controls for driver
-
-    m_driverController.leftBumper()
-        .onTrue(m_attatchment.getSpinShooterCommand())
-        .onFalse(m_attatchment.getStopShooterCommand());
-
-    m_driverController.b()
-        .onTrue(m_attatchment.getStartIntakersCommand())
-        .onFalse(m_attatchment.getStopIntakersCommand());
-
-    m_driverController.y()
-        .onTrue(m_attatchment.getReverseIntakersCommand())
-        .onFalse(m_attatchment.getStopIntakersCommand());
   }
 
   public Translation2d getAimingVector(Translation2d target) {
