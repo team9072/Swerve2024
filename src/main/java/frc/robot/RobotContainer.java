@@ -67,6 +67,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putData("Pose Estimation", m_estimationField);
+    SmartDashboard.putNumber("Pivot Angle", 0);
 
     // Configure the button bindings
     configureButtonBindings();
