@@ -3,35 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.46,
-        "y": 6.487678567774198
+        "x": 1.2234294142773756,
+        "y": 6.47073614949235
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.56,
-        "y": 6.487678567774198
+        "x": 4.433079141847506,
+        "y": 5.812346461785655
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Subwoofer Top Shot"
     },
     {
       "anchor": {
-        "x": 2.641463403904597,
-        "y": 6.855588136725928
+        "x": 7.987370953949141,
+        "y": 7.448127797913619
       },
       "prevControl": {
-        "x": 2.541463403904597,
-        "y": 6.855588136725928
+        "x": 5.657249339408116,
+        "y": 7.448127797913619
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "W1"
+      "linkedName": "M1"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.0,
-      "rotationDegrees": 30.0,
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0,
       "rotateFast": true
     }
   ],
@@ -45,14 +45,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 30.0,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 40.0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
