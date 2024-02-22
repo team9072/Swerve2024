@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.90418447074017,
-        "y": 7.347203842296197
+        "x": 7.272384670082625,
+        "y": 6.5530348604556865
       },
       "isLocked": false,
       "linkedName": "M1"
     },
     {
       "anchor": {
-        "x": 2.9105529890257786,
-        "y": 6.985103093013204
+        "x": 1.2234294142773756,
+        "y": 6.47073614949235
       },
       "prevControl": {
-        "x": 3.7660208897607332,
-        "y": 7.248353454615901
+        "x": 3.311759204972045,
+        "y": 5.76090976743357
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "W1"
+      "linkedName": "Subwoofer Top Shot"
     }
   ],
   "rotationTargets": [],
@@ -39,11 +39,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 30.0,
+    "rotation": 40.0,
     "rotateFast": true
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Week 0",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
