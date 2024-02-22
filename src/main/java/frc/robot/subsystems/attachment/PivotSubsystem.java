@@ -28,8 +28,8 @@ public class PivotSubsystem extends SubsystemBase {
     private SparkPIDController m_pivotPID;
     private RelativeEncoder m_pivotEncoder;
 
-    private PivotPosition m_pivotPosition = PivotPosition.kIntakePosition;
-    private double m_pivotSetpoint = 0;
+    private PivotPosition m_position = PivotPosition.kIntakePosition;
+    private double m_setpoint = 0;
 
     public PivotSubsystem() {
         m_pivotMotor = new CANSparkMax(PivotConstants.kPivotMotorCANId, MotorType.kBrushless);
@@ -54,9 +54,9 @@ public class PivotSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        m_pivotPID.setReference(m_pivotSetpoint, CANSparkMax.ControlType.kPosition);
+        m_pivotPID.setReference(m_setpoint, CANSparkMax.ControlType.kPosition);
 
-        SmartDashboard.putNumber("pivot setpoint", m_pivotSetpoint);
+        SmartDashboard.putNumber("pivot setpoint", m_setpoint);
         SmartDashboard.putNumber("pivot position", m_pivotEncoder.getPosition());
     }
 
@@ -66,8 +66,12 @@ public class PivotSubsystem extends SubsystemBase {
      * @param pos The new general position for the shooter
      */
     public void setPosition(PivotPosition pos) {
-        m_pivotPosition = pos;
-        setPrecisePosition(m_pivotSetpoint);
+        m_position = pos;
+        setPrecisePosition(m_setpoint);
+    }
+
+    public PivotPosition getPosition() {
+        return m_position;
     }
 
     /**
@@ -81,6 +85,6 @@ public class PivotSubsystem extends SubsystemBase {
             return;
         }
 
-        m_pivotSetpoint = Math.max(m_pivotPosition.lowLimit, Math.min(setpoint, m_pivotPosition.highLimit));
+        m_setpoint = Math.max(m_position.lowLimit, Math.min(setpoint, m_position.highLimit));
     }
 }

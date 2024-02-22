@@ -6,7 +6,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FeederConstants;
 
@@ -61,16 +60,6 @@ public class FeederSubsystem extends SubsystemBase {
      */
     public boolean getBeamBreakState() {
         return !m_beamBreakSensor.get();
-    }
-
-    /**
-     * set the state of the feeder
-     * 
-     * @param state the new state to set
-     * @return a command to set the state of the feeder
-     */
-    public Command getSetStateCommand(FeederState state) {
-        return this.runOnce(() -> setState(state));
     }
 
     /*
