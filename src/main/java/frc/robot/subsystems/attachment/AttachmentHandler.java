@@ -13,7 +13,7 @@ import frc.robot.subsystems.attachment.ShooterSubsystem.ShooterState;
 
 public class AttachmentHandler extends SubsystemBase {
     private final UTBIntakerSubsystem m_UTBIntaker;
-    //TODO: Make private
+    // TODO: Make private
     public final FeederSubsystem m_feeder;
     private final ShooterSubsystem m_shooter;
     //TODO: Make private
@@ -23,7 +23,8 @@ public class AttachmentHandler extends SubsystemBase {
     private boolean m_hasNote = false;
     private boolean m_stopOnBeamBreak = true;
 
-    public AttachmentHandler(UTBIntakerSubsystem utbIntaker, FeederSubsystem feeder, ShooterSubsystem shooter, PivotSubsystem pivot) {
+    public AttachmentHandler(UTBIntakerSubsystem utbIntaker, FeederSubsystem feeder, ShooterSubsystem shooter,
+            PivotSubsystem pivot) {
         m_UTBIntaker = utbIntaker;
         m_feeder = feeder;
         m_shooter = shooter;
@@ -46,6 +47,7 @@ public class AttachmentHandler extends SubsystemBase {
 
     /**
      * Set wether the beam break will stop the intaker or not
+     * 
      * @param beamBreakEnabled should the beam berak sensor stop the inkakers
      */
     public void setStopOnBeamBreakEnabled(boolean beamBreakEnabled) {
@@ -54,6 +56,7 @@ public class AttachmentHandler extends SubsystemBase {
 
     /**
      * Set the new state only if the shoter is not currently shooting
+     * 
      * @return true if new state was set, false otherwise
      */
     private boolean trySetShooterState(ShooterState state) {
@@ -76,14 +79,14 @@ public class AttachmentHandler extends SubsystemBase {
     /**
      * Start the intakers
      * Will not start the intakers if the feeder is shooting
+     * 
      * @return A command to start the intakers
      */
     public Command getStartIntakersCommand() {
         return Commands.parallel(
-            m_UTBIntaker.getSetMotorStateCommand(IntakerMotorState.kIntaking),
-            //TODO: OTB Intaker
-            m_feeder.getSetStateCommand(FeederState.kIntaking)
-        );
+                m_UTBIntaker.getSetMotorStateCommand(IntakerMotorState.kIntaking),
+                // TODO: OTB Intaker
+                m_feeder.getSetStateCommand(FeederState.kIntaking));
     }
 
     /**
@@ -97,14 +100,31 @@ public class AttachmentHandler extends SubsystemBase {
     /**
      * Stop the intakers
      * Will stop the intakers even if the feeder is shooting
+     * 
      * @return A command to start the intakers
      */
     public Command getStopIntakersCommand() {
         return Commands.parallel(
-            m_UTBIntaker.getSetMotorStateCommand(IntakerMotorState.kStopped),
-            //TODO: OTB Intaker
-            m_feeder.getSetStateCommand(FeederState.kStopped).asProxy()
-        );
+                m_UTBIntaker.getSetMotorStateCommand(IntakerMotorState.kStopped),
+                // TODO: OTB Intaker
+                m_feeder.getSetStateCommand(FeederState.kStopped).asProxy());
+    }
+
+    /**
+     * Start the feeder wheels
+     * 
+     * @return A command to start the feeder wheels
+     */
+    public Command getStartFeedersCommand() {
+        return m_feeder.getSetStateCommand(FeederState.kIntaking);
+    }
+
+    /**
+     * Stop the feeder wheels
+     * @return A command to stop the feeder wheels
+     */
+    public Command getStopFeedersCommand() {
+        return m_feeder.getSetStateCommand(FeederState.kStopped).asProxy();
     }
 
     /**
@@ -118,14 +138,14 @@ public class AttachmentHandler extends SubsystemBase {
     /**
      * Reverse the intakers
      * Will not reverse the intakers if the feeder is shooting
+     * 
      * @return A command to reverse the intakers
      */
     public Command getReverseIntakersCommand() {
         return Commands.parallel(
-            m_UTBIntaker.getSetMotorStateCommand(IntakerMotorState.kReversed),
-            //TODO: OTB Intaker
-            m_feeder.getSetStateCommand(FeederState.kReversed)
-        );
+                m_UTBIntaker.getSetMotorStateCommand(IntakerMotorState.kReversed),
+                // TODO: OTB Intaker
+                m_feeder.getSetStateCommand(FeederState.kReversed));
     }
 
     /**
@@ -137,6 +157,7 @@ public class AttachmentHandler extends SubsystemBase {
 
     /**
      * Start spinning up the shooter
+     * 
      * @return A command to start spinning the shooter
      */
     public Command getSpinShooterCommand() {
@@ -152,6 +173,7 @@ public class AttachmentHandler extends SubsystemBase {
 
     /**
      * Stop the shooter
+     * 
      * @return A command to stop the shooter
      */
     public Command getStopShooterCommand() {
@@ -167,17 +189,18 @@ public class AttachmentHandler extends SubsystemBase {
 
     /**
      * Shoot the note in the feeder out of the shooter
+     * 
      * @return A commnd t shoot the loaded note
      */
     public Command getShootCommand() {
         return Commands.sequence(
-            new WaitUntilCommand(m_shooter::isShooterReady),
-            m_shooter.getSetStateCommand(ShooterState.kShooting),
-            m_feeder.getSetStateCommand(FeederState.kShooting),
-            new WaitCommand(ShooterConstants.kShootTime),
-            m_shooter.getSetStateCommand(ShooterState.kStopped),
-            m_feeder.getSetStateCommand(FeederState.kStopped)
-        ).withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
+                new WaitUntilCommand(m_shooter::isShooterReady),
+                m_shooter.getSetStateCommand(ShooterState.kShooting),
+                m_feeder.getSetStateCommand(FeederState.kShooting),
+                new WaitCommand(ShooterConstants.kShootTime),
+                m_shooter.getSetStateCommand(ShooterState.kStopped),
+                m_feeder.getSetStateCommand(FeederState.kStopped))
+                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }
 
     public void setPivotPosition(double pos) {
