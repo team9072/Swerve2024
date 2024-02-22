@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.987370953949141,
-        "y": 7.448127797913619
+        "x": 1.2466232990759765,
+        "y": 5.542410187664096
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.90418447074017,
-        "y": 7.347203842296197
+        "x": 1.3466232990759766,
+        "y": 5.542410187664096
       },
       "isLocked": false,
-      "linkedName": "M1"
+      "linkedName": "Subwoofer"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 6.985103093013204
       },
       "prevControl": {
-        "x": 3.7660208897607332,
-        "y": 7.248353454615901
+        "x": 2.810552989025778,
+        "y": 6.985103093013204
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,8 +39,8 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 30.0,
-    "rotateFast": true
+    "rotation": 0.0,
+    "rotateFast": false
   },
   "reversed": false,
   "folder": null,
@@ -48,5 +48,5 @@
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
