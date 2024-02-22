@@ -16,15 +16,17 @@ public class AttachmentHandler extends SubsystemBase {
     //TODO: Make private
     public final FeederSubsystem m_feeder;
     private final ShooterSubsystem m_shooter;
+    private final PivotSubsystem m_pivot;
 
     // state variables
     private boolean m_hasNote = false;
     private boolean m_stopOnBeamBreak = true;
 
-    public AttachmentHandler(UTBIntakerSubsystem utbIntaker, FeederSubsystem feeder, ShooterSubsystem shooter) {
+    public AttachmentHandler(UTBIntakerSubsystem utbIntaker, FeederSubsystem feeder, ShooterSubsystem shooter, PivotSubsystem pivot) {
         m_UTBIntaker = utbIntaker;
         m_feeder = feeder;
         m_shooter = shooter;
+        m_pivot = pivot;
     }
 
     @Override
@@ -175,5 +177,9 @@ public class AttachmentHandler extends SubsystemBase {
             m_shooter.getSetStateCommand(ShooterState.kStopped),
             m_feeder.getSetStateCommand(FeederState.kStopped)
         ).withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
+    }
+
+    public void setPivotPosition(double pos) {
+        m_pivot.setPrecisePosition(pos);
     }
 }
