@@ -12,7 +12,7 @@ import frc.robot.Constants.PivotConstants;
 
 public class PivotSubsystem extends SubsystemBase {
     public enum PivotPosition {
-        kIntakePosition(PivotConstants.kIntakeMin, PivotConstants.kIntakeMax),
+        kIntakePosition(PivotConstants.kIntakePos, PivotConstants.kIntakePos),
         kSpeakerPosition(PivotConstants.kSpeakerMin, PivotConstants.kSpeakerMax),
         kAmpPosition(PivotConstants.kAmpPos, PivotConstants.kAmpPos);
 

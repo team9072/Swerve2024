@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.TargetConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -200,16 +201,16 @@ public class RobotContainer {
 
     // Arm/pivot positioning
     m_attachmentController.povUp().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(30)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kSubwooferPos)));
 
     m_attachmentController.povDown().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(10)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kIntakePos)));
 
     m_attachmentController.povLeft().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(15)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(0)));
 
     m_attachmentController.povRight().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(20)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kSubwooferPos)));
     // Attatchment controls for driver
 
     m_driverController.leftBumper()
