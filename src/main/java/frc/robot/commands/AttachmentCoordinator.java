@@ -39,7 +39,7 @@ public class AttachmentCoordinator {
         m_shooter = shooter;
         m_pivot = pivot;
 
-        m_beamBreak = new Trigger(m_feeder::getBeamBreakState).debounce(0.1, DebounceType.kBoth);
+        m_beamBreak = new Trigger(m_feeder::getBeamBreakState);
 
         m_beamBreak.onTrue(new InstantCommand(() -> handleGetNote(), m_UTBIntaker, m_feeder));
         m_beamBreak.onFalse(new InstantCommand(() -> handleLoseNote(), m_UTBIntaker, m_feeder));
@@ -79,7 +79,7 @@ public class AttachmentCoordinator {
 
     private void handleGetNote() {
         switch (m_state) {
-            // Startaiming on get note
+            // Start aiming on get note
             case kIntake -> setState(AttatchmentState.kAiming);
             // Keep aiming I guess? Not sure how we got here
             case kAiming -> {}
@@ -96,7 +96,6 @@ public class AttachmentCoordinator {
             case kAiming -> setState(AttatchmentState.kIntake);
             // Go back to intake after a delay
             case kShooting -> {
-                
                 setState(AttatchmentState.kIntake);
             }
         }
