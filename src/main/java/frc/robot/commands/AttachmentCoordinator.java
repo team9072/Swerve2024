@@ -193,8 +193,13 @@ public class AttachmentCoordinator {
                 Commands.waitUntil(m_pivot::isPivotReady)
             ),
             Commands.runOnce(() -> m_feeder.setState(FeederState.kShooting), m_feeder),
-            Commands.waitUntil(m_beamBreak.negate()),
-            Commands.waitSeconds(ShooterConstants.kShootEndLag)
+            Commands.race(
+                Commands.waitSeconds(ShooterConstants.kMaxShootTime),
+                Commands.sequence(
+                    Commands.waitUntil(m_beamBreak.negate()),
+                    Commands.waitSeconds(ShooterConstants.kBeamBreakEndLag)
+                )
+            )
         ).finallyDo(() -> {
             m_shooter.setState(ShooterState.kShooting);
             m_feeder.setState(FeederState.kStopped);

@@ -102,11 +102,11 @@ public final class Constants {
     public static final int kLeftShooterMotorCANId = 12;
 
     public static final double kShootSpeed = 1;
-    // shooting time in seconds
-    public static final double kShootTime = 3;
 
-    // delay time to keep shooting after beam break (in seconds)
-    public static final double kShootEndLag = 0.5;
+    // Maximum shooting time in seconds
+    public static final double kMaxShootTime = 3;
+    // Delay time to keep shooting after beam break (in seconds)
+    public static final double kBeamBreakEndLag = 0.5;
   }
 
   public static final class DriveConstants {
