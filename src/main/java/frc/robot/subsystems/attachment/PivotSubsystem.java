@@ -95,6 +95,8 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public boolean isPivotReady() {
-        return Math.abs(m_setpoint - m_pivotEncoder.getPosition()) < PivotConstants.kPositionDeadzone;
+        //TODO: Check pivot position
+        //return Math.abs(m_setpoint - m_pivotEncoder.getPosition()) < PivotConstants.kPositionDeadzone;
+        return true;
     }
 }
