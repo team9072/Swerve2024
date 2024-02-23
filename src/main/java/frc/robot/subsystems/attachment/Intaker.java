@@ -1,6 +1,5 @@
 package frc.robot.subsystems.attachment;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public abstract class Intaker extends SubsystemBase {
@@ -38,13 +37,4 @@ public abstract class Intaker extends SubsystemBase {
      * @param state the new state of the intaker motors
      */
     public abstract void setState(IntakerState state);
-
-    /**
-     * Get a command to set the motor state
-     * @param state the new motor state
-     * @return A command that sets the state to the provided value
-     */
-    public Command getSetMotorStateCommand(IntakerState state) {
-        return runOnce(() -> setState(state));
-    }
 }

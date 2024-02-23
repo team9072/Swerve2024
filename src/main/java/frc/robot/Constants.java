@@ -56,7 +56,8 @@ public final class Constants {
   }
 
   public static final class PivotConstants {
-    public static final int kPivotMotorCANId = 9;
+    public static final int kLeftPivotMotorCANId = 9;
+    public static final int kRightPivotMotorCANId = 15;
 
     public static final double kPivotGearRatio = 1.0 / 250; // 250 to 1 from motor to pivot
     public static final double kPivotSpeed = 0.5;
@@ -82,6 +83,9 @@ public final class Constants {
     public static final double kPodiumPos = 25;
     public static final double kOffAnglePos = 35;
 
+    // Distance before pivot is considered ready
+    public static final double kPositionDeadzone = 2.0;
+
     public static final class PivotPID {
       public static final double kP = 0.7;
       public static final double kI = 1e-4;
@@ -95,12 +99,15 @@ public final class Constants {
 
   public static final class ShooterConstants {
     // Constants for shooter
-    public static final int kShooterMotor1CANId = 11;
-    public static final int kShooterMotor2CANId = 12;
+    public static final int kRightShooterMotorCANId = 11;
+    public static final int kLeftShooterMotorCANId = 12;
 
     public static final double kShootSpeed = 1;
     // shooting time in seconds
     public static final double kShootTime = 3;
+
+    // delay time to keep shooting after beam break (in seconds)
+    public static final double kShootEndLag = 0.5;
   }
 
   public static final class DriveConstants {

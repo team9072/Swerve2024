@@ -5,11 +5,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TargetConstants.AimingTarget;
 import frc.robot.subsystems.attachment.FeederSubsystem;
 import frc.robot.subsystems.attachment.ShooterSubsystem;
 import frc.robot.subsystems.attachment.UTBIntakerSubsystem;
 import frc.robot.subsystems.attachment.PivotSubsystem.PivotPosition;
+import frc.robot.subsystems.attachment.ShooterSubsystem.ShooterState;
 import frc.robot.subsystems.attachment.FeederSubsystem.FeederState;
 import frc.robot.subsystems.attachment.Intaker.IntakerState;
 import frc.robot.subsystems.attachment.PivotSubsystem;
@@ -93,7 +95,7 @@ public class AttachmentCoordinator {
             case kAiming -> setState(AttatchmentState.kIntake);
             // Go back to intake after a delay
             case kShooting -> {
-                //TODO: Add delay
+                
                 setState(AttatchmentState.kIntake);
             }
         }
@@ -124,11 +126,20 @@ public class AttachmentCoordinator {
      * Stop intaking, but not shooting
      */
     private void stopIntaking() {
-        if (m_feeder.getState() != FeederState.kShooting) {
+        if (m_state != AttatchmentState.kShooting) {
             m_feeder.setState(FeederState.kStopped);
         }
 
         m_UTBIntaker.setState(IntakerState.kStopped);
+    }
+
+    /**
+     * Set the shooter state only if it woukd not interupt shooting
+     */
+    private void softSetShooterState(ShooterState state) {
+        if (m_state != AttatchmentState.kShooting) {
+          m_shooter.setState(state);
+        }
     }
 
     /**
@@ -154,6 +165,22 @@ public class AttachmentCoordinator {
     }
 
     public Command getSpinShooterCommand() {
-        return Commands.startEnd(null, null, m_shooter);
+        return Commands.startEnd(() -> softSetShooterState(ShooterState.kSpinning), () -> softSetShooterState(ShooterState.kStopped), m_shooter);
+    }
+
+    public Command getShootCommand() {
+        return Commands.sequence(
+            Commands.runOnce(() -> m_shooter.setState(ShooterState.kShooting), m_shooter, m_pivot),
+            Commands.parallel(
+                Commands.waitUntil(m_shooter::isShooterReady),
+                Commands.waitUntil(m_pivot::isPivotReady)
+            ),
+            Commands.runOnce(() -> m_feeder.setState(FeederState.kShooting), m_feeder),
+            Commands.waitUntil(m_beamBreak.negate()),
+            Commands.waitSeconds(ShooterConstants.kShootEndLag)
+        ).finallyDo(() -> {
+            m_shooter.setState(ShooterState.kShooting);
+            m_feeder.setState(FeederState.kStopped);
+        });
     }
 }

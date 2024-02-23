@@ -32,7 +32,7 @@ public class PivotSubsystem extends SubsystemBase {
     private double m_setpoint = 0;
 
     public PivotSubsystem() {
-        m_pivotMotor = new CANSparkMax(PivotConstants.kPivotMotorCANId, MotorType.kBrushless);
+        m_pivotMotor = new CANSparkMax(PivotConstants.kLeftPivotMotorCANId, MotorType.kBrushless);
 
         m_pivotMotor.restoreFactoryDefaults();
         m_pivotMotor.setIdleMode(IdleMode.kBrake);
@@ -72,6 +72,10 @@ public class PivotSubsystem extends SubsystemBase {
 
     public PivotPosition getPosition() {
         return m_position;
+    }
+
+    public boolean isPivotReady() {
+        return Math.abs(m_setpoint - m_pivotEncoder.getPosition()) > PivotConstants.kPositionDeadzone;
     }
 
     /**
