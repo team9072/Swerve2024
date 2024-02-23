@@ -155,18 +155,34 @@ public class AttachmentCoordinator {
         }
     }
 
+    /**
+     * Intake untul the returned command is canceled
+     * @return a command to intake
+     */
     public Command getIntakeCommand() {
         return Commands.startEnd(() -> startIntaking(), () -> stopIntaking(), m_UTBIntaker, m_feeder);
     }
 
+    /**
+     * Reverse the intakers to unjam, until the command is cancelled
+     * @return a command to unjam
+     */
     public Command getUnjamIntakersCommand() {
         return Commands.startEnd(() -> unjamIntakers(), () -> stopIntaking(), m_UTBIntaker, m_feeder);
     }
 
+    /**
+     * Spin the shooter until the command is cancelled
+     * @return a command to spin the shooter
+     */
     public Command getSpinShooterCommand() {
         return Commands.startEnd(() -> softSetShooterState(ShooterState.kSpinning), () -> softSetShooterState(ShooterState.kStopped), m_shooter);
     }
 
+    /**
+     * Get ready and shoot once the shooter is at speed and the pivot is at the right angle
+     * @return a command to shoot
+     */
     public Command getShootCommand() {
         return Commands.sequence(
             Commands.runOnce(() -> m_shooter.setState(ShooterState.kShooting), m_shooter, m_pivot),
@@ -183,10 +199,19 @@ public class AttachmentCoordinator {
         });
     }
 
-    public void setSpeakerRotations(double angle) {
-        m_pivot.setPrecisePosition(angle);
+    /**
+     * Set the position of the povot for speaker shots at different distances
+     * @param rotations the pivot angle
+     */
+    public void setSpeakerRotations(double rotations) {
+        m_pivot.setPrecisePosition(rotations);
     }
 
+    /**W
+     * Set the position of the povot for speaker shots at different distances
+     * @param rotations the pivot angle
+     * @return a command to set the pivot angle
+     */
     public Command getSetSpeakerRotationsCommand(double rotations) {
         return Commands.runOnce(() -> m_pivot.setPrecisePosition(rotations), m_pivot);
     }
