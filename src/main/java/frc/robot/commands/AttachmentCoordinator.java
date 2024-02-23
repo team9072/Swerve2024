@@ -201,7 +201,7 @@ public class AttachmentCoordinator {
                 )
             )
         ).finallyDo(() -> {
-            m_shooter.setState(ShooterState.kShooting);
+            m_shooter.setState(ShooterState.kStopped);
             m_feeder.setState(FeederState.kStopped);
         });
     }
