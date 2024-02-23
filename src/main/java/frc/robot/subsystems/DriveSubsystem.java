@@ -122,6 +122,9 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("robot heading", getHeading().getDegrees());
+
+    SmartDashboard.putNumber("Velocity (RPM)", m_frontLeft.m_drivingSparkMax.getEncoder().getVelocity());
+
     updateOdometry();
   }
 

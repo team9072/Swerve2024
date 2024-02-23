@@ -29,7 +29,7 @@ public class PivotSubsystem extends SubsystemBase {
     private final RelativeEncoder m_pivotEncoder;
 
     private PivotPosition m_pivotPosition = PivotPosition.kSpeakerPosition;
-    private double m_pivotSetpoint = 0;
+    private double m_pivotSetpoint = PivotConstants.kIntakePos;
 
     public PivotSubsystem() {
         m_leftPivotMotor = new CANSparkMax(PivotConstants.kLeftPivotMotorCANId, MotorType.kBrushless);

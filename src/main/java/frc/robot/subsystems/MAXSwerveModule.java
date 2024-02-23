@@ -16,6 +16,7 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
+import frc.robot.Constants;
 import frc.robot.Constants.ModuleConstants;
 
 public class MAXSwerveModule {
@@ -154,6 +155,7 @@ public class MAXSwerveModule {
 
     // Command driving and turning SPARKS MAX towards their respective setpoints.
     m_drivingPIDController.setReference(optimizedDesiredState.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
+    // m_drivingPIDController.setReference((optimizedDesiredState.speedMetersPerSecond/Constants.ModuleConstants.kDriveWheelFreeSpeedMps) * 12.0, CANSparkMax.ControlType.kVoltage);
     m_turningPIDController.setReference(optimizedDesiredState.angle.getRadians(), CANSparkMax.ControlType.kPosition);
 
     m_desiredState = desiredState;
