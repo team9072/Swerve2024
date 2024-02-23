@@ -24,7 +24,7 @@ public class PivotSubsystem extends SubsystemBase {
         }
     }
 
-    private final CANSparkMax m_rightPivotMotor;
+    private final CANSparkMax m_leftPivotMotor;
     private final SparkPIDController m_pivotPID;
     private final RelativeEncoder m_pivotEncoder;
 
@@ -32,18 +32,17 @@ public class PivotSubsystem extends SubsystemBase {
     private double m_pivotSetpoint = 0;
 
     public PivotSubsystem() {
-        m_rightPivotMotor = new CANSparkMax(PivotConstants.kRightPivotMotorCANId, MotorType.kBrushless);
+        m_leftPivotMotor = new CANSparkMax(PivotConstants.kLeftPivotMotorCANId, MotorType.kBrushless);
 
-        m_rightPivotMotor.restoreFactoryDefaults();
-        m_rightPivotMotor.setIdleMode(IdleMode.kBrake);
-        m_rightPivotMotor.setInverted(true);
+        m_leftPivotMotor.restoreFactoryDefaults();
+        m_leftPivotMotor.setIdleMode(IdleMode.kBrake);
 
-        m_pivotPID = m_rightPivotMotor.getPIDController();
+        m_pivotPID = m_leftPivotMotor.getPIDController();
 
         // set false to not pop off chain by going wrong way
         m_pivotPID.setPositionPIDWrappingEnabled(false);
 
-        m_pivotEncoder = m_rightPivotMotor.getEncoder();
+        m_pivotEncoder = m_leftPivotMotor.getEncoder();
         m_pivotPID.setFeedbackDevice(m_pivotEncoder);
 
         // set pivot PID coefficients

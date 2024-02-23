@@ -200,13 +200,13 @@ public class RobotContainer {
 
     // Arm/pivot positioning
     m_attachmentController.povUp().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(60)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(30)));
 
     m_attachmentController.povDown().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(0)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(10)));
 
     m_attachmentController.povLeft().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(40)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(15)));
 
     m_attachmentController.povRight().onTrue(
         Commands.runOnce(() -> m_attatchment.setPivotPosition(20)));
@@ -254,7 +254,7 @@ public class RobotContainer {
         - getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle().getDegrees();
     SmartDashboard.putNumber("auto angle diff", Math.round(angle));
 
-    m_attatchment.m_pivot.setPrecisePosition(SmartDashboard.getNumber("Pivot Angle", 0));
+    //m_attatchment.m_pivot.setPrecisePosition(SmartDashboard.getNumber("Pivot Angle", 0));
   }
 
   public void prepareTeleop() {
