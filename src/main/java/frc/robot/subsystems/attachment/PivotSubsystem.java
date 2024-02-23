@@ -12,7 +12,7 @@ import frc.robot.Constants.PivotConstants;
 
 public class PivotSubsystem extends SubsystemBase {
     public enum PivotPosition {
-        kIntakePosition(PivotConstants.kIntakeMin, PivotConstants.kIntakeMax),
+        kIntakePosition(PivotConstants.kIntakePos, PivotConstants.kIntakePos),
         kSpeakerPosition(PivotConstants.kSpeakerMin, PivotConstants.kSpeakerMax),
         kAmpPosition(PivotConstants.kAmpPos, PivotConstants.kAmpPos);
 
@@ -24,24 +24,26 @@ public class PivotSubsystem extends SubsystemBase {
         }
     }
 
-    private final CANSparkMax m_pivotMotor;
-    private SparkPIDController m_pivotPID;
-    private RelativeEncoder m_pivotEncoder;
+    private final CANSparkMax m_leftPivotMotor;
+    private final SparkPIDController m_pivotPID;
+    private final RelativeEncoder m_pivotEncoder;
 
     private PivotPosition m_position = PivotPosition.kIntakePosition;
-    private double m_setpoint = 0;
+    private double m_setpoint = PivotConstants.kIntakePos;
 
     public PivotSubsystem() {
-        m_pivotMotor = new CANSparkMax(PivotConstants.kLeftPivotMotorCANId, MotorType.kBrushless);
+        m_leftPivotMotor = new CANSparkMax(PivotConstants.kLeftPivotMotorCANId, MotorType.kBrushless);
 
-        m_pivotMotor.restoreFactoryDefaults();
-        m_pivotMotor.setIdleMode(IdleMode.kBrake);
+        m_leftPivotMotor.restoreFactoryDefaults();
+        m_leftPivotMotor.setIdleMode(IdleMode.kBrake);
 
-        m_pivotPID = m_pivotMotor.getPIDController();
+        m_pivotPID = m_leftPivotMotor.getPIDController();
+
         // set false to not pop off chain by going wrong way
         m_pivotPID.setPositionPIDWrappingEnabled(false);
 
-        m_pivotEncoder = m_pivotMotor.getEncoder();
+        m_pivotEncoder = m_leftPivotMotor.getEncoder();
+        m_pivotPID.setFeedbackDevice(m_pivotEncoder);
 
         // set pivot PID coefficients
         m_pivotPID.setP(PivotConstants.PivotPID.kP);
@@ -74,10 +76,6 @@ public class PivotSubsystem extends SubsystemBase {
         return m_position;
     }
 
-    public boolean isPivotReady() {
-        return Math.abs(m_setpoint - m_pivotEncoder.getPosition()) > PivotConstants.kPositionDeadzone;
-    }
-
     /**
      * Set the specific setpoint for the feeder
      * 
@@ -90,5 +88,13 @@ public class PivotSubsystem extends SubsystemBase {
         }
 
         m_setpoint = Math.max(m_position.lowLimit, Math.min(setpoint, m_position.highLimit));
+    }
+
+    public double getPrecisePosition() {
+        return m_setpoint;
+    }
+
+    public boolean isPivotReady() {
+        return Math.abs(m_setpoint - m_pivotEncoder.getPosition()) < PivotConstants.kPositionDeadzone;
     }
 }

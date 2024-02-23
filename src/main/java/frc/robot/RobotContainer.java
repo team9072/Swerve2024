@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.TargetConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.AttachmentCoordinator;
@@ -67,6 +68,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putData("Pose Estimation", m_estimationField);
+    SmartDashboard.putNumber("Pivot Angle", 0);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -110,11 +112,12 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Base controls
 
+    // Set X wheels
     m_driverController.rightBumper().whileTrue(Commands.run(
         () -> m_robotDrive.setX(),
         m_robotDrive));
 
-    // auto aiming
+    // Auto aiming
     m_driverController.leftTrigger().whileTrue(Commands.run(
         () -> m_robotDrive.driveWithHeading(
             -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
@@ -124,7 +127,7 @@ public class RobotContainer {
         m_robotDrive));
 
     // Drive speeds
-    m_driverController.rightTrigger().whileTrue(Commands.run(
+    m_driverController.leftBumper().whileTrue(Commands.run(
         () -> {
           Constants.DriveConstants.kMaxSpeedMetersPerSecond = 4.8 * 0.5;
         }))
@@ -162,6 +165,23 @@ public class RobotContainer {
         Rotation2d.fromDegrees(90), true, false),
         m_robotDrive));
 
+    // Attatchment controls for driver
+
+    // Shoot
+    m_driverController.rightTrigger()
+        .onTrue(m_attatchment.getStartFeedersCommand())
+        .onFalse(m_attatchment.getStopFeedersCommand());
+
+    // Spin Intaker
+    m_driverController.rightTrigger()
+        .onTrue(m_attatchment.getStartIntakersCommand())
+        .onFalse(m_attatchment.getStopIntakersCommand());
+
+    // Unjam
+    m_driverController.y()
+        .onTrue(m_attatchment.getReverseIntakersCommand())
+        .onFalse(m_attatchment.getStopIntakersCommand());
+
     // Attatchment controls
 
     /*
@@ -177,18 +197,18 @@ public class RobotContainer {
         .onTrue(m_attatchment.getReverseIntakersCommand())
         .onFalse(m_attatchment.getStopIntakersCommand());
 
+    // Arm/pivot positioning
     m_attachmentController.povUp().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(60)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kSubwooferPos)));
 
     m_attachmentController.povDown().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(0)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kIntakePos)));
 
     m_attachmentController.povLeft().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(40)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(0)));
 
     m_attachmentController.povRight().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(20)));
-
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kSubwooferPos)));
     // Attatchment controls for driver
 
     m_driverController.leftBumper()
@@ -234,6 +254,7 @@ public class RobotContainer {
         - getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle().getDegrees();
     SmartDashboard.putNumber("auto angle diff", Math.round(angle));
 
+    //m_attatchment.m_pivot.setPrecisePosition(SmartDashboard.getNumber("Pivot Angle", 0));
   }
 
   public void prepareTeleop() {

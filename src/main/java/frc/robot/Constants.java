@@ -66,9 +66,8 @@ public final class Constants {
     public static final double kGlobalMin = 0;
     public static final double kGlobalMax = 60;
 
-    // Intake is from 0-10
-    public static final double kIntakeMin = 0;
-    public static final double kIntakeMax = 10;
+    // Intake angle is 7
+    public static final double kIntakePos = 7;
 
     // Shooting is from the entire range
     public static final double kSpeakerMin = kGlobalMin;
@@ -79,9 +78,12 @@ public final class Constants {
 
     // Speaker positions
     // TODO: Finalize positions
-    public static final double kSubwooferPos = 40;
-    public static final double kPodiumPos = 25;
-    public static final double kOffAnglePos = 35;
+    public static final double kSubwooferPos = 20;
+    public static final double kPodiumPos = 7;
+    public static final double kOffAnglePos = 20;
+
+    // Distance before pivot is considered ready
+    public static final double kPositionDeadzone = 2.0;
 
     // Distance before pivot is considered ready
     public static final double kPositionDeadzone = 2.0;
