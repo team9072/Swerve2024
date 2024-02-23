@@ -60,8 +60,10 @@ public class AttachmentCoordinator {
                     case kAmp -> PivotPosition.kAmpPosition;
                 });
 
-                m_UTBIntaker.getCurrentCommand().cancel();
-                m_feeder.getCurrentCommand().cancel();
+                Command utbIntakerCommand = m_UTBIntaker.getCurrentCommand();
+                Command feederCommand = m_feeder.getCurrentCommand();
+                if (utbIntakerCommand != null) { utbIntakerCommand.cancel(); }
+                if (feederCommand != null) { feederCommand.cancel(); }
 
                 m_UTBIntaker.setState(IntakerState.kStopped);
                 m_feeder.setState(FeederState.kStopped);
