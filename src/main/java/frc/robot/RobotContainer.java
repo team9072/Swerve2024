@@ -91,13 +91,7 @@ public class RobotContainer {
    * Register named commands used in pathplanner autos
    */
   private void registerPathplannerCommands() {
-    /*
-    NamedCommands.registerCommand("startIntakers", m_attatchment.getStartIntakersCommand());
-    NamedCommands.registerCommand("stopIntakers", m_attatchment.getStopIntakersCommand());
-
-    NamedCommands.registerCommand("startShooter", m_attatchment.getSpinShooterCommand());
-    NamedCommands.registerCommand("stopShooter", m_attatchment.getStopShooterCommand());
-    */
+    //TODO: Auto Commands
   }
 
   /**
@@ -165,64 +159,30 @@ public class RobotContainer {
         Rotation2d.fromDegrees(90), true, false),
         m_robotDrive));
 
-    // Attatchment controls for driver
-
-    // Shoot
-    m_driverController.rightTrigger()
-        .onTrue(m_attatchment.getStartFeedersCommand())
-        .onFalse(m_attatchment.getStopFeedersCommand());
-
-    // Spin Intaker
-    m_driverController.rightTrigger()
-        .onTrue(m_attatchment.getStartIntakersCommand())
-        .onFalse(m_attatchment.getStopIntakersCommand());
-
-    // Unjam
-    m_driverController.y()
-        .onTrue(m_attatchment.getReverseIntakersCommand())
-        .onFalse(m_attatchment.getStopIntakersCommand());
-
     // Attatchment controls
 
-    /*
-    m_attachmentController.leftBumper()
-        .onTrue(m_attatchment.getSpinShooterCommand())
-        .onFalse(m_attatchment.getStopShooterCommand());
+    // Intake
+    m_attachmentController.b().or(m_driverController.b()).whileTrue(m_attatchment.getIntakeCommand());
 
-    m_attachmentController.b()
-        .onTrue(m_attatchment.getStartIntakersCommand())
-        .onFalse(m_attatchment.getStopIntakersCommand());
+    // Unjam
+    m_attachmentController.y().or(m_driverController.y()).whileTrue(m_attatchment.getUnjamIntakersCommand());
 
-    m_attachmentController.y()
-        .onTrue(m_attatchment.getReverseIntakersCommand())
-        .onFalse(m_attatchment.getStopIntakersCommand());
+    // Spin up shooter
+    m_attachmentController.leftBumper().whileTrue(m_attatchment.getSpinShooterCommand());
+
+    // Shoot
+    m_attachmentController.rightTrigger().or(m_driverController.rightTrigger())
+        .onTrue(m_attatchment.getShootCommand());
 
     // Arm/pivot positioning
-    m_attachmentController.povUp().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kSubwooferPos)));
 
-    m_attachmentController.povDown().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kIntakePos)));
+    m_attachmentController.povUp().onTrue(m_attatchment.getSetSpeakerRotationsCommand(PivotConstants.kSubwooferPos));
 
-    m_attachmentController.povLeft().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(0)));
+    m_attachmentController.povDown().onTrue(m_attatchment.getSetSpeakerRotationsCommand(PivotConstants.kIntakePos));
 
-    m_attachmentController.povRight().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kSubwooferPos)));
-    // Attatchment controls for driver
+    m_attachmentController.povLeft().onTrue(m_attatchment.getSetSpeakerRotationsCommand(0));
 
-    m_driverController.leftBumper()
-        .onTrue(m_attatchment.getSpinShooterCommand())
-        .onFalse(m_attatchment.getStopShooterCommand());
-
-    m_driverController.b()
-        .onTrue(m_attatchment.getStartIntakersCommand())
-        .onFalse(m_attatchment.getStopIntakersCommand());
-
-    m_driverController.y()
-        .onTrue(m_attatchment.getReverseIntakersCommand())
-        .onFalse(m_attatchment.getStopIntakersCommand());
-        */
+    m_attachmentController.povRight().onTrue(m_attatchment.getSetSpeakerRotationsCommand(PivotConstants.kSubwooferPos));
   }
 
   public Translation2d getAimingVector(Translation2d target) {
@@ -230,7 +190,6 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    SmartDashboard.putBoolean("beam", m_attatchment.m_feeder.getBeamBreakState());
     m_field.setRobotPose(m_robotDrive.getPose());
 
     var result = VisionConstants.rearCam.getLatestResult();
@@ -254,15 +213,16 @@ public class RobotContainer {
         - getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle().getDegrees();
     SmartDashboard.putNumber("auto angle diff", Math.round(angle));
 
-    //m_attatchment.m_pivot.setPrecisePosition(SmartDashboard.getNumber("Pivot Angle", 0));
+    // m_attatchment.m_pivot.setPrecisePosition(SmartDashboard.getNumber("Pivot
+    // Angle", 0));
   }
 
   public void prepareTeleop() {
     /*
-    m_attatchment.stopShooter();
-    m_attatchment.stopIntakers();
-    m_attatchment.setStopOnBeamBreakEnabled(true);
-    */
+     * m_attatchment.stopShooter();
+     * m_attatchment.stopIntakers();
+     * m_attatchment.setStopOnBeamBreakEnabled(true);
+     */
   }
 
   /**

@@ -24,8 +24,7 @@ public class AttachmentCoordinator {
     }
 
     private final UTBIntakerSubsystem m_UTBIntaker;
-    // TODO: Make private
-    public final FeederSubsystem m_feeder;
+    private final FeederSubsystem m_feeder;
     private final ShooterSubsystem m_shooter;
     private final PivotSubsystem m_pivot;
     private final Trigger m_beamBreak;
@@ -115,7 +114,7 @@ public class AttachmentCoordinator {
      * Reverse intakers if not shooting
      * Acts as an unjam feature
      */
-    private void startIntakersReverse() {
+    private void unjamIntakers() {
         if (m_state != AttatchmentState.kShooting) {
             m_UTBIntaker.setState(IntakerState.kReversed);
             m_feeder.setState(FeederState.kReversed);
@@ -160,8 +159,8 @@ public class AttachmentCoordinator {
         return Commands.startEnd(() -> startIntaking(), () -> stopIntaking(), m_UTBIntaker, m_feeder);
     }
 
-    public Command getReverseIntakersCommand() {
-        return Commands.startEnd(() -> startIntakersReverse(), () -> stopIntaking(), m_UTBIntaker, m_feeder);
+    public Command getUnjamIntakersCommand() {
+        return Commands.startEnd(() -> unjamIntakers(), () -> stopIntaking(), m_UTBIntaker, m_feeder);
     }
 
     public Command getSpinShooterCommand() {
@@ -182,5 +181,13 @@ public class AttachmentCoordinator {
             m_shooter.setState(ShooterState.kShooting);
             m_feeder.setState(FeederState.kStopped);
         });
+    }
+
+    public void setSpeakerRotations(double angle) {
+        m_pivot.setPrecisePosition(angle);
+    }
+
+    public Command getSetSpeakerRotationsCommand(double rotations) {
+        return Commands.runOnce(() -> m_pivot.setPrecisePosition(rotations), m_pivot);
     }
 }

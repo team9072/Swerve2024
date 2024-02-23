@@ -85,9 +85,6 @@ public final class Constants {
     // Distance before pivot is considered ready
     public static final double kPositionDeadzone = 2.0;
 
-    // Distance before pivot is considered ready
-    public static final double kPositionDeadzone = 2.0;
-
     public static final class PivotPID {
       public static final double kP = 0.7;
       public static final double kI = 1e-4;
