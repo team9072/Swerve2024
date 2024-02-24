@@ -66,23 +66,21 @@ public final class Constants {
 
     // Pivot range is 0-60
     public static final double kGlobalMin = 0;
-    public static final double kGlobalMax = 60;
-
-    // Intake angle is 7
-    public static final double kIntakePos = 10.5;
+    public static final double kGlobalMax = 40;
 
     // Shooting is from the entire range
     public static final double kSpeakerMin = kGlobalMin;
     public static final double kSpeakerMax = kGlobalMax;
 
-    // Amp shots are at exactly 60
-    public static final double kAmpPos = 55;
+    public static final double kAmpPos = 65;
+
+    // Intake angle is 10.5
+    public static final double kIntakePos = 10.5;
 
     // Speaker positions
     // TODO: Finalize positions
-    public static final double kSubwooferPos = 20;
-    //public static final double kPodiumPos = 7;
-   // public static final double kOffAnglePos = 20;
+    public static final double kSubwooferPos = 20; // Left on attachment d-pad
+    public static final double kPodiumPos = 10.5;
 
     // Distance before pivot is considered ready
     public static final double kPositionDeadzone = 2.0;
@@ -103,8 +101,8 @@ public final class Constants {
     public static final int kRightShooterMotorCANId = 11;
     public static final int kLeftShooterMotorCANId = 12;
 
-    // TODO: back to final, testing!!
-    public static double kShootSpeed = 1;
+    // Shooting speed 0-1
+    public static final double kShootSpeed = 1;
     // shooting time in seconds
     public static final double kShootTime = 3;
 

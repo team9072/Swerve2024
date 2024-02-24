@@ -16,7 +16,6 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
-import frc.robot.Constants;
 import frc.robot.Constants.ModuleConstants;
 
 public class MAXSwerveModule {

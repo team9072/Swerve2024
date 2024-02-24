@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -25,7 +24,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.PivotConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TargetConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -71,7 +69,6 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putData("Pose Estimation", m_estimationField);
-    SmartDashboard.putNumber("Pivot Angle", PivotConstants.kAmpPos);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -188,16 +185,6 @@ public class RobotContainer {
         .onTrue(m_attatchment.getReverseIntakersCommand())
         .onFalse(m_attatchment.getStopIntakersCommand());
 
-        // TESTING SPEEDS
-        m_driverController.a()
-        .whileTrue(Commands.run(
-            () -> {
-              Constants.ShooterConstants.kShootSpeed = 1;
-            }))
-            .whileFalse(Commands.run(() -> {
-             Constants.ShooterConstants.kShootSpeed = .23;
-            }));
-
     // Attatchment controls
 
     m_attachmentController.leftBumper()
@@ -213,14 +200,11 @@ public class RobotContainer {
         .onFalse(m_attatchment.getStopIntakersCommand());
 
     // Arm/pivot positioning
-    m_attachmentController.povLeft().onTrue(
+    m_attachmentController.povLeft().or(m_attachmentController.povUp()).onTrue(
         Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotPosition.kSpeakerPosition, PivotConstants.kSubwooferPos)));
 
     m_attachmentController.povDown().onTrue(
         Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotPosition.kIntakePosition, PivotConstants.kIntakePos)));
-
-    m_attachmentController.povUp().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotPosition.kAmpPosition, SmartDashboard.getNumber("Pivot Angle", 0))));
         
     // Attatchment controls for driver
 
