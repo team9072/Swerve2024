@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants.FeederConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.attachment.FeederSubsystem.FeederState;
 import frc.robot.subsystems.attachment.Intaker.IntakerMotorState;
@@ -92,7 +93,7 @@ public class AttachmentHandler extends SubsystemBase {
                         m_UTBIntaker.getSetMotorStateCommand(IntakerMotorState.kIntaking),
                         // TODO: OTB Intaker
                         m_feeder.getSetStateCommand(FeederState.kIntaking)),
-                Commands.none(), () -> m_pivot.getPosition() == PivotPosition.kIntakePosition);
+                Commands.none(), () -> true); // m_pivot.getPosition() == PivotPosition.kIntakePosition);
     }
 
     /**
@@ -154,7 +155,7 @@ public class AttachmentHandler extends SubsystemBase {
                         m_UTBIntaker.getSetMotorStateCommand(IntakerMotorState.kReversed),
                         // TODO: OTB Intaker
                         m_feeder.getSetStateCommand(FeederState.kReversed)),
-                Commands.none(), () -> m_pivot.getPosition() == PivotPosition.kIntakePosition);
+                Commands.none(), () -> true); //m_pivot.getPosition() == PivotPosition.kIntakePosition);
     }
 
     /**
@@ -213,6 +214,13 @@ public class AttachmentHandler extends SubsystemBase {
     }
 
     public void setPivotPosition(PivotPosition position, double pos) {
+        // * Testing different speeds for positions
+        if (pos == PivotConstants.kSubwooferSidePos) {
+            m_shooter.setSpeed(ShooterConstants.kSubwooferSideShootSpeed);
+        } else {
+            m_shooter.setSpeed(ShooterConstants.kShootSpeed);
+        }
+
         m_pivot.setPosition(position);
         m_pivot.setPrecisePosition(pos);
     }

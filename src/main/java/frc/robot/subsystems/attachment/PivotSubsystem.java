@@ -2,8 +2,8 @@ package frc.robot.subsystems.attachment;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,7 +14,9 @@ public class PivotSubsystem extends SubsystemBase {
     public enum PivotPosition {
         kIntakePosition(PivotConstants.kIntakePos, PivotConstants.kIntakePos),
         kSpeakerPosition(PivotConstants.kSpeakerMin, PivotConstants.kSpeakerMax),
-        kAmpPosition(PivotConstants.kAmpPos, PivotConstants.kAmpPos);
+        kAmpPosition(PivotConstants.kAmpPos, PivotConstants.kAmpPos),
+        kSubwooferPosition(PivotConstants.kSubwooferPos, PivotConstants.kSubwooferPos),
+        kSubwooferSidePosition(PivotConstants.kSubwooferSidePos, PivotConstants.kSubwooferSidePos);
 
         public double lowLimit, highLimit;
 
@@ -26,7 +28,7 @@ public class PivotSubsystem extends SubsystemBase {
 
     private final CANSparkMax m_leftPivotMotor;
     private final SparkPIDController m_pivotPID;
-    private final RelativeEncoder m_pivotEncoder;
+    private final AbsoluteEncoder m_pivotEncoder;
 
     private PivotPosition m_pivotPosition = PivotPosition.kIntakePosition;
     private double m_pivotSetpoint = PivotConstants.kIntakePos;
@@ -39,11 +41,16 @@ public class PivotSubsystem extends SubsystemBase {
 
         m_pivotPID = m_leftPivotMotor.getPIDController();
 
-        // set false to not pop off chain by going wrong way
-        m_pivotPID.setPositionPIDWrappingEnabled(false);
-
-        m_pivotEncoder = m_leftPivotMotor.getEncoder();
+        m_pivotEncoder = m_leftPivotMotor.getAbsoluteEncoder();
+        m_pivotEncoder.setPositionConversionFactor(125);
+        m_pivotEncoder.setVelocityConversionFactor(125);
+        System.out.print("POSITION: ");
+        System.out.println(m_pivotEncoder.getPosition());
         m_pivotPID.setFeedbackDevice(m_pivotEncoder);
+
+        m_pivotPID.setPositionPIDWrappingMaxInput(125);
+        m_pivotPID.setPositionPIDWrappingMinInput(0);
+        m_pivotPID.setPositionPIDWrappingEnabled(true);
 
         // set pivot PID coefficients
         m_pivotPID.setP(PivotConstants.PivotPID.kP);
@@ -74,6 +81,10 @@ public class PivotSubsystem extends SubsystemBase {
 
     public PivotPosition getPosition() {
         return m_pivotPosition;
+    }
+
+    public double getSetpoint() {
+        return m_pivotSetpoint;
     }
 
     /**

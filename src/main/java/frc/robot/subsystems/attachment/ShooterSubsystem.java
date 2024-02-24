@@ -13,12 +13,13 @@ public class ShooterSubsystem extends SubsystemBase {
     public enum ShooterState {
         kStopped,
         kSpinning,
-        kShooting
+        kShooting,
     }
 
     private CANSparkMax m_motor1;
     private CANSparkMax m_motor2;
     private ShooterState m_state = ShooterState.kStopped;
+    private double m_speed = ShooterConstants.kShootSpeed;
 
     public ShooterSubsystem() {
         m_motor1 = new CANSparkMax(ShooterConstants.kRightShooterMotorCANId, MotorType.kBrushless);
@@ -43,15 +44,20 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public void setState(ShooterState state) {
         m_state = state;
+        setSpeed(m_speed);
+    }
 
-        double speed = switch(m_state) {
+    public void setSpeed(double speed) {
+        m_speed = speed;
+
+        double actualSpeed = switch(m_state) {
             case kStopped -> 0;
-            case kSpinning -> ShooterConstants.kShootSpeed;
-            case kShooting -> ShooterConstants.kShootSpeed;
+            case kSpinning -> m_speed;
+            case kShooting -> m_speed;
         };
 
-        m_motor1.set(speed);
-        m_motor2.set(speed);
+        m_motor1.set(actualSpeed);
+        m_motor2.set(actualSpeed);
     }
 
     /**
