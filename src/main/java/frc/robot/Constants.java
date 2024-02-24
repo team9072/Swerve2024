@@ -67,14 +67,14 @@ public final class Constants {
     public static final double kGlobalMax = 60;
 
     // Intake angle is 7
-    public static final double kIntakePos = 7;
+    public static final double kIntakePos = 10.5;
 
     // Shooting is from the entire range
     public static final double kSpeakerMin = kGlobalMin;
     public static final double kSpeakerMax = kGlobalMax;
 
     // Amp shots are at exactly 60
-    public static final double kAmpPos = 60;
+    public static final double kAmpPos = 55;
 
     // Speaker positions
     // TODO: Finalize positions
@@ -101,7 +101,7 @@ public final class Constants {
     public static final int kRightShooterMotorCANId = 11;
     public static final int kLeftShooterMotorCANId = 12;
 
-    public static final double kShootSpeed = 1;
+    public static final double kShootSpeed = 0.23;
     // shooting time in seconds
     public static final double kShootTime = 3;
 

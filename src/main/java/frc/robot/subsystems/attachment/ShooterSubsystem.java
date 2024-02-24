@@ -50,7 +50,7 @@ public class ShooterSubsystem extends SubsystemBase {
             case kShooting -> ShooterConstants.kShootSpeed;
         };
 
-        m_motor1.set(speed);
+        m_motor1.set(speed * .5);
         m_motor2.set(speed);
     }
 

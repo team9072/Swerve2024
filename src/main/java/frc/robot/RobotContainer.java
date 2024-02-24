@@ -68,7 +68,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putData("Pose Estimation", m_estimationField);
-    SmartDashboard.putNumber("Pivot Angle", 0);
+    SmartDashboard.putNumber("Pivot Angle", PivotConstants.kAmpPos);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -203,17 +203,15 @@ public class RobotContainer {
         .onFalse(m_attatchment.getStopIntakersCommand());
 
     // Arm/pivot positioning
-    m_attachmentController.povUp().onTrue(
+    m_attachmentController.povLeft().onTrue(
         Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kSubwooferPos)));
 
     m_attachmentController.povDown().onTrue(
         Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kIntakePos)));
 
-    m_attachmentController.povLeft().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(0)));
-
-    m_attachmentController.povRight().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kSubwooferPos)));
+    m_attachmentController.povUp().onTrue(
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(SmartDashboard.getNumber("Pivot Angle", 0))));
+        
     // Attatchment controls for driver
 
     m_driverController.leftBumper()
@@ -258,7 +256,6 @@ public class RobotContainer {
         - getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle().getDegrees();
     SmartDashboard.putNumber("auto angle diff", Math.round(angle));
 
-    //m_attatchment.m_pivot.setPrecisePosition(SmartDashboard.getNumber("Pivot Angle", 0));
   }
 
   public void prepareTeleop() {
