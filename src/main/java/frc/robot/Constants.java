@@ -54,7 +54,7 @@ public final class Constants {
     public static final double kReverseSpeed = -0.9;
     public static final double kShootSpeed = 1;
 
-    public static final double kBeamBreakDeay = 0.05;
+    public static final double kBeamBreakDeay = 0.075;
   }
 
   public static final class PivotConstants {
@@ -81,8 +81,8 @@ public final class Constants {
     // Speaker positions
     // TODO: Finalize positions
     public static final double kSubwooferPos = 20;
-    public static final double kPodiumPos = 7;
-    public static final double kOffAnglePos = 20;
+    //public static final double kPodiumPos = 7;
+   // public static final double kOffAnglePos = 20;
 
     // Distance before pivot is considered ready
     public static final double kPositionDeadzone = 2.0;
@@ -103,12 +103,16 @@ public final class Constants {
     public static final int kRightShooterMotorCANId = 11;
     public static final int kLeftShooterMotorCANId = 12;
 
-    public static final double kShootSpeed = 0.23;
+    // TODO: back to final, testing!!
+    public static double kShootSpeed = 1;
     // shooting time in seconds
     public static final double kShootTime = 3;
 
     // delay time to keep shooting after beam break (in seconds)
     public static final double kShootEndLag = 0.5;
+
+    // Shooter bottom multiplier
+    public static final double kBottomSpeed = .8;
   }
 
   public static final class DriveConstants {
