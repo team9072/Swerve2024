@@ -53,6 +53,8 @@ public final class Constants {
     public static final double kIntakeSpeed = 0.9;
     public static final double kReverseSpeed = -0.9;
     public static final double kShootSpeed = 1;
+
+    public static final double kBeamBreakDeay = 0.05;
   }
 
   public static final class PivotConstants {

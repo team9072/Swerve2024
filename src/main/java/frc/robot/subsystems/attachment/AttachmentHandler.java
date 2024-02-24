@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.attachment.FeederSubsystem.FeederState;
 import frc.robot.subsystems.attachment.Intaker.IntakerMotorState;
@@ -38,7 +39,7 @@ public class AttachmentHandler extends SubsystemBase {
             if (m_stopOnBeamBreak && !m_hasNote) {
                 // on get note stop intake
                 Commands.sequence(
-                        Commands.waitSeconds(0.0),
+                        Commands.waitSeconds(FeederConstants.kBeamBreakDeay),
                         Commands.runOnce(() -> stopIntakers(), this)).schedule();
             }
 
