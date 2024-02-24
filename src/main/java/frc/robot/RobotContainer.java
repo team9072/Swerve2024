@@ -32,6 +32,7 @@ import frc.robot.subsystems.attachment.FeederSubsystem;
 import frc.robot.subsystems.attachment.PivotSubsystem;
 import frc.robot.subsystems.attachment.ShooterSubsystem;
 import frc.robot.subsystems.attachment.UTBIntakerSubsystem;
+import frc.robot.subsystems.attachment.PivotSubsystem.PivotPosition;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -101,9 +102,6 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("startShooter", m_attatchment.getSpinShooterCommand());
     NamedCommands.registerCommand("stopShooter", m_attatchment.getStopShooterCommand());
-
-    NamedCommands.registerCommand("pivotSubwoofer", Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kSubwooferPos)));
-    NamedCommands.registerCommand("pivotIntake", Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kIntakePos)));
   }
 
   /**
@@ -204,13 +202,13 @@ public class RobotContainer {
 
     // Arm/pivot positioning
     m_attachmentController.povLeft().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kSubwooferPos)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotPosition.kSpeakerPosition, PivotConstants.kSubwooferPos)));
 
     m_attachmentController.povDown().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotConstants.kIntakePos)));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotPosition.kIntakePosition, PivotConstants.kIntakePos)));
 
     m_attachmentController.povUp().onTrue(
-        Commands.runOnce(() -> m_attatchment.setPivotPosition(SmartDashboard.getNumber("Pivot Angle", 0))));
+        Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotPosition.kAmpPosition, SmartDashboard.getNumber("Pivot Angle", 0))));
         
     // Attatchment controls for driver
 

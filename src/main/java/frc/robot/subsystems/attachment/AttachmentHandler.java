@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.attachment.FeederSubsystem.FeederState;
 import frc.robot.subsystems.attachment.Intaker.IntakerMotorState;
+import frc.robot.subsystems.attachment.PivotSubsystem.PivotPosition;
 import frc.robot.subsystems.attachment.ShooterSubsystem.ShooterState;
 
 public class AttachmentHandler extends SubsystemBase {
@@ -16,7 +17,7 @@ public class AttachmentHandler extends SubsystemBase {
     // TODO: Make private
     public final FeederSubsystem m_feeder;
     private final ShooterSubsystem m_shooter;
-    //TODO: Make private
+    // TODO: Make private
     public final PivotSubsystem m_pivot;
 
     // state variables
@@ -36,7 +37,9 @@ public class AttachmentHandler extends SubsystemBase {
         if (m_feeder.getBeamBreakState()) {
             if (m_stopOnBeamBreak && !m_hasNote) {
                 // on get note stop intake
-                stopIntakers();
+                Commands.sequence(
+                        Commands.waitSeconds(0.0),
+                        Commands.runOnce(() -> stopIntakers(), this)).schedule();
             }
 
             m_hasNote = true;
@@ -83,10 +86,12 @@ public class AttachmentHandler extends SubsystemBase {
      * @return A command to start the intakers
      */
     public Command getStartIntakersCommand() {
-        return Commands.parallel(
-                m_UTBIntaker.getSetMotorStateCommand(IntakerMotorState.kIntaking),
-                // TODO: OTB Intaker
-                m_feeder.getSetStateCommand(FeederState.kIntaking));
+        return Commands.either(
+                Commands.parallel(
+                        m_UTBIntaker.getSetMotorStateCommand(IntakerMotorState.kIntaking),
+                        // TODO: OTB Intaker
+                        m_feeder.getSetStateCommand(FeederState.kIntaking)),
+                Commands.none(), () -> m_pivot.getPosition() == PivotPosition.kIntakePosition);
     }
 
     /**
@@ -121,6 +126,7 @@ public class AttachmentHandler extends SubsystemBase {
 
     /**
      * Stop the feeder wheels
+     * 
      * @return A command to stop the feeder wheels
      */
     public Command getStopFeedersCommand() {
@@ -142,10 +148,12 @@ public class AttachmentHandler extends SubsystemBase {
      * @return A command to reverse the intakers
      */
     public Command getReverseIntakersCommand() {
-        return Commands.parallel(
-                m_UTBIntaker.getSetMotorStateCommand(IntakerMotorState.kReversed),
-                // TODO: OTB Intaker
-                m_feeder.getSetStateCommand(FeederState.kReversed));
+        return Commands.either(
+                Commands.parallel(
+                        m_UTBIntaker.getSetMotorStateCommand(IntakerMotorState.kReversed),
+                        // TODO: OTB Intaker
+                        m_feeder.getSetStateCommand(FeederState.kReversed)),
+                Commands.none(), () -> m_pivot.getPosition() == PivotPosition.kIntakePosition);
     }
 
     /**
@@ -203,7 +211,8 @@ public class AttachmentHandler extends SubsystemBase {
                 .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }
 
-    public void setPivotPosition(double pos) {
+    public void setPivotPosition(PivotPosition position, double pos) {
+        m_pivot.setPosition(position);
         m_pivot.setPrecisePosition(pos);
     }
 }
