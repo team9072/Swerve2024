@@ -231,7 +231,7 @@ public class RobotContainer {
     }
 
     public void periodic() {
-        SmartDashboard.putBoolean("beam", m_attatchment.m_feeder.getBeamBreakState());
+        /*SmartDashboard.putBoolean("beam", m_attatchment.m_feeder.getBeamBreakState());
         m_field.setRobotPose(m_robotDrive.getPose());
 
         var result = VisionConstants.rearCam.getLatestResult();
@@ -253,7 +253,7 @@ public class RobotContainer {
 
         double angle = m_robotDrive.getHeading().getDegrees()
                 - getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle().getDegrees();
-        SmartDashboard.putNumber("auto angle diff", Math.round(angle));
+        SmartDashboard.putNumber("auto angle diff", Math.round(angle));*/
 
     }
 

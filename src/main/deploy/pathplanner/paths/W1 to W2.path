@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5196341119499284,
-        "y": 7.015965109624455
+        "x": 2.47317044397122,
+        "y": 6.8
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4889256409070242,
-        "y": 6.489360620812251
+        "x": 1.71449139106809,
+        "y": 6.829179963573196
       },
       "isLocked": false,
       "linkedName": "W1"
     },
     {
       "anchor": {
-        "x": 2.72,
-        "y": 5.71
+        "x": 2.395357207776027,
+        "y": 5.72
       },
       "prevControl": {
-        "x": 1.8588693429819068,
-        "y": 5.833759943082497
+        "x": 1.0044456107869557,
+        "y": 5.836719854292789
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6,
+      "waypointRelativePos": 0.5,
       "rotationDegrees": 0.0,
       "rotateFast": false
     }
@@ -39,7 +39,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 0.6,
+    "maxAcceleration": 0.8,
     "maxAngularVelocity": 200.0,
     "maxAngularAcceleration": 100.0
   },
@@ -49,7 +49,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "Week 0",
+  "folder": null,
   "previewStartingState": {
     "rotation": 30.0,
     "velocity": 0

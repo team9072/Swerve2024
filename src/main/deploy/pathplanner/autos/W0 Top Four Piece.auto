@@ -5,7 +5,7 @@
       "x": 0.7913611817198578,
       "y": 6.6250462325486055
     },
-    "rotation": 60.86570780277382
+    "rotation": 60.87
   },
   "command": {
     "type": "sequential",
@@ -20,19 +20,19 @@
         {
           "type": "named",
           "data": {
-            "name": "disableBeamBreak"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "startShooter"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.75
+            "waitTime": 0.375
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "disableBeamBreak"
           }
         },
         {
