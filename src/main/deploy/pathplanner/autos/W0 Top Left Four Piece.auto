@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.6884877930156866,
-      "y": 6.727919621252776
+      "x": 0.7913611817198578,
+      "y": 6.6250462325486055
     },
     "rotation": 60.86570780277382
   },
@@ -32,19 +32,31 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.75
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "startIntakers"
+            "name": "startFeeders"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
           "type": "named",
           "data": {
             "name": "pivotIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startIntakers"
           }
         },
         {

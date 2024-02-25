@@ -101,6 +101,14 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("startShooter", m_attatchment.getSpinShooterCommand());
         NamedCommands.registerCommand("stopShooter", m_attatchment.getStopShooterCommand());
+
+        NamedCommands.registerCommand("startFeeders", m_attatchment.getStartFeedersCommand());
+        NamedCommands.registerCommand("stopFeeders", m_attatchment.getStopFeedersCommand());
+
+        NamedCommands.registerCommand("pivotSubwoofer", Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotPosition.kSubwooferPosition,
+                        PivotConstants.kSubwooferPos)));
+        NamedCommands.registerCommand("pivotIntake", Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotPosition.kIntakePosition,
+                        PivotConstants.kIntakePos)));
     }
 
     /**

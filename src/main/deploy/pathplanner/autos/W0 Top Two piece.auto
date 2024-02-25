@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.55,
-      "y": 6.487678567774198
+      "x": 0.7913611817198578,
+      "y": 6.6250462325486055
     },
-    "rotation": 0.0
+    "rotation": 58.94436334600257
   },
   "command": {
     "type": "sequential",
@@ -41,6 +41,12 @@
                       "type": "named",
                       "data": {
                         "name": "startIntakers"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "startFeeders"
                       }
                     }
                   ]

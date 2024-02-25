@@ -2,15 +2,21 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2466232990759765,
-      "y": 5.542410187664096
+      "x": 0.7953225385123751,
+      "y": 6.633578385640183
     },
-    "rotation": 0.0
+    "rotation": 59.6567511157604
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "pivotSubwoofer"
+          }
+        },
         {
           "type": "named",
           "data": {
@@ -24,9 +30,27 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.75
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startFeeders"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "pivotIntake"
+                }
+              },
               {
                 "type": "path",
                 "data": {
