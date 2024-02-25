@@ -107,8 +107,8 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("pivotSubwoofer", Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotPosition.kSubwooferPosition,
                         PivotConstants.kSubwooferPos)));
-        NamedCommands.registerCommand("pivotIntake", Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotPosition.kIntakePosition,
-                        PivotConstants.kIntakePos)));
+        NamedCommands.registerCommand("pivotIntake", Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotPosition.kPodiumPosition,
+                        PivotConstants.kPodiumPos)));
     }
 
     /**
@@ -194,7 +194,7 @@ public class RobotContainer {
                 .onFalse(m_attatchment.getStopIntakersCommand());
 
         m_attachmentController.povUp().onTrue(
-                Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotPosition.kIntakePosition,
+                Commands.runOnce(() -> m_attatchment.setPivotPosition(PivotPosition.kPodiumPosition,
                         PivotConstants.kPodiumPos)));
 
         // Arm/pivot positioning

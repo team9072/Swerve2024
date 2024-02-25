@@ -15,6 +15,7 @@ public class PivotSubsystem extends SubsystemBase {
         kIntakePosition(PivotConstants.kIntakePos, PivotConstants.kIntakePos),
         kSpeakerPosition(PivotConstants.kSpeakerMin, PivotConstants.kSpeakerMax),
         kAmpPosition(PivotConstants.kAmpPos, PivotConstants.kAmpPos),
+        kPodiumPosition(PivotConstants.kPodiumPos, PivotConstants.kPodiumPos),
         kSubwooferPosition(PivotConstants.kSubwooferPos, PivotConstants.kSubwooferPos),
         kSubwooferSidePosition(PivotConstants.kSubwooferSidePos, PivotConstants.kSubwooferSidePos);
 
