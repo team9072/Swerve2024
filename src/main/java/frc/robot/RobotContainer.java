@@ -181,6 +181,13 @@ public class RobotContainer {
     }
 
   public void periodic() {
+    SmartDashboard.putString("Attatchment State", switch (m_attatchment.getState()) {
+      case kIntake -> "Intake";
+      case kAiming -> "Aiming";
+      case kShooting -> "Shooting";
+      case kContinuousFire -> "Auto Continuous";
+    });
+
     m_field.setRobotPose(m_robotDrive.getPose());
 
         var result = VisionConstants.rearCam.getLatestResult();

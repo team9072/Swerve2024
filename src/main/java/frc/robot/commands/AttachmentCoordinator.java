@@ -87,7 +87,7 @@ public class AttachmentCoordinator {
                         m_feeder.setState(FeederState.kAlignReverse);
                     }, m_UTBIntaker, m_feeder),
                     Commands.waitUntil(m_beamBreak.negate()),
-                    Commands.runOnce(() -> stopIntaking(), m_UTBIntaker, m_feeder)
+                    Commands.runOnce(() -> softSetFeederState(FeederState.kStopped), m_UTBIntaker, m_feeder)
                     )),
                 // Keep aiming I guess? Not sure how we got here
                 Map.entry(AttatchmentState.kAiming, Commands.none()),
@@ -104,7 +104,7 @@ public class AttachmentCoordinator {
                 // Stay in intake state
                 Map.entry(AttatchmentState.kIntake, Commands.none()),
                 // Go back to intake on unjam or lose note
-                Map.entry(AttatchmentState.kAiming, Commands.runOnce(() -> setState(AttatchmentState.kIntake), m_UTBIntaker, m_feeder)),
+                Map.entry(AttatchmentState.kAiming, Commands.none()),//Commands.runOnce(() -> setState(AttatchmentState.kIntake), m_UTBIntaker, m_feeder)),
                 // handled by shoot command
                 Map.entry(AttatchmentState.kShooting, Commands.none()),
                 // handled by Continuous Fire command
@@ -137,12 +137,19 @@ public class AttachmentCoordinator {
      * Stop intaking, but not shooting
      */
     private void stopIntaking() {
-        if (m_state != AttatchmentState.kShooting) {
-            m_feeder.setState(FeederState.kStopped);
-        }
-
         m_UTBIntaker.setState(IntakerState.kStopped);
+        softSetFeederState(FeederState.kStopped);
     }
+
+    /**
+     * Set the feeder state only if it woukd not interupt shooting
+     */
+    private void softSetFeederState(FeederState state) {
+        if (m_state != AttatchmentState.kShooting) {
+            m_feeder.setState(state);
+        }
+    }
+    
 
     /**
      * Set the shooter state only if it woukd not interupt shooting
@@ -211,7 +218,7 @@ public class AttachmentCoordinator {
                 )
             )
         ).finallyDo(() -> {
-            setState(AttatchmentState.kAiming);
+            setState(AttatchmentState.kIntake);
             m_shooter.setState(ShooterState.kStopped);
             m_feeder.setState(FeederState.kStopped);
         });
