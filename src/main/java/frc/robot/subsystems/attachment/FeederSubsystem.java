@@ -12,6 +12,7 @@ import frc.robot.Constants.FeederConstants;
 public class FeederSubsystem extends SubsystemBase {
 
     public enum FeederState {
+        kAlignReverse,
         kReversed,
         kStopped,
         kIntaking,
@@ -44,6 +45,7 @@ public class FeederSubsystem extends SubsystemBase {
         m_state = state;
 
         double speed = switch (m_state) {
+            case kAlignReverse -> FeederConstants.kReverseAlignNoteSpeed;
             case kReversed -> FeederConstants.kReverseSpeed;
             case kStopped -> 0;
             case kIntaking -> FeederConstants.kIntakeSpeed;

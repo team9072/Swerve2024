@@ -1,8 +1,9 @@
 package frc.robot.commands;
 
+import java.util.Map;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TargetConstants.AimingTarget;
@@ -41,8 +42,8 @@ public class AttachmentCoordinator {
 
         m_beamBreak = new Trigger(m_feeder::getBeamBreakState);
 
-        m_beamBreak.onTrue(new InstantCommand(() -> handleGetNote(), m_UTBIntaker, m_feeder));
-        m_beamBreak.onFalse(new InstantCommand(() -> handleLoseNote(), m_UTBIntaker, m_feeder));
+        m_beamBreak.onTrue(getHandleGetNoteCommand());
+        m_beamBreak.onFalse(getHandleLoseNoteCommand());
     }
 
     private void setState(AttatchmentState state) {
@@ -60,11 +61,6 @@ public class AttachmentCoordinator {
                     case kAmp -> PivotPosition.kAmpPosition;
                 });
 
-                Command utbIntakerCommand = m_UTBIntaker.getCurrentCommand();
-                Command feederCommand = m_feeder.getCurrentCommand();
-                if (utbIntakerCommand != null) { utbIntakerCommand.cancel(); }
-                if (feederCommand != null) { feederCommand.cancel(); }
-
                 m_UTBIntaker.setState(IntakerState.kStopped);
                 m_feeder.setState(FeederState.kStopped);
             }
@@ -77,30 +73,43 @@ public class AttachmentCoordinator {
         }
     }
 
-    private void handleGetNote() {
-        switch (m_state) {
-            // Start aiming on get note
-            case kIntake -> setState(AttatchmentState.kAiming);
-            // Keep aiming I guess? Not sure how we got here
-            case kAiming -> {}
-            // Keep shooting, this happens in continuous mode during auto
-            case kShooting -> {}
-            // handled by command
-            case kContinuousFire -> {}
-        }
+    public AttatchmentState getState() {
+        return this.m_state;
+    };
+
+    private Command getHandleGetNoteCommand() {
+        return Commands.select(
+            Map.ofEntries(
+                // Start aiming on get note, and align note in feeder
+                Map.entry(AttatchmentState.kIntake, Commands.sequence(
+                    Commands.runOnce(() -> {
+                        setState(AttatchmentState.kAiming);
+                        m_feeder.setState(FeederState.kAlignReverse);
+                    }, m_UTBIntaker, m_feeder),
+                    Commands.waitUntil(m_beamBreak.negate()),
+                    Commands.runOnce(() -> stopIntaking(), m_UTBIntaker, m_feeder)
+                    )),
+                // Keep aiming I guess? Not sure how we got here
+                Map.entry(AttatchmentState.kAiming, Commands.none()),
+                // Keep shooting ?
+                Map.entry(AttatchmentState.kShooting, Commands.none()),
+                // handled by Continuous Fire command
+                Map.entry(AttatchmentState.kContinuousFire, Commands.none())
+            ), this::getState);
     }
 
-    private void handleLoseNote() {
-        switch (m_state) {
-            // Stay in intake state
-            case kIntake -> {}
-            // Go back to intake on unjam or lose note
-            case kAiming -> setState(AttatchmentState.kIntake);
-            // handled by shoot command
-            case kShooting -> {}
-            // handled by command
-            case kContinuousFire -> {}
-        }
+    private Command getHandleLoseNoteCommand() {
+        return Commands.select(
+            Map.ofEntries(
+                // Stay in intake state
+                Map.entry(AttatchmentState.kIntake, Commands.none()),
+                // Go back to intake on unjam or lose note
+                Map.entry(AttatchmentState.kAiming, Commands.runOnce(() -> setState(AttatchmentState.kIntake), m_UTBIntaker, m_feeder)),
+                // handled by shoot command
+                Map.entry(AttatchmentState.kShooting, Commands.none()),
+                // handled by Continuous Fire command
+                Map.entry(AttatchmentState.kContinuousFire, Commands.none())
+            ), this::getState);
     }
 
     /**
