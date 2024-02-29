@@ -55,16 +55,7 @@ public class AttachmentCoordinator {
             case kIntake, kContinuousFire -> {
                 m_pivot.setPosition(PivotPosition.kIntakePosition);
             }
-            case kAiming -> {
-                m_pivot.setPosition(switch (m_target) {
-                    case kSpeaker -> PivotPosition.kSpeakerPosition;
-                    case kAmp -> PivotPosition.kAmpPosition;
-                });
-
-                m_UTBIntaker.setState(IntakerState.kStopped);
-                m_feeder.setState(FeederState.kStopped);
-            }
-            case kShooting -> {
+            case kAiming, kShooting -> {
                 m_pivot.setPosition(switch (m_target) {
                     case kSpeaker -> PivotPosition.kSpeakerPosition;
                     case kAmp -> PivotPosition.kAmpPosition;
@@ -116,7 +107,7 @@ public class AttachmentCoordinator {
      * Intake if in intake mode
      */
     private void startIntaking() {
-        if (m_state == AttatchmentState.kIntake) {
+        if (m_pivot.getPosition() == PivotPosition.kIntakePosition) {
             m_UTBIntaker.setState(IntakerState.kIntaking);
             m_feeder.setState(FeederState.kIntaking);
         }
@@ -127,7 +118,7 @@ public class AttachmentCoordinator {
      * Acts as an unjam feature
      */
     private void unjamIntakers() {
-        if (m_state != AttatchmentState.kShooting) {
+        if (m_pivot.getPosition() == PivotPosition.kIntakePosition) {
             m_UTBIntaker.setState(IntakerState.kReversed);
             m_feeder.setState(FeederState.kReversed);
         }
