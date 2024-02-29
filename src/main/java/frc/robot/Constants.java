@@ -53,6 +53,8 @@ public final class Constants {
     public static final double kIntakeSpeed = 0.9;
     public static final double kReverseSpeed = -0.9;
     public static final double kShootSpeed = 1;
+
+    public static final double kBeamBreakDeay = 0.05;
   }
 
   public static final class PivotConstants {
@@ -64,31 +66,27 @@ public final class Constants {
 
     // Pivot range is 0-60
     public static final double kGlobalMin = 0;
-    public static final double kGlobalMax = 60;
-
-    // Intake angle is 7
-    public static final double kIntakePos = 7;
+    public static final double kGlobalMax = 40;
 
     // Shooting is from the entire range
     public static final double kSpeakerMin = kGlobalMin;
     public static final double kSpeakerMax = kGlobalMax;
 
-    // Amp shots are at exactly 60
-    public static final double kAmpPos = 60;
-
     // Speaker positions
     // TODO: Finalize positions
-    public static final double kSubwooferPos = 20;
-    public static final double kPodiumPos = 7;
-    public static final double kOffAnglePos = 20;
+    public static final double kSubwooferPos = 23; // left (good)
+    public static final double kSubwooferSidePos = 23; // start button (good)
+    public static final double kPodiumPos = 12; // up (good)
+    public static final double kIntakePos = 11; // down (good)
+    public static final double kAmpPos = 65;
 
     // Distance before pivot is considered ready
     public static final double kPositionDeadzone = 2.0;
 
     public static final class PivotPID {
-      public static final double kP = 0.7;
+      public static final double kP = 0.16;
       public static final double kI = 1e-4;
-      public static final double kD = 1;
+      public static final double kD = 0.0055;
       public static final double kIz = 0;
       public static final double kFF = 0;
       public static final double kMaxOutput = 1;
@@ -101,12 +99,19 @@ public final class Constants {
     public static final int kRightShooterMotorCANId = 11;
     public static final int kLeftShooterMotorCANId = 12;
 
+    // Shooting speed 0-1
     public static final double kShootSpeed = 1;
 
+    // Shooting speed for subwoofer side
+    public static final double kSubwooferSideShootSpeed = 1;
+    
     // Maximum shooting time in seconds
     public static final double kMaxShootTime = 3;
     // Delay time to keep shooting after beam break (in seconds)
     public static final double kBeamBreakEndLag = 0.5;
+
+    // Shooter bottom multiplier
+    public static final double kBottomSpeed = .8;
   }
 
   public static final class DriveConstants {
@@ -180,7 +185,7 @@ public final class Constants {
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
     // teeth on the bevel pinion
     public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
-    public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
+    public static final double kDriveWheelFreeSpeedMps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
         / kDrivingMotorReduction;
 
     public static final double kDrivingEncoderPositionFactor = (kWheelDiameterMeters * Math.PI)
@@ -197,7 +202,7 @@ public final class Constants {
     public static final double kDrivingP = 0.04;
     public static final double kDrivingI = 0;
     public static final double kDrivingD = 0;
-    public static final double kDrivingFF = 1 / kDriveWheelFreeSpeedRps;
+    public static final double kDrivingFF = 1 / kDriveWheelFreeSpeedMps;
     public static final double kDrivingMinOutput = -1;
     public static final double kDrivingMaxOutput = 1;
 

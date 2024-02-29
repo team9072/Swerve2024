@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.55,
-      "y": 6.487678567774198
+      "x": 0.7913611817198578,
+      "y": 6.6250462325486055
     },
-    "rotation": 0.0
+    "rotation": 60.87
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,49 @@
         {
           "type": "named",
           "data": {
+            "name": "pivotSubwoofer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "startShooter"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.375
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "disableBeamBreak"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startFeeders"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pivotIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startIntakers"
           }
         },
         {
@@ -25,25 +67,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "Top to W1"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.8
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "startIntakers"
-                      }
-                    }
-                  ]
                 }
               }
             ]

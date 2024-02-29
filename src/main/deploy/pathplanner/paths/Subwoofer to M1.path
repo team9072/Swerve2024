@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.35,
-        "y": 5.542410187664096
+        "x": 0.7953225385123751,
+        "y": 6.633578385640183
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7361715404485407,
-        "y": 5.976943883712329
+        "x": 2.181494078960916,
+        "y": 7.068112081688416
       },
       "isLocked": false,
       "linkedName": "Subwoofer"
@@ -33,9 +33,9 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxAcceleration": 1.0,
+    "maxAngularVelocity": 200.0,
+    "maxAngularAcceleration": 100.0
   },
   "goalEndState": {
     "velocity": 0,
