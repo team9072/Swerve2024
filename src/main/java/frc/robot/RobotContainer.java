@@ -91,6 +91,7 @@ public class RobotContainer {
    */
   private void registerPathplannerCommands() {
     //TODO: Auto Commands
+    NamedCommands.registerCommand("continuousFire", m_attatchment.getContinuousFireCommand());
   }
 
     /**
@@ -204,14 +205,6 @@ public class RobotContainer {
         SmartDashboard.putNumber("auto angle diff", Math.round(angle));
 
     }
-
-  public void prepareTeleop() {
-    /*
-     * m_attatchment.stopShooter();
-     * m_attatchment.stopIntakers();
-     * m_attatchment.setStopOnBeamBreakEnabled(true);
-     */
-  }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

@@ -19,7 +19,8 @@ public class AttachmentCoordinator {
     public enum AttatchmentState {
         kIntake,
         kAiming,
-        kShooting
+        kShooting,
+        kContinuousFire;
     }
 
     private final UTBIntakerSubsystem m_UTBIntaker;
@@ -50,7 +51,7 @@ public class AttachmentCoordinator {
         m_state = state;
 
         switch (m_state) {
-            case kIntake -> {
+            case kIntake, kContinuousFire -> {
                 m_pivot.setPosition(PivotPosition.kIntakePosition);
             }
             case kAiming -> {
@@ -84,6 +85,8 @@ public class AttachmentCoordinator {
             case kAiming -> {}
             // Keep shooting, this happens in continuous mode during auto
             case kShooting -> {}
+            // handled by command
+            case kContinuousFire -> {}
         }
     }
 
@@ -95,6 +98,8 @@ public class AttachmentCoordinator {
             case kAiming -> setState(AttatchmentState.kIntake);
             // handled by shoot command
             case kShooting -> {}
+            // handled by command
+            case kContinuousFire -> {}
         }
     }
 
@@ -197,9 +202,29 @@ public class AttachmentCoordinator {
                 )
             )
         ).finallyDo(() -> {
+            setState(AttatchmentState.kAiming);
             m_shooter.setState(ShooterState.kStopped);
             m_feeder.setState(FeederState.kStopped);
         });
+    }
+
+    /**
+     * Get a command to feed notes through the whole attatchment without stopping
+     * This mode ends when the command ends
+     * @return the continuous fire command
+     */
+    public Command getContinuousFireCommand() {
+        return Commands.startEnd(() -> {
+            setState(AttatchmentState.kContinuousFire);
+            m_UTBIntaker.setState(IntakerState.kIntaking);
+            m_feeder.setState(FeederState.kShooting);
+            m_shooter.setState(ShooterState.kShooting);
+        }, () -> {
+            setState(AttatchmentState.kIntake);
+            m_UTBIntaker.setState(IntakerState.kStopped);
+            m_feeder.setState(FeederState.kStopped);
+            m_shooter.setState(ShooterState.kStopped);
+        }, m_UTBIntaker, m_feeder, m_shooter);
     }
 
     /**
@@ -217,17 +242,5 @@ public class AttachmentCoordinator {
      */
     public Command getSetSpeakerRotationsCommand(double rotations) {
         return Commands.runOnce(() -> m_pivot.setPrecisePosition(rotations), m_pivot);
-    }
-
-    public Command getContinuousFireCommand() {
-        return Commands.startEnd(() -> {
-            m_UTBIntaker.setState(IntakerState.kIntaking);
-            m_feeder.setState(FeederState.kShooting);
-            m_shooter.setState(ShooterState.kShooting);
-        }, () -> {
-            m_UTBIntaker.setState(IntakerState.kStopped);
-            m_feeder.setState(FeederState.kStopped);
-            m_shooter.setState(ShooterState.kStopped);
-        }, m_UTBIntaker, m_feeder, m_shooter);
     }
 }
