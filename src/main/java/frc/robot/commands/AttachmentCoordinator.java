@@ -209,6 +209,7 @@ public class AttachmentCoordinator {
                 Commands.waitUntil(m_shooter::isShooterReady),
                 Commands.waitUntil(m_pivot::isPivotReady)
             ),
+            Commands.waitSeconds(ShooterConstants.kShooterRevTime),
             Commands.runOnce(() -> m_feeder.setState(FeederState.kShooting), m_feeder),
             Commands.race(
                 Commands.waitSeconds(ShooterConstants.kMaxShootTime),

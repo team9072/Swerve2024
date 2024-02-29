@@ -107,6 +107,8 @@ public final class Constants {
     
     // Maximum shooting time in seconds
     public static final double kMaxShootTime = 3;
+    //Shooter rev time in seconds
+    public static final double kShooterRevTime = 0.15;
     // Delay time to keep shooting after beam break (in seconds)
     public static final double kBeamBreakEndLag = 0.5;
 
