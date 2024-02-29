@@ -12,6 +12,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -396,6 +397,15 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Rotation2d getHeading() {
     return getPose().getRotation();
+  }
+
+  /**
+   * Returns the translation of the robot.
+   *
+   * @return the robot's translation
+   */
+  public Translation2d getTranslation() {
+    return getPose().getTranslation();
   }
 
   /**

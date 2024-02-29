@@ -204,6 +204,8 @@ public class RobotContainer {
                 - getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle().getDegrees();
         SmartDashboard.putNumber("auto angle diff", Math.round(angle));
 
+        double distance = m_robotDrive.getTranslation().getDistance(getAimingVector(TargetConstants.kBlueSpeakerTarget));
+        SmartDashboard.putNumber("auto angle distance", distance);
     }
 
     /**
