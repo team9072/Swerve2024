@@ -55,7 +55,8 @@ public final class Constants {
     public static final double kReverseAlignNoteSpeed = -0.3;
     public static final double kShootSpeed = 1;
 
-    public static final double kBeamBreakDeay = 0.05;
+    // max note pullabck time in seconds
+    public static final double kNotePullbackMaxTime = 2;
   }
 
   public static final class PivotConstants {

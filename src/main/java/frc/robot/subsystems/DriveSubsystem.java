@@ -221,7 +221,7 @@ public class DriveSubsystem extends SubsystemBase {
       boolean rateLimit) {
     double rotSpeed = m_rotationPID.calculate(
         getHeading().getRadians(),
-        new TrapezoidProfile.State(targetRotation.getRadians(), 0));
+        new TrapezoidProfile.State(targetRotation.getRadians() + (5*(Math.PI/180)), 0));
 
     double xSpeedCommanded;
     double ySpeedCommanded;

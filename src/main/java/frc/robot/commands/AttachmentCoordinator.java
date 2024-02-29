@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TargetConstants.AimingTarget;
 import frc.robot.subsystems.attachment.FeederSubsystem;
@@ -52,7 +53,8 @@ public class AttachmentCoordinator {
 
         switch (m_state) {
             // do nothing
-            case kAiming, kShooting -> {}
+            case kAiming, kShooting -> {
+            }
             case kContinuousFire -> {
                 m_pivot.setPosition(PivotPosition.kIntakePosition);
             }
@@ -69,7 +71,11 @@ public class AttachmentCoordinator {
 
     public AttatchmentState getState() {
         return this.m_state;
-    };
+    }
+
+    public boolean getBeamBreakState() {
+        return m_beamBreak.getAsBoolean();
+    }
 
     private Command getHandleGetNoteCommand() {
         return Commands.either(
@@ -78,9 +84,11 @@ public class AttachmentCoordinator {
                             setState(AttatchmentState.kAiming);
                             m_feeder.setState(FeederState.kAlignReverse);
                         }, m_UTBIntaker, m_feeder),
-                        Commands.waitUntil(m_beamBreak.negate()),
-                        Commands.runOnce(() -> softSetFeederState(FeederState.kStopped), m_UTBIntaker, m_feeder)),
-                Commands.none(), () -> m_pivot.getPosition() == PivotPosition.kIntakePosition);
+                        Commands.race(Commands.waitUntil(m_beamBreak.negate()),
+                                Commands.waitSeconds(FeederConstants.kNotePullbackMaxTime)),
+                        Commands.runOnce(() -> m_feeder.setState(FeederState.kStopped), m_UTBIntaker, m_feeder)),
+                Commands.none(),
+                () -> m_pivot.getPosition() == PivotPosition.kIntakePosition && m_state == AttatchmentState.kAiming);
     }
 
     /**
@@ -231,7 +239,10 @@ public class AttachmentCoordinator {
      * @param rotations the pivot angle
      * @return a command to set the pivot angle
      */
-    public Command getSetSpeakerRotationsCommand(double rotations) {
-        return Commands.runOnce(() -> m_pivot.setPrecisePosition(rotations), m_pivot);
+    public Command getSetSpeakerRotationsCommand(PivotPosition position, double rotations) {
+        return Commands.runOnce(() -> {
+            m_pivot.setPosition(position);
+            m_pivot.setPrecisePosition(rotations);
+        }, m_pivot);
     }
 }
