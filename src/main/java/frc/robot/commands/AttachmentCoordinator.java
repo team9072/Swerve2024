@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -83,7 +82,7 @@ public class AttachmentCoordinator {
             case kIntake -> setState(AttatchmentState.kAiming);
             // Keep aiming I guess? Not sure how we got here
             case kAiming -> {}
-            // Keep shooting, something odd is happening tho ._.
+            // Keep shooting, this happens in continuous mode during auto
             case kShooting -> {}
         }
     }
@@ -94,10 +93,8 @@ public class AttachmentCoordinator {
             case kIntake -> {}
             // Go back to intake on unjam or lose note
             case kAiming -> setState(AttatchmentState.kIntake);
-            // Go back to intake after a delay
-            case kShooting -> {
-                setState(AttatchmentState.kIntake);
-            }
+            // handled by shoot command
+            case kShooting -> {}
         }
     }
 
@@ -220,5 +217,17 @@ public class AttachmentCoordinator {
      */
     public Command getSetSpeakerRotationsCommand(double rotations) {
         return Commands.runOnce(() -> m_pivot.setPrecisePosition(rotations), m_pivot);
+    }
+
+    public Command getContinuousFireCommand() {
+        return Commands.startEnd(() -> {
+            m_UTBIntaker.setState(IntakerState.kIntaking);
+            m_feeder.setState(FeederState.kShooting);
+            m_shooter.setState(ShooterState.kShooting);
+        }, () -> {
+            m_UTBIntaker.setState(IntakerState.kStopped);
+            m_feeder.setState(FeederState.kStopped);
+            m_shooter.setState(ShooterState.kStopped);
+        }, m_UTBIntaker, m_feeder, m_shooter);
     }
 }

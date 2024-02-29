@@ -32,7 +32,6 @@ import frc.robot.subsystems.attachment.FeederSubsystem;
 import frc.robot.subsystems.attachment.PivotSubsystem;
 import frc.robot.subsystems.attachment.ShooterSubsystem;
 import frc.robot.subsystems.attachment.UTBIntakerSubsystem;
-import frc.robot.subsystems.attachment.PivotSubsystem.PivotPosition;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -202,7 +201,7 @@ public class RobotContainer {
 
         double angle = m_robotDrive.getHeading().getDegrees()
                 - getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle().getDegrees();
-        SmartDashboard.putNumber("auto angle diff", Math.round(angle));*/
+        SmartDashboard.putNumber("auto angle diff", Math.round(angle));
 
     }
 
