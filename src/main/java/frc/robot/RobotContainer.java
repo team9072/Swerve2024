@@ -95,6 +95,7 @@ public class RobotContainer {
    */
   private void registerPathplannerCommands() {
     // TODO: Auto Commands
+    NamedCommands.registerCommand("spinShooter", m_attatchment.getSpinShooterCommand());
     NamedCommands.registerCommand("continuousFire", m_attatchment.getContinuousFireCommand());
     NamedCommands.registerCommand("subwooferPosition", m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
     NamedCommands.registerCommand("intakePositon", m_attatchment.getSetPivotPositionCommand(PivotPosition.kIntakePosition));
