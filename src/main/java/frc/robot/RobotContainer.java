@@ -11,7 +11,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -93,7 +95,10 @@ public class RobotContainer {
    */
   private void registerPathplannerCommands() {
     // TODO: Auto Commands
+    NamedCommands.registerCommand("spinShooter", m_attatchment.getSpinShooterCommand());
     NamedCommands.registerCommand("continuousFire", m_attatchment.getContinuousFireCommand());
+    NamedCommands.registerCommand("subwooferPosition", m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
+    NamedCommands.registerCommand("intakePositon", m_attatchment.getSetPivotPositionCommand(PivotPosition.kIntakePosition));
   }
 
   /**
@@ -118,7 +123,7 @@ public class RobotContainer {
         () -> m_robotDrive.driveWithHeading(
             -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
             -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-            getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle(),
+            getAimingVector(getTarget()).getAngle(),
             true, false),
         m_robotDrive));
 
@@ -169,13 +174,17 @@ public class RobotContainer {
 
     // Arm/pivot positioning
 
-    m_attachmentController.povUp().onTrue(m_attatchment.getSetSpeakerRotationsCommand(PivotPosition.kSubwooferPosition, PivotConstants.kSubwooferPos));
+    m_attachmentController.povUp().onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
 
-    m_attachmentController.povDown().onTrue(m_attatchment.getSetSpeakerRotationsCommand(PivotPosition.kIntakePosition, PivotConstants.kIntakePos));
+    m_attachmentController.povDown().onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kIntakePosition));
 
-    m_attachmentController.povLeft().onTrue(m_attatchment.getSetSpeakerRotationsCommand(PivotPosition.kSpeakerPosition, SmartDashboard.getNumber("Pivot Angle", 0)));
+    m_attachmentController.povLeft().onTrue(m_attatchment.getSetCustomPivotPositionCommand(SmartDashboard.getNumber("Pivot Angle", 0)));
 
-    m_attachmentController.povRight().onTrue(m_attatchment.getSetSpeakerRotationsCommand(PivotPosition.kSubwooferPosition, PivotConstants.kSubwooferPos));
+    m_attachmentController.povRight().onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
+  }
+
+  public Translation2d getTarget() {
+    return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? TargetConstants.kBlueSpeakerTarget : TargetConstants.kRedSpeakerTarget;
   }
 
   public Translation2d getAimingVector(Translation2d target) {
@@ -206,7 +215,7 @@ public class RobotContainer {
         m_estimationField.setRobotPose(estimatedPose);
         m_robotDrive.updateOdometryWithVision(estimatedPose, timestamp);
 
-        double distance = getAimingVector(TargetConstants.kBlueSpeakerTarget).getNorm();
+        double distance = getAimingVector(getTarget()).getNorm();
         SmartDashboard.putNumber("auto angle distance", distance);
       } else {
         m_estimationField.setRobotPose(new Pose2d());
@@ -214,7 +223,7 @@ public class RobotContainer {
     }
 
     double angle = m_robotDrive.getHeading().getDegrees()
-        - getAimingVector(TargetConstants.kBlueSpeakerTarget).getAngle().getDegrees();
+        - getAimingVector(getTarget()).getAngle().getDegrees();
     SmartDashboard.putNumber("auto angle diff", angle);
   }
 

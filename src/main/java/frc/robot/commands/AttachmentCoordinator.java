@@ -48,7 +48,7 @@ public class AttachmentCoordinator {
             return;
         }
 
-        m_state = state;
+        m_state = state; 
 
         switch (m_state) {
             // do nothing
@@ -147,7 +147,7 @@ public class AttachmentCoordinator {
         m_target = target;
         if (m_pivot.getPosition() != PivotPosition.kIntakePosition) {
             m_pivot.setPosition(switch (m_target) {
-                case kSpeaker -> PivotPosition.kSpeakerPosition;
+                case kSpeaker -> PivotPosition.kCustomSpeakerPosition;
                 case kAmp -> PivotPosition.kAmpPosition;
             });
         }
@@ -213,24 +213,24 @@ public class AttachmentCoordinator {
     }
 
     /**
-     * Set the position of the povot for speaker shots at different distances
-     * 
-     * @param rotations the pivot angle
+     * Set the position of the pivot
+     * @param position the pivot position
+     * @return a command to set the pivot position
      */
-    public void setSpeakerRotations(double rotations) {
-        m_pivot.setPrecisePosition(rotations);
+    public Command getSetPivotPositionCommand(PivotPosition position) {
+        return Commands.runOnce(() -> {
+            m_pivot.setPosition(position);
+        }, m_pivot);
     }
 
     /**
-     * W
-     * Set the position of the povot for speaker shots at different distances
-     * 
-     * @param rotations the pivot angle
+     * Set the roattion of the pivot to a custom value
+     * @param rotations the pivot angle in rotations of the neo motor
      * @return a command to set the pivot angle
      */
-    public Command getSetSpeakerRotationsCommand(PivotPosition position, double rotations) {
+    public Command getSetCustomPivotPositionCommand(double rotations) {
         return Commands.runOnce(() -> {
-            m_pivot.setPosition(position);
+            m_pivot.setPosition(PivotPosition.kCustomSpeakerPosition);
             m_pivot.setPrecisePosition(rotations);
         }, m_pivot);
     }

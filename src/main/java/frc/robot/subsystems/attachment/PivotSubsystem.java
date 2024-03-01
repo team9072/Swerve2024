@@ -12,14 +12,17 @@ import frc.robot.Constants.PivotConstants;
 
 public class PivotSubsystem extends SubsystemBase {
     public enum PivotPosition {
-        kIntakePosition(PivotConstants.kIntakePos, PivotConstants.kIntakePos),
-        kSpeakerPosition(PivotConstants.kSpeakerMin, PivotConstants.kSpeakerMax),
-        kAmpPosition(PivotConstants.kAmpPos, PivotConstants.kAmpPos),
-        kPodiumPosition(PivotConstants.kPodiumPos, PivotConstants.kPodiumPos),
-        kSubwooferPosition(PivotConstants.kSubwooferPos, PivotConstants.kSubwooferPos),
-        kSubwooferSidePosition(PivotConstants.kSubwooferSidePos, PivotConstants.kSubwooferSidePos);
+        kIntakePosition(PivotConstants.kIntakePos),
+        kCustomSpeakerPosition(PivotConstants.kSpeakerMin, PivotConstants.kSpeakerMax),
+        kAmpPosition(PivotConstants.kAmpPos),
+        kSubwooferPosition(PivotConstants.kSubwooferPos);
 
         public double lowLimit, highLimit;
+
+        PivotPosition(double pos) {
+            lowLimit = Math.max(PivotConstants.kGlobalMin, pos);
+            highLimit = Math.min(PivotConstants.kGlobalMax, pos);
+        }
 
         PivotPosition(double low, double high) {
             lowLimit = Math.max(PivotConstants.kGlobalMin, low);

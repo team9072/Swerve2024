@@ -12,18 +12,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "disableBeamBreak"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startShooter"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
