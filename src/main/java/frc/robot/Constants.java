@@ -75,9 +75,9 @@ public final class Constants {
     public static final double kSpeakerMax = kGlobalMax;
 
     // Speaker positions
-    public static final double kSubwooferPos = 23; // left (good)
+    public static final double kSubwooferPos = 14; // left (good)
     public static final double kPodiumPos = 12; // up (good)
-    public static final double kIntakePos = 11; // down (good)
+    public static final double kIntakePos = 11; // down (good) 11
     public static final double kAmpPos = 65;
 
     // Distance before pivot is considered ready

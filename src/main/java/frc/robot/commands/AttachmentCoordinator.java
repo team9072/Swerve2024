@@ -134,6 +134,7 @@ public class AttachmentCoordinator {
     private void softSetShooterState(ShooterState state) {
         if (m_state != AttatchmentState.kShooting) {
             m_shooter.setState(state);
+            
         }
     }
 
@@ -188,11 +189,15 @@ public class AttachmentCoordinator {
      * @return a command to shoot
      */
     public Command getShootCommand() {
-        return Commands.sequence(
-                Commands.runOnce(() -> m_feeder.setState(FeederState.kShooting), m_feeder))
-                .finallyDo(() -> {
-                    goToIntake();
-                });
+        return Commands.runOnce(() -> m_feeder.setState(FeederState.kShooting), m_feeder);
+    }
+
+    /**
+     * Stop shooting.
+     * @return a command to stop shooting
+     */
+    public Command getStopShootCommand() {
+        return Commands.runOnce(() -> m_feeder.setState(FeederState.kStopped), m_feeder);
     }
 
     /**

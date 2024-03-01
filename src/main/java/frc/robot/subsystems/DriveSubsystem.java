@@ -20,10 +20,12 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.TargetConstants;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -79,7 +81,7 @@ public class DriveSubsystem extends SubsystemBase {
         this::getPose, // Robot pose supplier
         this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        this::driveRobotRelativeWithHeading, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         AutoConstants.AutoPathFollowerConfig,
         () -> {
           // Boolean supplier that controls when the path will be mirrored for the red
@@ -218,10 +220,10 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rateLimit      Whether to enable rate limiting for smoother control.
    */
   public void driveWithHeading(double xSpeed, double ySpeed, Rotation2d targetRotation, boolean fieldRelative,
-      boolean rateLimit) {
+      boolean rateLimit, double offsetDegrees) {
     double rotSpeed = m_rotationPID.calculate(
         getHeading().getRadians(),
-        new TrapezoidProfile.State(targetRotation.getRadians() + (5*(Math.PI/180)), 0));
+        new TrapezoidProfile.State(targetRotation.getRadians() + (offsetDegrees * (Math.PI / 180)), 0));
 
     double xSpeedCommanded;
     double ySpeedCommanded;
@@ -249,6 +251,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Limit the slew rate of the robot to reduce wear
+   * 
    * @param xSpeed   Speed of the robot in the x direction (forward).
    * @param ySpeed   Speed of the robot in the y direction (sideways).
    * @param rotSpeed Angular rate of the robot.
@@ -324,6 +327,36 @@ public class DriveSubsystem extends SubsystemBase {
    * @param speeds The robot relative ChasisSpeeds
    */
   private void driveRobotRelative(ChassisSpeeds speeds) {
+    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+    setModuleStates(swerveModuleStates);
+  }
+
+  public Translation2d getTarget() {
+    return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? TargetConstants.kBlueSpeakerTarget
+        : TargetConstants.kRedSpeakerTarget;
+  }
+
+  /**
+   * Drive the robot with heading (speaker target during auto) using a robot relative ChasisSpeeds
+   * 
+   * @param speeds The robot relative ChasisSpeeds
+   */
+  private void driveRobotRelativeWithHeading(ChassisSpeeds speeds) {
+    // Blue/Red speaker target
+    Translation2d speakerTarget = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? TargetConstants.kBlueSpeakerTarget
+        : TargetConstants.kRedSpeakerTarget;
+
+    // This is getAimingVector
+    Rotation2d targetRotation = getPose().getTranslation().minus(speakerTarget).getAngle();
+
+    double rotSpeed = m_rotationPID.calculate(
+        getHeading().getRadians(),
+        new TrapezoidProfile.State(targetRotation.getRadians(), 0));
+
+    speeds.omegaRadiansPerSecond = rotSpeed;
+
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);

@@ -49,6 +49,9 @@ public class RobotContainer {
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
 
+  // Other (tests)
+  double distance = 0;
+
   public final AttachmentCoordinator m_attatchment = new AttachmentCoordinator(
       new UTBIntakerSubsystem(),
       new FeederSubsystem(),
@@ -71,7 +74,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putData("Pose Estimation", m_estimationField);
-    SmartDashboard.putNumber("Pivot Angle", PivotConstants.kAmpPos);
+    // SmartDashboard.putNumber("Pivot Angle", 20);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -97,8 +100,10 @@ public class RobotContainer {
     // TODO: Auto Commands
     NamedCommands.registerCommand("spinShooter", m_attatchment.getSpinShooterCommand());
     NamedCommands.registerCommand("continuousFire", m_attatchment.getContinuousFireCommand());
-    NamedCommands.registerCommand("subwooferPosition", m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
-    NamedCommands.registerCommand("intakePositon", m_attatchment.getSetPivotPositionCommand(PivotPosition.kIntakePosition));
+    NamedCommands.registerCommand("subwooferPosition",
+        m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
+    NamedCommands.registerCommand("intakePositon",
+        m_attatchment.getSetPivotPositionCommand(PivotPosition.kIntakePosition));
   }
 
   /**
@@ -118,13 +123,13 @@ public class RobotContainer {
         () -> m_robotDrive.setX(),
         m_robotDrive));
 
-    // Auto aiming
+    // Auto aiming (offset is 5 degrees for alignment)
     m_driverController.leftTrigger().whileTrue(Commands.run(
         () -> m_robotDrive.driveWithHeading(
             -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
             -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
             getAimingVector(getTarget()).getAngle(),
-            true, false),
+            true, false, 5),
         m_robotDrive));
 
     // Reset field oriented
@@ -132,29 +137,37 @@ public class RobotContainer {
       m_robotDrive.resetGyro();
     }));
 
+    m_driverController.a().onTrue(Commands.runOnce(() -> {
+      //double angle = (-7.05376 * distance) + 32.4698;
+      double angle = 38.7304 * Math.pow(.6761, distance);
+      if (angle < 30 && angle > 0) {
+        m_attatchment.getSetCustomPivotPositionCommand(angle).schedule();
+      }
+    }));
+
     // D-pad turning
     m_driverController.povUp().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
         -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
         -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-        Rotation2d.fromDegrees(0), true, false),
+        Rotation2d.fromDegrees(0), true, false, 0),
         m_robotDrive));
 
     m_driverController.povRight().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
         -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
         -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-        Rotation2d.fromDegrees(-90), true, false),
+        Rotation2d.fromDegrees(-90), true, false, 0),
         m_robotDrive));
 
     m_driverController.povDown().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
         -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
         -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-        Rotation2d.fromDegrees(180), true, false),
+        Rotation2d.fromDegrees(180), true, false, 0),
         m_robotDrive));
 
     m_driverController.povLeft().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
         -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
         -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-        Rotation2d.fromDegrees(90), true, false),
+        Rotation2d.fromDegrees(90), true, false, 0),
         m_robotDrive));
 
     // Attatchment controls
@@ -170,7 +183,8 @@ public class RobotContainer {
 
     // Shoot
     m_attachmentController.rightTrigger().or(m_driverController.rightTrigger())
-        .onTrue(m_attatchment.getShootCommand());
+        .onTrue(m_attatchment.getShootCommand())
+        .onFalse(m_attatchment.getStopShootCommand());
 
     // Arm/pivot positioning
 
@@ -178,13 +192,16 @@ public class RobotContainer {
 
     m_attachmentController.povDown().onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kIntakePosition));
 
-    m_attachmentController.povLeft().onTrue(m_attatchment.getSetCustomPivotPositionCommand(SmartDashboard.getNumber("Pivot Angle", 0)));
+    m_attachmentController.povLeft()
+        .onTrue(m_attatchment.getSetCustomPivotPositionCommand(SmartDashboard.getNumber("Pivot Angle", 0)));
 
-    m_attachmentController.povRight().onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
+    m_attachmentController.povRight()
+        .onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
   }
 
   public Translation2d getTarget() {
-    return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? TargetConstants.kBlueSpeakerTarget : TargetConstants.kRedSpeakerTarget;
+    return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? TargetConstants.kBlueSpeakerTarget
+        : TargetConstants.kRedSpeakerTarget;
   }
 
   public Translation2d getAimingVector(Translation2d target) {
@@ -215,8 +232,8 @@ public class RobotContainer {
         m_estimationField.setRobotPose(estimatedPose);
         m_robotDrive.updateOdometryWithVision(estimatedPose, timestamp);
 
-        double distance = getAimingVector(getTarget()).getNorm();
-        SmartDashboard.putNumber("auto angle distance", distance);
+        distance = getAimingVector(getTarget()).getNorm();
+        SmartDashboard.putNumber("auto aim distance", distance);
       } else {
         m_estimationField.setRobotPose(new Pose2d());
       }
@@ -224,7 +241,9 @@ public class RobotContainer {
 
     double angle = m_robotDrive.getHeading().getDegrees()
         - getAimingVector(getTarget()).getAngle().getDegrees();
-    SmartDashboard.putNumber("auto angle diff", angle);
+    SmartDashboard.putNumber("auto aim angle", angle);
+
+    SmartDashboard.putNumber("auto aim target angle", getAimingVector(getTarget()).getAngle().getDegrees());
   }
 
   /**
