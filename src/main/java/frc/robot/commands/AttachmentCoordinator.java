@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.FeederConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TargetConstants.AimingTarget;
 import frc.robot.subsystems.attachment.FeederSubsystem;
 import frc.robot.subsystems.attachment.ShooterSubsystem;
@@ -190,17 +189,7 @@ public class AttachmentCoordinator {
      */
     public Command getShootCommand() {
         return Commands.sequence(
-                Commands.runOnce(() -> m_shooter.setState(ShooterState.kShooting), m_shooter, m_pivot),
-                Commands.parallel(
-                        Commands.waitUntil(m_shooter::isShooterReady),
-                        Commands.waitUntil(m_pivot::isPivotReady)),
-                Commands.waitSeconds(ShooterConstants.kShooterRevTime),
-                Commands.runOnce(() -> m_feeder.setState(FeederState.kShooting), m_feeder),
-                Commands.race(
-                        Commands.waitSeconds(ShooterConstants.kMaxShootTime),
-                        Commands.sequence(
-                                Commands.waitUntil(m_beamBreak.negate()),
-                                Commands.waitSeconds(ShooterConstants.kBeamBreakEndLag))))
+                Commands.runOnce(() -> m_feeder.setState(FeederState.kShooting), m_feeder))
                 .finallyDo(() -> {
                     goToIntake();
                 });

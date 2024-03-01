@@ -32,11 +32,6 @@ public class ShooterSubsystem extends SubsystemBase {
         m_motor2.setIdleMode(IdleMode.kCoast);
     }
 
-    @Override
-    public void periodic() {
-        // TODO flywheel velocity PID
-    }
-
     /**
      * set the state of the shooter
      * @param state the new state to set
@@ -65,10 +60,5 @@ public class ShooterSubsystem extends SubsystemBase {
      */
     public ShooterState getState() {
         return m_state;
-    }
-
-    public boolean isShooterReady() {
-        //TODO: check shooter rpm
-        return true;
     }
 }
