@@ -98,12 +98,17 @@ public class RobotContainer {
    */
   private void registerPathplannerCommands() {
     // TODO: Auto Commands
-    NamedCommands.registerCommand("spinShooter", m_attatchment.getSpinShooterCommand());
-    NamedCommands.registerCommand("continuousFire", m_attatchment.getContinuousFireCommand());
-    NamedCommands.registerCommand("subwooferPosition",
+    NamedCommands.registerCommand("disableBeamBreak", Commands.none());
+
+    NamedCommands.registerCommand("pivotSubwoofer",
         m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
-    NamedCommands.registerCommand("intakePositon",
+    NamedCommands.registerCommand("pivotIntake",
         m_attatchment.getSetPivotPositionCommand(PivotPosition.kIntakePosition));
+
+    NamedCommands.registerCommand("startFeeders", m_attatchment.getShootCommand());
+    NamedCommands.registerCommand("startShooter", m_attatchment.getSpinShooterAutoCommand()); 
+    NamedCommands.registerCommand("startIntakers", m_attatchment.getIntakeAutoCommand());
+
   }
 
   /**
@@ -137,9 +142,9 @@ public class RobotContainer {
       m_robotDrive.resetGyro();
     }));
 
-    m_driverController.a().onTrue(Commands.runOnce(() -> {
-      //double angle = (-7.05376 * distance) + 32.4698;
-      double angle = 38.7304 * Math.pow(.6761, distance);
+    m_driverController.a().whileTrue(Commands.run(() -> {
+      //double angle = 33.7077 * Math.pow(.7202, distance);
+      double angle = 35.5428 * Math.pow(.7066, distance);
       if (angle < 30 && angle > 0) {
         m_attatchment.getSetCustomPivotPositionCommand(angle).schedule();
       }

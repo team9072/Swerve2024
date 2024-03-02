@@ -30,7 +30,9 @@ public class PivotSubsystem extends SubsystemBase {
         }
     }
 
-    private final CANSparkMax m_leftPivotMotor;
+    private final CANSparkMax m_leftPivotMotor;    
+    private final CANSparkMax m_rightPivotMotor;
+
     private final SparkPIDController m_pivotPID;
     private final AbsoluteEncoder m_pivotEncoder;
 
@@ -39,9 +41,13 @@ public class PivotSubsystem extends SubsystemBase {
 
     public PivotSubsystem() {
         m_leftPivotMotor = new CANSparkMax(PivotConstants.kLeftPivotMotorCANId, MotorType.kBrushless);
+        m_rightPivotMotor = new CANSparkMax(PivotConstants.kRightPivotMotorCANId, MotorType.kBrushless);
 
         m_leftPivotMotor.restoreFactoryDefaults();
         m_leftPivotMotor.setIdleMode(IdleMode.kBrake);
+        m_rightPivotMotor.restoreFactoryDefaults();
+        m_rightPivotMotor.setIdleMode(IdleMode.kBrake);
+        m_rightPivotMotor.follow(m_leftPivotMotor, true);
 
         m_pivotPID = m_leftPivotMotor.getPIDController();
 

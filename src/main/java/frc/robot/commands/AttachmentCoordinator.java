@@ -163,6 +163,10 @@ public class AttachmentCoordinator {
         return Commands.startEnd(() -> startIntaking(), () -> stopIntaking(), m_UTBIntaker, m_feeder);
     }
 
+    public Command getIntakeAutoCommand() {
+        return Commands.runOnce(() -> startIntaking(), m_UTBIntaker, m_feeder);
+    }
+
     /**
      * Reverse the intakers to unjam, until the command is cancelled
      * 
@@ -180,6 +184,10 @@ public class AttachmentCoordinator {
     public Command getSpinShooterCommand() {
         return Commands.startEnd(() -> softSetShooterState(ShooterState.kSpinning),
                 () -> softSetShooterState(ShooterState.kStopped), m_shooter);
+    }
+
+    public Command getSpinShooterAutoCommand() {
+        return Commands.runOnce(() -> softSetShooterState(ShooterState.kSpinning), m_shooter);
     }
 
     /**
