@@ -36,7 +36,7 @@ public class PivotSubsystem extends SubsystemBase {
     private final SparkPIDController m_pivotPID;
     private final AbsoluteEncoder m_pivotEncoder;
 
-    private PivotPosition m_position = PivotPosition.kCustomSpeakerPosition;
+    private PivotPosition m_position = PivotPosition.kIntakePosition;
     private double m_setpoint = PivotConstants.kIntakePos;
 
     public PivotSubsystem() {

@@ -48,7 +48,7 @@ public class AttachmentCoordinator {
             return;
         }
 
-        m_state = state; 
+        m_state = state;
 
         switch (m_state) {
             // do nothing
@@ -134,7 +134,7 @@ public class AttachmentCoordinator {
     private void softSetShooterState(ShooterState state) {
         if (m_state != AttatchmentState.kShooting) {
             m_shooter.setState(state);
-            
+
         }
     }
 
@@ -197,15 +197,17 @@ public class AttachmentCoordinator {
      * @return a command to shoot
      */
     public Command getShootCommand() {
-        return Commands.runOnce(() -> m_feeder.setState(FeederState.kShooting), m_feeder);
-    }
-
-    /**
-     * Stop shooting.
-     * @return a command to stop shooting
-     */
-    public Command getStopShootCommand() {
-        return Commands.runOnce(() -> m_feeder.setState(FeederState.kStopped), m_feeder);
+        return Commands.startEnd(
+                () -> {
+                    setState(AttatchmentState.kShooting);
+                    m_feeder.setState(FeederState.kShooting);
+                },
+                () -> {
+                    setState(AttatchmentState.kAiming);
+                    m_feeder.setState(FeederState.kStopped);
+                    m_pivot.setPosition(PivotPosition.kIntakePosition);
+                },
+                m_feeder);
     }
 
     /**
@@ -225,8 +227,18 @@ public class AttachmentCoordinator {
         }, m_UTBIntaker, m_feeder, m_shooter);
     }
 
+    public Command getStartContinuousFireCommand() {
+        return Commands.runOnce(() -> {
+            setState(AttatchmentState.kContinuousFire);
+            m_UTBIntaker.setState(IntakerState.kIntaking);
+            m_feeder.setState(FeederState.kShooting);
+            m_shooter.setState(ShooterState.kShooting);
+        }, m_UTBIntaker, m_feeder, m_shooter);
+    }
+
     /**
      * Set the position of the pivot
+     * 
      * @param position the pivot position
      * @return a command to set the pivot position
      */
@@ -238,6 +250,7 @@ public class AttachmentCoordinator {
 
     /**
      * Set the roattion of the pivot to a custom value
+     * 
      * @param rotations the pivot angle in rotations of the neo motor
      * @return a command to set the pivot angle
      */

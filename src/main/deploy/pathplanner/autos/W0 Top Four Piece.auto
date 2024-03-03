@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7913611817198578,
-      "y": 6.6250462325486055
+      "x": 1.336590141851963,
+      "y": 5.51401363454356
     },
-    "rotation": 60.87
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
@@ -32,13 +32,7 @@
         {
           "type": "named",
           "data": {
-            "name": "disableBeamBreak"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startFeeders"
+            "name": "startContinuousFire"
           }
         },
         {
@@ -54,22 +48,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "startIntakers"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Top to W1"
-                }
-              }
-            ]
+            "pathName": "Top to W1"
           }
         },
         {

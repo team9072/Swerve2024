@@ -20,13 +20,13 @@
         {
           "type": "named",
           "data": {
-            "name": "disableBeamBreak"
+            "name": null
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "startShooter"
+            "name": null
           }
         },
         {
@@ -38,7 +38,7 @@
         {
           "type": "named",
           "data": {
-            "name": "startFeeders"
+            "name": null
           }
         },
         {
@@ -70,7 +70,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "startIntakers"
+                        "name": null
                       }
                     }
                   ]

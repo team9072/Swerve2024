@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import frc.robot.Constants.OIConstants;
-import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.TargetConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.AttachmentCoordinator;
@@ -47,7 +46,7 @@ public class RobotContainer {
   public final SendableChooser<Command> autoChooser;
 
   // The robot's subsystems
-  public final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  public final DriveSubsystem m_robotDrive = new DriveSubsystem(this::getBlueVector);
 
   // Other (tests)
   double distance = 0;
@@ -98,7 +97,9 @@ public class RobotContainer {
    */
   private void registerPathplannerCommands() {
     // TODO: Auto Commands
-    NamedCommands.registerCommand("disableBeamBreak", Commands.none());
+    NamedCommands.registerCommand("continuousFire", m_attatchment.getContinuousFireCommand());
+
+    NamedCommands.registerCommand("startContinuousFire", m_attatchment.getStartContinuousFireCommand());
 
     NamedCommands.registerCommand("pivotSubwoofer",
         m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
@@ -106,7 +107,7 @@ public class RobotContainer {
         m_attatchment.getSetPivotPositionCommand(PivotPosition.kIntakePosition));
 
     NamedCommands.registerCommand("startFeeders", m_attatchment.getShootCommand());
-    NamedCommands.registerCommand("startShooter", m_attatchment.getSpinShooterAutoCommand()); 
+    NamedCommands.registerCommand("startShooter", m_attatchment.getSpinShooterAutoCommand());
     NamedCommands.registerCommand("startIntakers", m_attatchment.getIntakeAutoCommand());
 
   }
@@ -128,26 +129,27 @@ public class RobotContainer {
         () -> m_robotDrive.setX(),
         m_robotDrive));
 
-    // Auto aiming (offset is 5 degrees for alignment)
-    m_driverController.leftTrigger().whileTrue(Commands.run(
-        () -> m_robotDrive.driveWithHeading(
-            -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-            getAimingVector(getTarget()).getAngle(),
-            true, false, 5),
+    // Auto aiming
+    m_attachmentController.rightTrigger().whileTrue(Commands.run(
+        () -> {
+          // Auto aiming left-right (offset is 5 degrees for alignment)
+          m_robotDrive.driveWithHeading(
+              -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+              -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+              getAimingVector(getTarget()).getAngle(),
+              true, false, 5);
+          // Auto aiming up-down
+          // double angle = 33.7077 * Math.pow(.7202, distance);
+          double angle = 35.5428 * Math.pow(.7066, distance);
+          if (angle < 30 && angle > 0) {
+            m_attatchment.getSetCustomPivotPositionCommand(angle).schedule();
+          }
+        },
         m_robotDrive));
 
     // Reset field oriented
     m_driverController.x().onTrue(Commands.runOnce(() -> {
       m_robotDrive.resetGyro();
-    }));
-
-    m_driverController.a().whileTrue(Commands.run(() -> {
-      //double angle = 33.7077 * Math.pow(.7202, distance);
-      double angle = 35.5428 * Math.pow(.7066, distance);
-      if (angle < 30 && angle > 0) {
-        m_attatchment.getSetCustomPivotPositionCommand(angle).schedule();
-      }
     }));
 
     // D-pad turning
@@ -187,9 +189,8 @@ public class RobotContainer {
     m_attachmentController.leftBumper().whileTrue(m_attatchment.getSpinShooterCommand());
 
     // Shoot
-    m_attachmentController.rightTrigger().or(m_driverController.rightTrigger())
-        .onTrue(m_attatchment.getShootCommand())
-        .onFalse(m_attatchment.getStopShootCommand());
+    m_driverController.rightTrigger()
+        .whileTrue(m_attatchment.getShootCommand());
 
     // Arm/pivot positioning
 
@@ -211,6 +212,10 @@ public class RobotContainer {
 
   public Translation2d getAimingVector(Translation2d target) {
     return m_robotDrive.getPose().getTranslation().minus(target);
+  }
+
+  public Translation2d getBlueVector() {
+    return getAimingVector(TargetConstants.kBlueSpeakerTarget);
   }
 
   public void periodic() {

@@ -4,8 +4,12 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -73,7 +77,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final ProfiledPIDController m_rotationPID;
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {
+  public DriveSubsystem(Supplier<Translation2d> aimingVectorSupplier) {
     // Reset and calibrate
     resetGyro();
     // m_gyro.setAngleAdjustment(180);
@@ -81,7 +85,7 @@ public class DriveSubsystem extends SubsystemBase {
         this::getPose, // Robot pose supplier
         this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        this::driveRobotRelativeWithHeading, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         AutoConstants.AutoPathFollowerConfig,
         () -> {
           // Boolean supplier that controls when the path will be mirrored for the red
@@ -97,6 +101,9 @@ public class DriveSubsystem extends SubsystemBase {
         },
         this // Reference to this subsystem to set requirements
     );
+    PPHolonomicDriveController.setRotationTargetOverride(() -> {
+      return Optional.of(aimingVectorSupplier.get().getAngle());
+    });
 
     m_rotationPID = new ProfiledPIDController(
         DriveConstants.kRotationPID.kP, DriveConstants.kRotationPID.kI, DriveConstants.kRotationPID.kD,
