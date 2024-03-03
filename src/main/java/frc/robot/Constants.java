@@ -244,7 +244,7 @@ public final class Constants {
     // Camera is backward and rotated 22 degrees up
     public static final Transform3d rearCamOffset = new Transform3d(
         new Translation3d(Units.inchesToMeters(-6.5), Units.inchesToMeters(8.25), -Units.inchesToMeters(-11)),
-        new Rotation3d(0, Units.degreesToRadians(-22), Math.PI));
+        new Rotation3d(0, Units.degreesToRadians(-35.5), Math.PI));
     public static final PhotonPoseEstimator rearCamPoseEstimator = new PhotonPoseEstimator(aprilTagLayout,
         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, rearCam, rearCamOffset);
   }
