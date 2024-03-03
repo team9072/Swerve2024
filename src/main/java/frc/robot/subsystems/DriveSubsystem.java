@@ -345,31 +345,6 @@ public class DriveSubsystem extends SubsystemBase {
         : TargetConstants.kRedSpeakerTarget;
   }
 
-  /**
-   * Drive the robot with heading (speaker target during auto) using a robot relative ChasisSpeeds
-   * 
-   * @param speeds The robot relative ChasisSpeeds
-   */
-  private void driveRobotRelativeWithHeading(ChassisSpeeds speeds) {
-    // Blue/Red speaker target
-    Translation2d speakerTarget = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? TargetConstants.kBlueSpeakerTarget
-        : TargetConstants.kRedSpeakerTarget;
-
-    // This is getAimingVector
-    Rotation2d targetRotation = getPose().getTranslation().minus(speakerTarget).getAngle();
-
-    double rotSpeed = m_rotationPID.calculate(
-        getHeading().getRadians(),
-        new TrapezoidProfile.State(targetRotation.getRadians(), 0));
-
-    speeds.omegaRadiansPerSecond = rotSpeed;
-
-    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    setModuleStates(swerveModuleStates);
-  }
-
   private SwerveModulePosition[] getModulePositions() {
     return new SwerveModulePosition[] {
         m_frontLeft.getPosition(),

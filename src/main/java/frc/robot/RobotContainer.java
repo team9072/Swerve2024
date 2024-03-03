@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -20,7 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -50,6 +48,7 @@ public class RobotContainer {
 
   // Other (tests)
   double distance = 0;
+  boolean autoEnableAutoPivot = false;
 
   public final AttachmentCoordinator m_attatchment = new AttachmentCoordinator(
       new UTBIntakerSubsystem(),
@@ -73,7 +72,6 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putData("Pose Estimation", m_estimationField);
-    // SmartDashboard.putNumber("Pivot Angle", 20);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -97,6 +95,12 @@ public class RobotContainer {
   private void registerPathplannerCommands() {
     NamedCommands.registerCommand("startContinuousFire", m_attatchment.getStartContinuousFireCommand());
 
+    // TODO: maybe find a cleaner way to implement this. also includes running the pivot function constantly during auto
+    NamedCommands.registerCommand("startAutoAim", Commands.runOnce(() -> {
+      autoEnableAutoPivot = true;
+      return; // TODO: needed? idk but this + asProxy doesn't stop the path during auto
+    }).asProxy());
+
     NamedCommands.registerCommand("pivotSubwoofer",
         m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
     NamedCommands.registerCommand("pivotIntake",
@@ -110,13 +114,7 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
-   * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
-   * subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
-   * passing it to a
-   * {@link JoystickButton}.
+   * Use this method to define your button->command mappings.
    */
   private void configureButtonBindings() {
     // Base controls
@@ -184,19 +182,15 @@ public class RobotContainer {
 
     m_attachmentController.povDown().onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kIntakePosition));
 
-    // m_attachmentController.povLeft().onTrue(m_attatchment.getSetCustomPivotPositionCommand(SmartDashboard.getNumber("Pivot
-    // Angle", 0)));
-
     m_attachmentController.povRight()
         .onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
   }
 
   public void autoAimPivot() {
     // Auto aiming up-down
-    // double angle = 33.7077 * Math.pow(.7202, distance);
     double angle = 35.5428 * Math.pow(.7066, distance);
     if (angle < 30 && angle > 0) {
-      m_attatchment.getSetCustomPivotPositionCommand(angle).schedule();
+      m_attatchment.setCustomPosition(angle);
     }
   }
 
@@ -219,18 +213,15 @@ public class RobotContainer {
   }
 
   public Translation2d getTargetVector() {
+    if (autoEnableAutoPivot == true) {
+      autoAimPivot();
+    }
     return getAimingVector(getTarget());
   }
 
   public void periodic() {
-    SmartDashboard.putString("Attatchment State", switch (m_attatchment.getState()) {
-      case kAiming -> "Aiming";
-      case kShooting -> "Shooting";
-      case kContinuousFire -> "Auto Continuous";
-    });
-
-    SmartDashboard.putBoolean("Beam Break", m_attatchment.getBeamBreakState());
-
+    SmartDashboard.putNumber("auto aim distance", distance);
+    
     m_field.setRobotPose(m_robotDrive.getPose());
 
     var result = VisionConstants.rearCam.getLatestResult();
@@ -247,17 +238,17 @@ public class RobotContainer {
         m_robotDrive.updateOdometryWithVision(estimatedPose, timestamp);
 
         distance = getAimingVector(getTarget()).getNorm();
-        SmartDashboard.putNumber("auto aim distance", distance);
       } else {
         m_estimationField.setRobotPose(new Pose2d());
       }
     }
+  }
 
-    double angle = m_robotDrive.getHeading().getDegrees()
-        - getAimingVector(getTarget()).getAngle().getDegrees();
-    SmartDashboard.putNumber("auto aim angle", angle);
-
-    SmartDashboard.putNumber("auto aim target angle", getAimingVector(getTarget()).getAngle().getDegrees());
+  // This stops continuous fire and starts the beam break trigger (so it's off
+  // during auto)
+  public void prepareTeleop() {
+    m_attatchment.getStopContinuousFireCommand().schedule();
+    m_attatchment.startBeamBreakTrigger();
   }
 
   /**

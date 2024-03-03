@@ -81,7 +81,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    //m_robotContainer.autoAimPivot();
   }
 
   @Override
@@ -94,7 +93,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_robotContainer.m_attatchment.getStopContinuousFireCommand().schedule();
+    m_robotContainer.prepareTeleop();
   }
 
   /** This function is called periodically during operator control. */

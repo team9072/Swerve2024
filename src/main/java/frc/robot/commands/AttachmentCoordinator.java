@@ -42,7 +42,10 @@ public class AttachmentCoordinator {
         m_pivot = pivot;
 
         m_beamBreak = new Trigger(m_feeder::getBeamBreakState);
+    }
 
+    // Starts the beam break trigger for teleop
+    public void startBeamBreakTrigger() {
         m_beamBreak.onTrue(getHandleGetNoteCommand());
     }
 
@@ -252,5 +255,11 @@ public class AttachmentCoordinator {
             m_pivot.setPosition(PivotPosition.kCustomSpeakerPosition);
             m_pivot.setPrecisePosition(rotations);
         }, m_pivot);
+    }
+
+    // TODO: testing
+    public void setCustomPosition(double rotations) {
+        m_pivot.setPosition(PivotPosition.kCustomSpeakerPosition);
+        m_pivot.setPrecisePosition(rotations);
     }
 }
