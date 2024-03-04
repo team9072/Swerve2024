@@ -98,7 +98,10 @@ public class RobotContainer {
     // TODO: maybe find a cleaner way to implement this. also includes running the pivot function constantly during auto
     NamedCommands.registerCommand("startAutoAim", Commands.runOnce(() -> {
       autoEnableAutoPivot = true;
-      return; // TODO: needed? idk but this + asProxy doesn't stop the path during auto
+    }).asProxy());
+
+    NamedCommands.registerCommand("zeroGyro", Commands.runOnce(() -> {
+      m_robotDrive.resetGyro();
     }).asProxy());
 
     NamedCommands.registerCommand("pivotSubwoofer",
@@ -221,7 +224,7 @@ public class RobotContainer {
 
   public void periodic() {
     SmartDashboard.putNumber("auto aim distance", distance);
-    
+
     m_field.setRobotPose(m_robotDrive.getPose());
 
     var result = VisionConstants.rearCam.getLatestResult();

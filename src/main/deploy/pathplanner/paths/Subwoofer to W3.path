@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 1.336590141851963,
-        "y": 5.51401363454356
+        "y": 5.53
       },
       "prevControl": null,
       "nextControl": {
         "x": 2.965804774688812,
-        "y": 5.6696401069339455
+        "y": 5.6856264723903855
       },
       "isLocked": false,
       "linkedName": "Subwoofer"

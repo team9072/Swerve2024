@@ -76,6 +76,18 @@
           "data": {
             "pathName": "W2 to W3"
           }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "W3 to Line"
+          }
         }
       ]
     }
