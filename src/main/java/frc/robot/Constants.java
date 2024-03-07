@@ -242,10 +242,10 @@ public final class Constants {
 
     public static final PhotonCamera rearCam = new PhotonCamera("BW3");
     // Camera is backward and rotated 22 degrees up
-    // Note: Negative shifts up and left
+    // Note: Negative shifts up and left (relative to field, not up on the field2d)
     // TODO: make adjustments into one number
     public static final Transform3d rearCamOffset = new Transform3d(
-        new Translation3d(Units.inchesToMeters(-6.5-7.55-5-7.5+17), Units.inchesToMeters(8.25-16+3.75), -Units.inchesToMeters(-11)),
+        new Translation3d(Units.inchesToMeters(-6.5-7.55-5-7.5+17), Units.inchesToMeters(8.25-16+1.25), -Units.inchesToMeters(-11)),
         new Rotation3d(0, Units.degreesToRadians(-35.5), Math.PI));
     public static final PhotonPoseEstimator rearCamPoseEstimator = new PhotonPoseEstimator(aprilTagLayout,
         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, rearCam, rearCamOffset);
@@ -253,13 +253,17 @@ public final class Constants {
 
   public static final class TargetConstants {
     // Apriltag #7
+    // Calibrate at comps
     public static final Translation2d kBlueSpeakerTarget = new Translation2d(-0.04, 5.55);
     // Apriltag #4
+    // Calibrate at comps
     public static final Translation2d kRedSpeakerTarget = new Translation2d(16.58, 5.55);
 
     // Apriltag #6
+    // Calibrate at comps
     public static final Translation2d kBlueAmpTarget = new Translation2d(1.84, 8.20);
     // Apriltag #5
+    // Calibrate at comps
     public static final Translation2d kRedAmpTarget = new Translation2d(14.70, 8.20);
 
     public enum AimingTarget {

@@ -1,7 +1,9 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.FeederConstants;
 import frc.robot.Constants.TargetConstants.AimingTarget;
@@ -45,8 +47,23 @@ public class AttachmentCoordinator {
     }
 
     // Starts the beam break trigger for teleop
-    public void startBeamBreakTrigger() {
-        m_beamBreak.onTrue(getHandleGetNoteCommand());
+    public void startBeamBreakTrigger(CommandXboxController driveController) {
+        // Rumble on intake (this mess makes it so it doesn't rumble while shooting and only for intaking)
+        m_beamBreak.onTrue(
+            Commands.parallel(
+                getHandleGetNoteCommand(),
+                Commands.either(                
+                    Commands.sequence(
+                    Commands.runOnce(() -> {
+                        driveController.getHID().setRumble(RumbleType.kBothRumble, 1);
+                    }),
+                    Commands.waitSeconds(1),
+                    Commands.runOnce(() -> {
+                        driveController.getHID().setRumble(RumbleType.kBothRumble, 0);
+                    })
+                ),
+                Commands.none(), () -> m_state != AttatchmentState.kShooting))
+        );
     }
 
     private void setState(AttatchmentState state) {
@@ -192,6 +209,21 @@ public class AttachmentCoordinator {
         return Commands.runOnce(() -> softSetShooterState(ShooterState.kSpinning), m_shooter);
     }
 
+    // Starts shooting and stops when the command ends
+    public Command getShootCommand() {
+        return Commands.startEnd(() -> {
+            enableBeamBreak = false;
+            setState(AttatchmentState.kShooting);
+            m_feeder.setState(FeederState.kShooting);
+        },
+        () -> {
+            setState(AttatchmentState.kAiming);
+            m_feeder.setState(FeederState.kStopped);
+            m_pivot.setPosition(PivotPosition.kIntakePosition);
+            enableBeamBreak = true;
+        });
+    }
+
     // Starts shooting without stopping
     public Command getStartShootCommand() {
         return Commands.runOnce(() -> {
@@ -203,12 +235,14 @@ public class AttachmentCoordinator {
 
     // Stops shooting
     public Command getStopShootCommand() {
-        return Commands.runOnce(() -> {
+        return Commands.sequence(
+        Commands.waitSeconds(0.2),   
+        Commands.runOnce(() -> {
             setState(AttatchmentState.kAiming);
             m_feeder.setState(FeederState.kStopped);
             m_pivot.setPosition(PivotPosition.kIntakePosition);
             enableBeamBreak = true;
-        });
+        }));
     }
 
     // Starts continuous fire without stopping

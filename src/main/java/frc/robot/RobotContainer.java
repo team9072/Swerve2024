@@ -19,9 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.TargetConstants;
 import frc.robot.Constants.VisionConstants;
@@ -95,7 +92,8 @@ public class RobotContainer {
   private void registerPathplannerCommands() {
     NamedCommands.registerCommand("startContinuousFire", m_attatchment.getStartContinuousFireCommand());
 
-    // TODO: maybe find a cleaner way to implement this. also includes running the pivot function constantly during auto
+    // TODO: maybe find a cleaner way to implement this. also includes running the
+    // pivot function constantly during auto
     NamedCommands.registerCommand("startAutoAim", Commands.runOnce(() -> {
       autoEnableAutoPivot = true;
     }).asProxy());
@@ -191,7 +189,7 @@ public class RobotContainer {
 
   public void autoAimPivot() {
     // Auto aiming up-down
-    double angle = 35.5428 * Math.pow(.7066, distance);
+    double angle = (35.5428 * Math.pow(.7066, distance)) - distance * (distance > 4 ? 0.8 : 1); // adjust more for longer distance
     if (angle < 30 && angle > 0) {
       m_attatchment.setCustomPosition(angle);
     }
@@ -227,23 +225,18 @@ public class RobotContainer {
 
     m_field.setRobotPose(m_robotDrive.getPose());
 
-    var result = VisionConstants.rearCam.getLatestResult();
-    PhotonTrackedTarget target = result.getBestTarget();
+    var pose = VisionConstants.rearCamPoseEstimator.update();
 
-    if (target != null) {
-      var pose = VisionConstants.rearCamPoseEstimator.update();
+    if (pose.isPresent()) {
+      Pose2d estimatedPose = pose.get().estimatedPose.toPose2d();
+      double timestamp = pose.get().timestampSeconds;
 
-      if (pose.isPresent()) {
-        Pose2d estimatedPose = pose.get().estimatedPose.toPose2d();
-        double timestamp = pose.get().timestampSeconds;
+      m_estimationField.setRobotPose(estimatedPose);
+      m_robotDrive.updateOdometryWithVision(estimatedPose, timestamp);
 
-        m_estimationField.setRobotPose(estimatedPose);
-        m_robotDrive.updateOdometryWithVision(estimatedPose, timestamp);
-
-        distance = getAimingVector(getTarget()).getNorm();
-      } else {
-        m_estimationField.setRobotPose(new Pose2d());
-      }
+      distance = getAimingVector(getTarget()).getNorm();
+    } else {
+      m_estimationField.setRobotPose(new Pose2d());
     }
   }
 
@@ -251,7 +244,7 @@ public class RobotContainer {
   // during auto)
   public void prepareTeleop() {
     m_attatchment.getStopContinuousFireCommand().schedule();
-    m_attatchment.startBeamBreakTrigger();
+    m_attatchment.startBeamBreakTrigger(m_driverController);
   }
 
   /**
