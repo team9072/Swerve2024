@@ -44,8 +44,8 @@ public class RobotContainer {
   public final DriveSubsystem m_robotDrive = new DriveSubsystem(this::getTargetVector);
 
   // Other (tests)
-  double distance = 0;
-  boolean autoEnableAutoPivot = false;
+  double m_targetDistance = 0;
+  boolean m_autoAimPivotEnabled = false;
 
   public final AttachmentCoordinator m_attatchment = new AttachmentCoordinator(
       new UTBIntakerSubsystem(),
@@ -95,7 +95,7 @@ public class RobotContainer {
     // TODO: maybe find a cleaner way to implement this. also includes running the
     // pivot function constantly during auto
     NamedCommands.registerCommand("startAutoAim", Commands.runOnce(() -> {
-      autoEnableAutoPivot = true;
+      m_autoAimPivotEnabled = true;
     }).asProxy());
 
     NamedCommands.registerCommand("zeroGyro", Commands.runOnce(() -> {
@@ -118,6 +118,10 @@ public class RobotContainer {
    * Use this method to define your button->command mappings.
    */
   private void configureButtonBindings() {
+    // Rumble on intake note
+    m_attatchment.bindControllerRumble(m_driverController);
+    m_attatchment.bindControllerRumble(m_attachmentController);
+
     // Base controls
 
     // Set X wheels
@@ -188,7 +192,7 @@ public class RobotContainer {
   }
 
   public void autoAimPivot() {
-    double angle = (42.9919 * Math.pow(.601, distance));
+    double angle = (42.9919 * Math.pow(.601, m_targetDistance));
     // Auto aiming up-down
     /*double angle = (35.5428 * Math.pow(.7066, distance));
 
@@ -233,14 +237,14 @@ public class RobotContainer {
   }
 
   public Translation2d getTargetVector() {
-    if (autoEnableAutoPivot == true) {
+    if (m_autoAimPivotEnabled == true) {
       autoAimPivot();
     }
     return getAimingVector(getTarget());
   }
 
   public void periodic() {
-    SmartDashboard.putNumber("auto aim distance", distance);
+    SmartDashboard.putNumber("auto aim distance", m_targetDistance);
 
     m_field.setRobotPose(m_robotDrive.getPose());
 
@@ -253,17 +257,10 @@ public class RobotContainer {
       m_estimationField.setRobotPose(estimatedPose);
       m_robotDrive.updateOdometryWithVision(estimatedPose, timestamp);
 
-      distance = getAimingVector(getTarget()).getNorm();
+      m_targetDistance = getAimingVector(getTarget()).getNorm();
     } else {
       m_estimationField.setRobotPose(new Pose2d());
     }
-  }
-
-  // This stops continuous fire and starts the beam break trigger (so it's off
-  // during auto)
-  public void prepareTeleop() {
-    m_attatchment.getStopContinuousFireCommand().schedule();
-    m_attatchment.startBeamBreakTrigger(m_driverController);
   }
 
   /**
@@ -272,6 +269,10 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    // Stop continuous fire and auto aim after auto ends
+    return autoChooser.getSelected().finallyDo(() -> {
+      m_attatchment.stopContinuousFire();
+      m_autoAimPivotEnabled = false;
+    });
   }
 }

@@ -44,14 +44,14 @@ public class AttachmentCoordinator {
         m_pivot = pivot;
 
         m_beamBreak = new Trigger(m_feeder::getBeamBreakState);
+        m_beamBreak.onTrue(getHandleGetNoteCommand());
     }
 
     // Starts the beam break trigger for teleop
-    public void startBeamBreakTrigger(CommandXboxController driveController) {
+    public void bindControllerRumble(CommandXboxController driveController) {
         // Rumble on intake (this mess makes it so it doesn't rumble while shooting and only for intaking)
         m_beamBreak.onTrue(
             Commands.parallel(
-                getHandleGetNoteCommand(),
                 Commands.either(                
                     Commands.sequence(
                     Commands.runOnce(() -> {
@@ -92,9 +92,6 @@ public class AttachmentCoordinator {
     }
 
     private Command getHandleGetNoteCommand() {
-        if (!enableBeamBreak || m_feeder.getState() == FeederState.kShooting)
-            return Commands.none();
-
         return Commands.either(
                 Commands.sequence(
                         Commands.runOnce(() -> {
@@ -107,7 +104,7 @@ public class AttachmentCoordinator {
                             m_feeder.setState(FeederState.kStopped);
                         }, m_UTBIntaker, m_feeder)),
                 Commands.none(),
-                () -> m_pivot.getPosition() == PivotPosition.kIntakePosition && m_state == AttatchmentState.kAiming);
+                () -> enableBeamBreak && m_pivot.getPosition() == PivotPosition.kIntakePosition && m_state == AttatchmentState.kAiming);
     }
 
     /**
@@ -255,14 +252,18 @@ public class AttachmentCoordinator {
         }, m_UTBIntaker, m_feeder, m_shooter);
     }
 
-    // Stops continuous fire
-    public Command getStopContinuousFireCommand() {
-        return Commands.runOnce(() -> {
-            setState(AttatchmentState.kAiming);
+    public void stopContinuousFire() {
+        setState(AttatchmentState.kAiming);
             m_pivot.setPosition(PivotPosition.kIntakePosition);
             m_shooter.setState(ShooterState.kStopped);
             m_feeder.setState(FeederState.kStopped);
             m_UTBIntaker.setState(IntakerState.kStopped);
+    }
+
+    // Stops continuous fire
+    public Command getStopContinuousFireCommand() {
+        return Commands.runOnce(() -> {
+            stopContinuousFire();
         }, m_UTBIntaker, m_feeder, m_shooter);
     }
 
