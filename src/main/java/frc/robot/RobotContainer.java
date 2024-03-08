@@ -188,8 +188,27 @@ public class RobotContainer {
   }
 
   public void autoAimPivot() {
+    double angle = (42.9919 * Math.pow(.601, distance));
     // Auto aiming up-down
-    double angle = (35.5428 * Math.pow(.7066, distance)) - distance * (distance > 4 ? 0.8 : 1); // adjust more for longer distance
+    /*double angle = (35.5428 * Math.pow(.7066, distance));
+
+    // Angle adjustments
+    double adjustment = distance;
+    
+    if (distance > 4.6) {
+      adjustment *= .5;
+    } else if (distance > 4.4) {
+      adjustment *= .7;
+    } else if (distance > 4.3) {
+      adjustment *= .7;
+    } else if (distance > 4.2) {
+      adjustment *= .7;
+    } else if (distance > 4.0) {
+      adjustment *= .8;
+    }
+
+    angle -= adjustment;*/
+
     if (angle < 30 && angle > 0) {
       m_attatchment.setCustomPosition(angle);
     }
