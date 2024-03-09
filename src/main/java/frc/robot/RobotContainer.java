@@ -79,8 +79,8 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         Commands.run(
             () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(invertIfRed(m_driverController.getLeftY()), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(invertIfRed(m_driverController.getLeftX()), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true, false),
             m_robotDrive));
@@ -131,7 +131,7 @@ public class RobotContainer {
 
     // Auto aiming
     m_attachmentController.rightTrigger().whileTrue(Commands.run(() -> {
-      autoAimDrive();
+      autoAimDrive(getAimingVector(getTarget()).getAngle());
       autoAimPivot();
     }));
 
@@ -141,29 +141,13 @@ public class RobotContainer {
     }));
 
     // D-pad turning
-    m_driverController.povUp().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
-        -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-        -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-        Rotation2d.fromDegrees(0), true, false, 0),
-        m_robotDrive));
+    m_driverController.povUp().whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(0, 180))), m_robotDrive));
 
-    m_driverController.povRight().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
-        -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-        -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-        Rotation2d.fromDegrees(-90), true, false, 0),
-        m_robotDrive));
+    m_driverController.povRight().whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(-90, 90))), m_robotDrive));
 
-    m_driverController.povDown().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
-        -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-        -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-        Rotation2d.fromDegrees(180), true, false, 0),
-        m_robotDrive));
+    m_driverController.povDown().whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(180, 0))), m_robotDrive));
 
-    m_driverController.povLeft().whileTrue(Commands.run(() -> m_robotDrive.driveWithHeading(
-        -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-        -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-        Rotation2d.fromDegrees(90), true, false, 0),
-        m_robotDrive));
+    m_driverController.povLeft().whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(90, -90))), m_robotDrive));
 
     // Attatchment controls
 
@@ -218,18 +202,29 @@ public class RobotContainer {
     }
   }
 
-  public void autoAimDrive() {
+  public void autoAimDrive(Rotation2d angle) {
     // Auto aiming left-right (offset is 5 degrees for alignment)
     m_robotDrive.driveWithHeading(
-        -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-        -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-        getAimingVector(getTarget()).getAngle(),
-        true, false, 5);
+        -MathUtil.applyDeadband(invertIfRed(m_driverController.getLeftY()), OIConstants.kDriveDeadband),
+        -MathUtil.applyDeadband(invertIfRed(m_driverController.getLeftX()), OIConstants.kDriveDeadband),
+        angle,
+        true, false);
+  }
+
+  public boolean isBlueAlliance() {
+    return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue;
+  }
+
+  public <T> T getFromAlliance(T blueVal, T redVal) {
+    return isBlueAlliance() ? blueVal : redVal;
+  }
+
+  public double invertIfRed(double num) {
+     return num * getFromAlliance(1, -1);
   }
 
   public Translation2d getTarget() {
-    return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? TargetConstants.kBlueSpeakerTarget
-        : TargetConstants.kRedSpeakerTarget;
+    return TargetConstants.AimingTarget.kSpeaker.getTarget(isBlueAlliance());
   }
 
   public Translation2d getAimingVector(Translation2d target) {

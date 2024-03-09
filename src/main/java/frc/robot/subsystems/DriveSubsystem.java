@@ -142,7 +142,8 @@ public class DriveSubsystem extends SubsystemBase {
    * Reset the forward direction of the robot
    */
   public void resetGyro() {
-    Pose2d newPose = new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(0));
+    Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
+    Pose2d newPose = new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(alliance == Alliance.Blue ? 0 : 180));
     resetPose(newPose);
   }
 
@@ -227,10 +228,10 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rateLimit      Whether to enable rate limiting for smoother control.
    */
   public void driveWithHeading(double xSpeed, double ySpeed, Rotation2d targetRotation, boolean fieldRelative,
-      boolean rateLimit, double offsetDegrees) {
+      boolean rateLimit) {
     double rotSpeed = m_rotationPID.calculate(
         getHeading().getRadians(),
-        new TrapezoidProfile.State(targetRotation.getRadians() + (offsetDegrees * (Math.PI / 180)), 0));
+        new TrapezoidProfile.State(targetRotation.getRadians(), 0));
 
     double xSpeedCommanded;
     double ySpeedCommanded;

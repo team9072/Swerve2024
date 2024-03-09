@@ -270,12 +270,16 @@ public final class Constants {
       kSpeaker(kBlueSpeakerTarget, kRedSpeakerTarget),
       kAmp(kBlueAmpTarget, kRedAmpTarget);
 
-      Translation2d blue, red;
+      private Translation2d blue, red;
 
       AimingTarget(Translation2d blue, Translation2d red) {
         this.blue = blue;
         this.red = red;
       };
+
+      public Translation2d getTarget(boolean isBlueAlliance) {
+        return isBlueAlliance ? blue : red;
+      }
     }
   }
 }
