@@ -68,7 +68,7 @@ public final class Constants {
 
     // Pivot range is 0-60
     public static final double kGlobalMin = 0;
-    public static final double kGlobalMax = 40;
+    public static final double kGlobalMax = 30;
 
     // Shooting is from the entire range
     public static final double kSpeakerMin = kGlobalMin;
@@ -78,7 +78,7 @@ public final class Constants {
     public static final double kSubwooferPos = 23; // left (good)
     public static final double kPodiumPos = 12; // up (good)
     public static final double kIntakePos = 11; // down (good) 11
-    public static final double kAmpPos = 65;
+    public static final double kAmpPos = 30;
 
     // Distance before pivot is considered ready
     public static final double kPositionDeadzone = 2.0;

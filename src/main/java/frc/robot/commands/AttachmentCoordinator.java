@@ -43,7 +43,7 @@ public class AttachmentCoordinator {
         m_shooter = shooter;
         m_pivot = pivot;
 
-        m_beamBreak = new Trigger(m_feeder::getBeamBreakState);
+        m_beamBreak = new Trigger(m_feeder::getBeamBreakState).negate();
         m_beamBreak.onTrue(getHandleGetNoteCommand());
     }
 

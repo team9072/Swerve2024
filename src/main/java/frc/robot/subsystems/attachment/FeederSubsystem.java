@@ -61,7 +61,7 @@ public class FeederSubsystem extends SubsystemBase {
      * @return true if a note is detected, or fale otherwise
      */
     public boolean getBeamBreakState() {
-        return !m_beamBreakSensor.get();
+        return m_beamBreakSensor.get();
     }
 
     /*

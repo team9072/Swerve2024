@@ -245,6 +245,7 @@ public class RobotContainer {
 
   public void periodic() {
     SmartDashboard.putNumber("auto aim distance", m_targetDistance);
+    SmartDashboard.putBoolean("has note", m_attatchment.getBeamBreakState());
 
     m_field.setRobotPose(m_robotDrive.getPose());
 
