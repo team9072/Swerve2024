@@ -24,7 +24,7 @@ public class AttachmentCoordinator {
     }
 
     private final UTBIntakerSubsystem m_UTBIntaker;
-    private final FeederSubsystem m_feeder;
+    public final FeederSubsystem m_feeder;
     private final ShooterSubsystem m_shooter;
     private final PivotSubsystem m_pivot;
     private final Trigger m_beamBreak;
@@ -33,8 +33,6 @@ public class AttachmentCoordinator {
     private AttatchmentState m_state = AttatchmentState.kAiming;
     private AimingTarget m_target = AimingTarget.kSpeaker;
 
-    // Other
-    boolean enableBeamBreak = true;
 
     public AttachmentCoordinator(UTBIntakerSubsystem utbIntaker, FeederSubsystem feeder, ShooterSubsystem shooter,
             PivotSubsystem pivot) {
@@ -44,7 +42,6 @@ public class AttachmentCoordinator {
         m_pivot = pivot;
 
         m_beamBreak = new Trigger(m_feeder::getBeamBreakState).negate();
-        m_beamBreak.onTrue(getHandleGetNoteCommand());
     }
 
     // Starts the beam break trigger for teleop
@@ -62,7 +59,7 @@ public class AttachmentCoordinator {
                         driveController.getHID().setRumble(RumbleType.kBothRumble, 0);
                     })
                 ),
-                Commands.none(), () -> m_state != AttatchmentState.kShooting))
+                Commands.none(), () -> m_state == AttatchmentState.kAiming))
         );
     }
 
@@ -89,22 +86,6 @@ public class AttachmentCoordinator {
 
     public boolean getBeamBreakState() {
         return m_beamBreak.getAsBoolean();
-    }
-
-    private Command getHandleGetNoteCommand() {
-        return Commands.either(
-                Commands.sequence(
-                        Commands.runOnce(() -> {
-                            setState(AttatchmentState.kAiming);
-                            m_feeder.setState(FeederState.kAlignReverse);
-                        }, m_UTBIntaker, m_feeder),
-                        Commands.race(Commands.waitUntil(m_beamBreak.negate()),
-                                Commands.waitSeconds(FeederConstants.kNotePullbackMaxTime)),
-                        Commands.runOnce(() -> {
-                            m_feeder.setState(FeederState.kStopped);
-                        }, m_UTBIntaker, m_feeder)),
-                Commands.none(),
-                () -> enableBeamBreak && m_pivot.getPosition() == PivotPosition.kIntakePosition && m_state == AttatchmentState.kAiming);
     }
 
     /**
@@ -176,7 +157,18 @@ public class AttachmentCoordinator {
      * @return a command to intake
      */
     public Command getIntakeCommand() {
-        return Commands.startEnd(() -> startIntaking(), () -> stopIntaking(), m_UTBIntaker, m_feeder);
+        return Commands.sequence(
+            Commands.runOnce(() -> startIntaking(), m_UTBIntaker, m_feeder),
+                Commands.waitUntil(m_beamBreak),
+                Commands.runOnce(() -> {
+                    m_feeder.setState(FeederState.kAlignReverse);
+                }, m_UTBIntaker, m_feeder),
+                Commands.race(Commands.waitUntil(m_beamBreak.negate()),
+                        Commands.waitSeconds(FeederConstants.kNotePullbackMaxTime)),
+                Commands.runOnce(() -> {
+                    m_feeder.setState(FeederState.kStopped);
+                }, m_UTBIntaker, m_feeder)
+        ).finallyDo(() -> stopIntaking());
     }
 
     public Command getIntakeAutoCommand() {
@@ -209,7 +201,6 @@ public class AttachmentCoordinator {
     // Starts shooting and stops when the command ends
     public Command getShootCommand() {
         return Commands.startEnd(() -> {
-            enableBeamBreak = false;
             setState(AttatchmentState.kShooting);
             m_feeder.setState(FeederState.kShooting);
         },
@@ -217,14 +208,12 @@ public class AttachmentCoordinator {
             setState(AttatchmentState.kAiming);
             m_feeder.setState(FeederState.kStopped);
             m_pivot.setPosition(PivotPosition.kIntakePosition);
-            enableBeamBreak = true;
         });
     }
 
     // Starts shooting without stopping
     public Command getStartShootCommand() {
         return Commands.runOnce(() -> {
-            enableBeamBreak = false;
             setState(AttatchmentState.kShooting);
             m_feeder.setState(FeederState.kShooting);
         });
@@ -238,7 +227,6 @@ public class AttachmentCoordinator {
             setState(AttatchmentState.kAiming);
             m_feeder.setState(FeederState.kStopped);
             m_pivot.setPosition(PivotPosition.kIntakePosition);
-            enableBeamBreak = true;
         }));
     }
 

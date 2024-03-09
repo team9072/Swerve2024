@@ -26,9 +26,9 @@ import frc.robot.commands.AttachmentCoordinator;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.attachment.FeederSubsystem;
 import frc.robot.subsystems.attachment.PivotSubsystem;
+import frc.robot.subsystems.attachment.PivotSubsystem.PivotPosition;
 import frc.robot.subsystems.attachment.ShooterSubsystem;
 import frc.robot.subsystems.attachment.UTBIntakerSubsystem;
-import frc.robot.subsystems.attachment.PivotSubsystem.PivotPosition;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -109,7 +109,9 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("startFeeders", m_attatchment.getStartShootCommand());
     NamedCommands.registerCommand("startShooter", m_attatchment.getSpinShooterAutoCommand());
-    NamedCommands.registerCommand("startIntakers", m_attatchment.getIntakeAutoCommand());
+    NamedCommands.registerCommand("startIntakers", m_attatchment.getIntakeAutoCommand().asProxy());
+    // will not stop
+    NamedCommands.registerCommand("intake", m_attatchment.getIntakeCommand());
 
     NamedCommands.registerCommand("stopFeeders", m_attatchment.getStopShootCommand());
   }
@@ -239,6 +241,9 @@ public class RobotContainer {
   }
 
   public void periodic() {
+    Command c = m_attatchment.m_feeder.getCurrentCommand();
+    String name = c == null ? "None" : c.getName();
+    SmartDashboard.putString("feeder Command", name);
     SmartDashboard.putNumber("auto aim distance", m_targetDistance);
     SmartDashboard.putBoolean("has note", m_attatchment.getBeamBreakState());
 
@@ -266,6 +271,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // Stop continuous fire and auto aim after auto ends
+    System.out.print("got auto command");
     return autoChooser.getSelected().finallyDo(() -> {
       m_attatchment.stopContinuousFire();
       m_autoAimPivotEnabled = false;
