@@ -2,27 +2,15 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7953225385123751,
-      "y": 6.633578385640183
+      "x": 1.336590141851963,
+      "y": 5.53
     },
-    "rotation": 59.506641597524386
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "disableBeamBreak"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startShooter"
-          }
-        },
         {
           "type": "parallel",
           "data": {
@@ -46,7 +34,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "startIntakers"
+                        "name": null
                       }
                     }
                   ]
@@ -88,7 +76,7 @@
         {
           "type": "named",
           "data": {
-            "name": "enableBeamBreak"
+            "name": null
           }
         },
         {
@@ -106,7 +94,7 @@
         {
           "type": "named",
           "data": {
-            "name": "startIntakers"
+            "name": null
           }
         }
       ]

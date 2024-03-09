@@ -2,10 +2,9 @@ package frc.robot.subsystems.attachment;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
@@ -16,14 +15,14 @@ public class ShooterSubsystem extends SubsystemBase {
         kShooting,
     }
 
-    private CANSparkMax m_motor1;
-    private CANSparkMax m_motor2;
+    private CANSparkFlex m_motor1;
+    private CANSparkFlex m_motor2;
     private ShooterState m_state = ShooterState.kStopped;
     private double m_speed = ShooterConstants.kShootSpeed;
 
     public ShooterSubsystem() {
-        m_motor1 = new CANSparkMax(ShooterConstants.kRightShooterMotorCANId, MotorType.kBrushless);
-        m_motor2 = new CANSparkMax(ShooterConstants.kLeftShooterMotorCANId, MotorType.kBrushless);
+        m_motor1 = new CANSparkFlex(ShooterConstants.kRightShooterMotorCANId, MotorType.kBrushless);
+        m_motor2 = new CANSparkFlex(ShooterConstants.kLeftShooterMotorCANId, MotorType.kBrushless);
 
         m_motor1.restoreFactoryDefaults();
         m_motor2.restoreFactoryDefaults();
@@ -31,11 +30,6 @@ public class ShooterSubsystem extends SubsystemBase {
         // set coast mode to prevent damage
         m_motor1.setIdleMode(IdleMode.kCoast);
         m_motor2.setIdleMode(IdleMode.kCoast);
-    }
-
-    @Override
-    public void periodic() {
-        // TODO flywheel velocity PID
     }
 
     /**
@@ -61,24 +55,10 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     /**
-     * set the state of the shooter
-     * @param state the new state to set
-     * @return a command to set the state of the shooter
-     */
-    public Command getSetStateCommand(ShooterState state) {
-        return this.runOnce(() -> setState(state));
-    }
-
-    /**
      * get the current state of the shooter
      * @return the state of the shooter
      */
     public ShooterState getState() {
         return m_state;
-    }
-
-    public boolean isShooterReady() {
-        //TODO: check shooter rpm
-        return true;
     }
 }

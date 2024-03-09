@@ -2,15 +2,21 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7913611817198578,
-      "y": 6.6250462325486055
+      "x": 1.336590141851963,
+      "y": 5.53
     },
-    "rotation": 60.87
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "zeroGyro"
+          }
+        },
         {
           "type": "named",
           "data": {
@@ -20,13 +26,7 @@
         {
           "type": "named",
           "data": {
-            "name": null
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": null
+            "name": "startShooter"
           }
         },
         {
@@ -38,7 +38,7 @@
         {
           "type": "named",
           "data": {
-            "name": null
+            "name": "startContinuousFire"
           }
         },
         {
@@ -50,32 +50,13 @@
         {
           "type": "named",
           "data": {
-            "name": "pivotIntake"
+            "name": "startAutoAim"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": null
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": null
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Runner 1"
-                }
-              }
-            ]
+            "pathName": "Top to W1"
           }
         },
         {
@@ -87,24 +68,24 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Runner 2"
+            "pathName": "W1 to W2"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": null
+            "waitTime": 0.1
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": null
+            "pathName": "W2 to W3"
           }
         }
       ]
     }
   },
-  "folder": "Week 0",
+  "folder": null,
   "choreoAuto": false
 }

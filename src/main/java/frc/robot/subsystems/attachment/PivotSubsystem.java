@@ -12,14 +12,17 @@ import frc.robot.Constants.PivotConstants;
 
 public class PivotSubsystem extends SubsystemBase {
     public enum PivotPosition {
-        kIntakePosition(PivotConstants.kIntakePos, PivotConstants.kIntakePos),
-        kSpeakerPosition(PivotConstants.kSpeakerMin, PivotConstants.kSpeakerMax),
-        kAmpPosition(PivotConstants.kAmpPos, PivotConstants.kAmpPos),
-        kPodiumPosition(PivotConstants.kPodiumPos, PivotConstants.kPodiumPos),
-        kSubwooferPosition(PivotConstants.kSubwooferPos, PivotConstants.kSubwooferPos),
-        kSubwooferSidePosition(PivotConstants.kSubwooferSidePos, PivotConstants.kSubwooferSidePos);
+        kIntakePosition(PivotConstants.kIntakePos),
+        kCustomSpeakerPosition(PivotConstants.kSpeakerMin, PivotConstants.kSpeakerMax),
+        kAmpPosition(PivotConstants.kAmpPos),
+        kSubwooferPosition(PivotConstants.kSubwooferPos);
 
         public double lowLimit, highLimit;
+
+        PivotPosition(double pos) {
+            lowLimit = Math.max(PivotConstants.kGlobalMin, pos);
+            highLimit = Math.min(PivotConstants.kGlobalMax, pos);
+        }
 
         PivotPosition(double low, double high) {
             lowLimit = Math.max(PivotConstants.kGlobalMin, low);
@@ -27,18 +30,24 @@ public class PivotSubsystem extends SubsystemBase {
         }
     }
 
-    private final CANSparkMax m_leftPivotMotor;
+    private final CANSparkMax m_leftPivotMotor;    
+    private final CANSparkMax m_rightPivotMotor;
+
     private final SparkPIDController m_pivotPID;
     private final AbsoluteEncoder m_pivotEncoder;
 
-    private PivotPosition m_pivotPosition = PivotPosition.kIntakePosition;
-    private double m_pivotSetpoint = PivotConstants.kIntakePos;
+    private PivotPosition m_position = PivotPosition.kIntakePosition;
+    private double m_setpoint = PivotConstants.kIntakePos;
 
     public PivotSubsystem() {
         m_leftPivotMotor = new CANSparkMax(PivotConstants.kLeftPivotMotorCANId, MotorType.kBrushless);
+        m_rightPivotMotor = new CANSparkMax(PivotConstants.kRightPivotMotorCANId, MotorType.kBrushless);
 
         m_leftPivotMotor.restoreFactoryDefaults();
         m_leftPivotMotor.setIdleMode(IdleMode.kBrake);
+        m_rightPivotMotor.restoreFactoryDefaults();
+        m_rightPivotMotor.setIdleMode(IdleMode.kBrake);
+        m_rightPivotMotor.follow(m_leftPivotMotor, true);
 
         m_pivotPID = m_leftPivotMotor.getPIDController();
 
@@ -64,9 +73,9 @@ public class PivotSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        m_pivotPID.setReference(m_pivotSetpoint, CANSparkMax.ControlType.kPosition);
+        m_pivotPID.setReference(m_setpoint, CANSparkMax.ControlType.kPosition);
 
-        SmartDashboard.putNumber("pivot setpoint", m_pivotSetpoint);
+        SmartDashboard.putNumber("pivot setpoint", m_setpoint);
         SmartDashboard.putNumber("pivot position", m_pivotEncoder.getPosition());
     }
 
@@ -76,16 +85,16 @@ public class PivotSubsystem extends SubsystemBase {
      * @param pos The new general position for the shooter
      */
     public void setPosition(PivotPosition pos) {
-        m_pivotPosition = pos;
-        setPrecisePosition(m_pivotSetpoint);
-    }
-
-    public PivotPosition getPosition() {
-        return m_pivotPosition;
+        m_position = pos;
+        setPrecisePosition(m_setpoint);
     }
 
     public double getSetpoint() {
-        return m_pivotSetpoint;
+        return m_setpoint;
+    }
+
+    public PivotPosition getPosition() {
+        return m_position;
     }
 
     /**
@@ -99,14 +108,10 @@ public class PivotSubsystem extends SubsystemBase {
             return;
         }
 
-        m_pivotSetpoint = Math.max(m_pivotPosition.lowLimit, Math.min(setpoint, m_pivotPosition.highLimit));
+        m_setpoint = Math.max(m_position.lowLimit, Math.min(setpoint, m_position.highLimit));
     }
 
     public double getPrecisePosition() {
-        return m_pivotSetpoint;
-    }
-
-    public boolean isPivotReady() {
-        return Math.abs(m_pivotSetpoint - m_pivotEncoder.getPosition()) < PivotConstants.kPositionDeadzone;
+        return m_setpoint;
     }
 }

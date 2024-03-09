@@ -20,7 +20,7 @@
         {
           "type": "named",
           "data": {
-            "name": "startShooter"
+            "name": null
           }
         },
         {
@@ -56,7 +56,7 @@
         {
           "type": "named",
           "data": {
-            "name": "startIntakers"
+            "name": null
           }
         }
       ]

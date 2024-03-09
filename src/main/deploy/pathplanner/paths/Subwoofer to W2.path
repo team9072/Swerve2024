@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7953225385123751,
-        "y": 6.633578385640183
+        "x": 1.336590141851963,
+        "y": 5.53
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8953225385123752,
-        "y": 6.633578385640183
+        "x": 1.436590141851963,
+        "y": 5.53
       },
       "isLocked": false,
       "linkedName": "Subwoofer"
     },
     {
       "anchor": {
-        "x": 2.47317044397122,
-        "y": 6.8
+        "x": 2.8914165885203804,
+        "y": 6.701664967310976
       },
       "prevControl": {
-        "x": 2.3731704439712193,
-        "y": 6.8
+        "x": 2.79141658852038,
+        "y": 6.701664967310976
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,5 +48,5 @@
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

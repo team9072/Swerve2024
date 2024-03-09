@@ -52,9 +52,11 @@ public final class Constants {
 
     public static final double kIntakeSpeed = 0.9;
     public static final double kReverseSpeed = -0.9;
+    public static final double kReverseAlignNoteSpeed = -0.3;
     public static final double kShootSpeed = 1;
 
-    public static final double kBeamBreakDeay = 0.05;
+    // max note pullabck time in seconds
+    public static final double kNotePullbackMaxTime = 2;
   }
 
   public static final class PivotConstants {
@@ -66,19 +68,17 @@ public final class Constants {
 
     // Pivot range is 0-60
     public static final double kGlobalMin = 0;
-    public static final double kGlobalMax = 40;
+    public static final double kGlobalMax = 30;
 
     // Shooting is from the entire range
     public static final double kSpeakerMin = kGlobalMin;
     public static final double kSpeakerMax = kGlobalMax;
 
     // Speaker positions
-    // TODO: Finalize positions
     public static final double kSubwooferPos = 23; // left (good)
-    public static final double kSubwooferSidePos = 23; // start button (good)
     public static final double kPodiumPos = 12; // up (good)
-    public static final double kIntakePos = 11; // down (good)
-    public static final double kAmpPos = 65;
+    public static final double kIntakePos = 11; // down (good) 11
+    public static final double kAmpPos = 30;
 
     // Distance before pivot is considered ready
     public static final double kPositionDeadzone = 2.0;
@@ -101,14 +101,9 @@ public final class Constants {
 
     // Shooting speed 0-1
     public static final double kShootSpeed = 1;
+
     // Shooting speed for subwoofer side
     public static final double kSubwooferSideShootSpeed = 1;
-    
-    // shooting time in seconds
-    public static final double kShootTime = 3;
-
-    // delay time to keep shooting after beam break (in seconds)
-    public static final double kShootEndLag = 0.5;
 
     // Shooter bottom multiplier
     public static final double kBottomSpeed = .8;
@@ -247,17 +242,40 @@ public final class Constants {
 
     public static final PhotonCamera rearCam = new PhotonCamera("BW3");
     // Camera is backward and rotated 22 degrees up
+    // Note: Negative shifts up and left (relative to field, not up on the field2d)
+    // TODO: make adjustments into one number
     public static final Transform3d rearCamOffset = new Transform3d(
-        new Translation3d(Units.inchesToMeters(-6.5), Units.inchesToMeters(8.25), -Units.inchesToMeters(-11)),
-        new Rotation3d(0, Units.degreesToRadians(-22), Math.PI));
+        new Translation3d(Units.inchesToMeters(-6.5-7.55-5-7.5+17), Units.inchesToMeters(8.25-16+1.25), -Units.inchesToMeters(-11)),
+        new Rotation3d(0, Units.degreesToRadians(-35.5), Math.PI));
     public static final PhotonPoseEstimator rearCamPoseEstimator = new PhotonPoseEstimator(aprilTagLayout,
         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, rearCam, rearCamOffset);
   }
 
   public static final class TargetConstants {
     // Apriltag #7
+    // Calibrate at comps
     public static final Translation2d kBlueSpeakerTarget = new Translation2d(-0.04, 5.55);
     // Apriltag #4
+    // Calibrate at comps
     public static final Translation2d kRedSpeakerTarget = new Translation2d(16.58, 5.55);
+
+    // Apriltag #6
+    // Calibrate at comps
+    public static final Translation2d kBlueAmpTarget = new Translation2d(1.84, 8.20);
+    // Apriltag #5
+    // Calibrate at comps
+    public static final Translation2d kRedAmpTarget = new Translation2d(14.70, 8.20);
+
+    public enum AimingTarget {
+      kSpeaker(kBlueSpeakerTarget, kRedSpeakerTarget),
+      kAmp(kBlueAmpTarget, kRedAmpTarget);
+
+      Translation2d blue, red;
+
+      AimingTarget(Translation2d blue, Translation2d red) {
+        this.blue = blue;
+        this.red = red;
+      };
+    }
   }
 }

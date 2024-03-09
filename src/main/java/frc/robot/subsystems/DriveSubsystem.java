@@ -4,14 +4,19 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -19,10 +24,12 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.TargetConstants;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -70,7 +77,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final ProfiledPIDController m_rotationPID;
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {
+  public DriveSubsystem(Supplier<Translation2d> aimingVectorSupplier) {
     // Reset and calibrate
     resetGyro();
     // m_gyro.setAngleAdjustment(180);
@@ -94,6 +101,9 @@ public class DriveSubsystem extends SubsystemBase {
         },
         this // Reference to this subsystem to set requirements
     );
+    PPHolonomicDriveController.setRotationTargetOverride(() -> {
+      return Optional.of(aimingVectorSupplier.get().getAngle());
+    });
 
     m_rotationPID = new ProfiledPIDController(
         DriveConstants.kRotationPID.kP, DriveConstants.kRotationPID.kI, DriveConstants.kRotationPID.kD,
@@ -217,10 +227,10 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rateLimit      Whether to enable rate limiting for smoother control.
    */
   public void driveWithHeading(double xSpeed, double ySpeed, Rotation2d targetRotation, boolean fieldRelative,
-      boolean rateLimit) {
+      boolean rateLimit, double offsetDegrees) {
     double rotSpeed = m_rotationPID.calculate(
         getHeading().getRadians(),
-        new TrapezoidProfile.State(targetRotation.getRadians(), 0));
+        new TrapezoidProfile.State(targetRotation.getRadians() + (offsetDegrees * (Math.PI / 180)), 0));
 
     double xSpeedCommanded;
     double ySpeedCommanded;
@@ -248,6 +258,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Limit the slew rate of the robot to reduce wear
+   * 
    * @param xSpeed   Speed of the robot in the x direction (forward).
    * @param ySpeed   Speed of the robot in the y direction (sideways).
    * @param rotSpeed Angular rate of the robot.
@@ -329,6 +340,11 @@ public class DriveSubsystem extends SubsystemBase {
     setModuleStates(swerveModuleStates);
   }
 
+  public Translation2d getTarget() {
+    return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue ? TargetConstants.kBlueSpeakerTarget
+        : TargetConstants.kRedSpeakerTarget;
+  }
+
   private SwerveModulePosition[] getModulePositions() {
     return new SwerveModulePosition[] {
         m_frontLeft.getPosition(),
@@ -396,6 +412,15 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Rotation2d getHeading() {
     return getPose().getRotation();
+  }
+
+  /**
+   * Returns the translation of the robot.
+   *
+   * @return the robot's translation
+   */
+  public Translation2d getTranslation() {
+    return getPose().getTranslation();
   }
 
   /**
