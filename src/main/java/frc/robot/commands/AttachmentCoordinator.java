@@ -24,7 +24,7 @@ public class AttachmentCoordinator {
     }
 
     private final UTBIntakerSubsystem m_UTBIntaker;
-    public final FeederSubsystem m_feeder;
+    private final FeederSubsystem m_feeder;
     private final ShooterSubsystem m_shooter;
     private final PivotSubsystem m_pivot;
     private final Trigger m_beamBreak;

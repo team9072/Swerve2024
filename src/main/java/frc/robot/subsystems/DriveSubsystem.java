@@ -77,7 +77,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final ProfiledPIDController m_rotationPID;
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem(Supplier<Translation2d> aimingVectorSupplier) {
+  public DriveSubsystem(Supplier<Optional<Rotation2d>> rotationOverrideSupplier) {
     // Reset and calibrate
     resetGyro();
     // m_gyro.setAngleAdjustment(180);
@@ -101,9 +101,7 @@ public class DriveSubsystem extends SubsystemBase {
         },
         this // Reference to this subsystem to set requirements
     );
-    PPHolonomicDriveController.setRotationTargetOverride(() -> {
-      return Optional.of(aimingVectorSupplier.get().getAngle());
-    });
+    PPHolonomicDriveController.setRotationTargetOverride(rotationOverrideSupplier);
 
     m_rotationPID = new ProfiledPIDController(
         DriveConstants.kRotationPID.kP, DriveConstants.kRotationPID.kI, DriveConstants.kRotationPID.kD,

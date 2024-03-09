@@ -26,13 +26,19 @@
         {
           "type": "named",
           "data": {
+            "name": "startAutoAim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "startShooter"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.1
+            "waitTime": 1.5
           }
         },
         {
