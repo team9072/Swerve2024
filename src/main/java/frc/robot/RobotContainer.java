@@ -194,7 +194,12 @@ public class RobotContainer {
     //double angle = (42.9919 * Math.pow(.601, m_targetDistance));
     // Auto aiming up-down
     //double angle = (35.5428 * Math.pow(.7066, m_targetDistance));
-    double angle = (35.8266 * Math.pow(.7037, m_targetDistance));
+    double angle = 15;
+    if (isBlueAlliance()) {
+      angle = (35.8266 * Math.pow(.7037, m_targetDistance));
+    } else {
+      angle = (35.8266 * Math.pow(.7037, m_targetDistance));
+    }
 /*
     // Angle adjustments
     double adjustment = distance;

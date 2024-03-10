@@ -28,8 +28,8 @@ public class ShooterSubsystem extends SubsystemBase {
         m_motor2.restoreFactoryDefaults();
 
         // set coast mode to prevent damage
-        m_motor1.setIdleMode(IdleMode.kCoast);
-        m_motor2.setIdleMode(IdleMode.kCoast);
+        m_motor1.setIdleMode(IdleMode.kBrake);
+        m_motor2.setIdleMode(IdleMode.kBrake);
     }
 
     /**

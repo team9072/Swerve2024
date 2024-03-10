@@ -80,6 +80,7 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem(Supplier<Optional<Rotation2d>> rotationOverrideSupplier) {
     // Reset and calibrate
     resetGyro();
+    
     // m_gyro.setAngleAdjustment(180);
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier

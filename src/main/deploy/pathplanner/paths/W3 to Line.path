@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.37,
-        "y": 4.11
+        "x": 2.1184278960036624,
+        "y": 7.159987853810294
       },
       "isLocked": false,
       "linkedName": "W3"
     },
     {
       "anchor": {
-        "x": 8.403991945828503,
-        "y": 7.437746003311556
+        "x": 8.3,
+        "y": 3.9
       },
       "prevControl": {
-        "x": 1.7509531410116947,
-        "y": 7.437746003311556
+        "x": 5.502962384370885,
+        "y": 3.283097794015137
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.7,
+      "waypointRelativePos": 0.45,
       "rotationDegrees": 0,
       "rotateFast": false
     }
@@ -39,7 +39,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 2.5,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 200.0,
     "maxAngularAcceleration": 100.0
   },

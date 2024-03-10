@@ -226,7 +226,7 @@ public final class Constants {
     public static final HolonomicPathFollowerConfig AutoPathFollowerConfig = new HolonomicPathFollowerConfig(
         new PIDConstants(5, 0, 0), // Translation PID constants
         new PIDConstants(5, 0, 0), // Rotation PID constants
-        3.0, // Max module speed, in m/s
+        4.0, // Max module speed, in m/s
         DriveConstants.kCenterToWheel, // Drive base radius in meters. Distance from robot center to furthest module.
         new ReplanningConfig() // Default path replanning config. See the API for the options here
     );
