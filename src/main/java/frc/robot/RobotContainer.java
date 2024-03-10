@@ -99,6 +99,7 @@ public class RobotContainer {
    */
   private void registerPathplannerCommands() {
     NamedCommands.registerCommand("startContinuousFire", m_attatchment.getStartContinuousFireCommand());
+    NamedCommands.registerCommand("stopContinuousFire", m_attatchment.getStopContinuousFireCommand());
 
     // TODO: maybe find a cleaner way to implement this. also includes running the
     // pivot function constantly during auto
@@ -190,10 +191,11 @@ public class RobotContainer {
   }
 
   public void autoAimPivot() {
-    double angle = (42.9919 * Math.pow(.601, m_targetDistance));
+    //double angle = (42.9919 * Math.pow(.601, m_targetDistance));
     // Auto aiming up-down
-    /*double angle = (35.5428 * Math.pow(.7066, distance));
-
+    //double angle = (35.5428 * Math.pow(.7066, m_targetDistance));
+    double angle = (35.8266 * Math.pow(.7037, m_targetDistance));
+/*
     // Angle adjustments
     double adjustment = distance;
     
@@ -274,6 +276,11 @@ public class RobotContainer {
     }
   }
 
+  public void prepareTeleop() {
+      m_attatchment.stopContinuousFire();
+      m_autoAim = false;
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -281,10 +288,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // Stop continuous fire and auto aim after auto ends
-    System.out.print("got auto command");
     return autoChooser.getSelected().finallyDo(() -> {
-      m_attatchment.stopContinuousFire();
-      m_autoAim = false;
+      // shooter stops too early for the third note sometimes
+      //m_attatchment.stopContinuousFire();
+     // m_autoAim = false;
     });
   }
 }
