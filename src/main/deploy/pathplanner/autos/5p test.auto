@@ -12,9 +12,34 @@
     "data": {
       "commands": [
         {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5p test to"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "intake"
+            "name": "startAutoAim"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5p test back"
           }
         },
         {
@@ -26,19 +51,13 @@
         {
           "type": "named",
           "data": {
-            "name": "startAutoAim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "startShooter"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 0.5
           }
         },
         {
