@@ -122,6 +122,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("startFeeders", m_attatchment.getStartShootCommand());
     NamedCommands.registerCommand("startShooter", m_attatchment.getSpinShooterAutoCommand());
+    NamedCommands.registerCommand("stopShooter", m_attatchment.getStopShootCommand());
     NamedCommands.registerCommand("startIntakers", m_attatchment.getIntakeAutoCommand().asProxy());
     // will not stop
     NamedCommands.registerCommand("intake", m_attatchment.getIntakeCommand());

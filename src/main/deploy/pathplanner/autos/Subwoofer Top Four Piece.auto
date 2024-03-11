@@ -82,6 +82,43 @@
           "data": {
             "pathName": "W2 to W3"
           }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopContinuousFire"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "pivotIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "W3 to Line"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              }
+            ]
+          }
         }
       ]
     }
