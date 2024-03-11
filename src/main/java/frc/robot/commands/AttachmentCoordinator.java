@@ -255,6 +255,20 @@ public class AttachmentCoordinator {
         }, m_UTBIntaker, m_feeder, m_shooter);
     }
 
+    public Command getStartAmpCommand() {
+        return Commands.runOnce(() -> {
+            m_shooter.setState(ShooterState.kAmp);
+            m_pivot.setPosition(PivotPosition.kCustomSpeakerPosition);
+            m_pivot.setPrecisePosition(61);
+        }, m_UTBIntaker, m_feeder, m_shooter);
+    }
+
+    public Command getStopAmpCommand() {
+        return Commands.runOnce(() -> {
+            m_shooter.setState(ShooterState.kStopped);
+        }, m_UTBIntaker, m_feeder, m_shooter);
+    }
+
     /**
      * Set the position of the pivot
      * 

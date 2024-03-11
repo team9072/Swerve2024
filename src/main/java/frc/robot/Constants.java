@@ -68,7 +68,7 @@ public final class Constants {
 
     // Pivot range is 0-60
     public static final double kGlobalMin = 0;
-    public static final double kGlobalMax = 30;
+    public static final double kGlobalMax = 70;
 
     // Shooting is from the entire range
     public static final double kSpeakerMin = kGlobalMin;

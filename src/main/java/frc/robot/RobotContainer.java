@@ -167,10 +167,10 @@ public class RobotContainer {
     // Attatchment controls
 
     // Intake
-    m_attachmentController.b().or(m_driverController.b()).whileTrue(m_attatchment.getIntakeCommand());
+    m_attachmentController.b().whileTrue(m_attatchment.getIntakeCommand());
 
     // Unjam
-    m_attachmentController.y().or(m_driverController.y()).whileTrue(m_attatchment.getUnjamIntakersCommand());
+    m_attachmentController.y().whileTrue(m_attatchment.getUnjamIntakersCommand());
 
     // Spin up shooter
     m_attachmentController.leftBumper().whileTrue(m_attatchment.getSpinShooterCommand());
@@ -186,37 +186,17 @@ public class RobotContainer {
 
     m_attachmentController.povDown().onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kIntakePosition));
 
-    m_attachmentController.povRight()
-        .onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
+        //m_attachmentController.povLeft().onTrue(m_attatchment.getStartAmpCommand());
+        //.onFalse(m_attatchment.getStopAmpCommand());
   }
 
   public void autoAimPivot() {
-    //double angle = (42.9919 * Math.pow(.601, m_targetDistance));
-    // Auto aiming up-down
-    //double angle = (35.5428 * Math.pow(.7066, m_targetDistance));
     double angle = 15;
     if (isBlueAlliance()) {
       angle = (35.8266 * Math.pow(.7037, m_targetDistance));
     } else {
       angle = (35.8266 * Math.pow(.7037, m_targetDistance));
     }
-/*
-    // Angle adjustments
-    double adjustment = distance;
-    
-    if (distance > 4.6) {
-      adjustment *= .5;
-    } else if (distance > 4.4) {
-      adjustment *= .7;
-    } else if (distance > 4.3) {
-      adjustment *= .7;
-    } else if (distance > 4.2) {
-      adjustment *= .7;
-    } else if (distance > 4.0) {
-      adjustment *= .8;
-    }
-
-    angle -= adjustment;*/
 
     if (angle < 30 && angle > 0) {
       m_attatchment.setCustomPosition(angle);

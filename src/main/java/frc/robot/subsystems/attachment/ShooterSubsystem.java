@@ -13,6 +13,7 @@ public class ShooterSubsystem extends SubsystemBase {
         kStopped,
         kSpinning,
         kShooting,
+        kAmp
     }
 
     private CANSparkFlex m_motor1;
@@ -48,9 +49,10 @@ public class ShooterSubsystem extends SubsystemBase {
             case kStopped -> 0;
             case kSpinning -> m_speed;
             case kShooting -> m_speed;
+            case kAmp -> .08;
         };
 
-        m_motor1.set(actualSpeed);
+        m_motor1.set(m_state == ShooterState.kAmp ? .4 : actualSpeed);
         m_motor2.set(actualSpeed);
     }
 
