@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.336590141851963,
-      "y": 5.53
+      "x": 0.7904592112501756,
+      "y": 4.464534426699184
     },
     "rotation": 0.0
   },
@@ -146,6 +146,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "startShooter"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Line to W1"
@@ -154,19 +160,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.1
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startShooter"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.6
+            "waitTime": 0.2
           }
         },
         {

@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.87,
-        "y": 4.11
+        "x": 0.7904592112501756,
+        "y": 4.464534426699184
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1184278960036624,
-        "y": 7.159987853810294
+        "x": 6.324925635633263,
+        "y": 0.3890661809759628
       },
       "isLocked": false,
-      "linkedName": "W3"
+      "linkedName": "Right Subwoofer"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 3.9
       },
       "prevControl": {
-        "x": 5.502962384370885,
-        "y": 3.283097794015137
+        "x": 1.5394116096289066,
+        "y": 4.756334062431157
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,8 +30,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.25,
-      "rotationDegrees": 0,
+      "waypointRelativePos": 0.3,
+      "rotationDegrees": -1.6489407864389152,
       "rotateFast": false
     }
   ],
@@ -45,13 +45,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 0.06194252120591949,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Three Piece",
   "previewStartingState": {
-    "rotation": -40.311498017004915,
+    "rotation": -60.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

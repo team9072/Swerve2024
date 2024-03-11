@@ -8,27 +8,33 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.644856998987181,
-        "y": 2.8084435116238655
+        "x": 6.707502524800954,
+        "y": 0.23067420477757805
       },
       "isLocked": false,
       "linkedName": "Line"
     },
     {
       "anchor": {
-        "x": 3.167736460786205,
-        "y": 5.606599684377313
+        "x": 2.0257443358488607,
+        "y": 3.3848757744908844
       },
       "prevControl": {
-        "x": 3.1780237996566223,
-        "y": 5.606599684377313
+        "x": 1.9771110632268658,
+        "y": 2.6748299942097504
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Right"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.25,
+      "rotationDegrees": -51.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -39,11 +45,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -55.840305454330625,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Three Piece",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

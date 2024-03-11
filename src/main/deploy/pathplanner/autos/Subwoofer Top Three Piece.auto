@@ -2,21 +2,15 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7913611817198578,
-      "y": 6.6250462325486055
+      "x": 0.7904592112501756,
+      "y": 4.464534426699184
     },
-    "rotation": 60.0
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "zeroGyro"
-          }
-        },
         {
           "type": "named",
           "data": {
@@ -44,48 +38,6 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startAutoAim"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Subwoofer to W1"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "W1 to W2"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "W2 to W3"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
             "waitTime": 0.2
           }
         },
@@ -93,12 +45,6 @@
           "type": "named",
           "data": {
             "name": "stopContinuousFire"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopAutoAim"
           }
         },
         {
@@ -133,7 +79,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "W3 to Line"
+                  "pathName": "Right Subwoofer to Line"
                 }
               }
             ]
@@ -154,7 +100,93 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Line to W1"
+            "pathName": "Line to Right"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startFeeders"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "stopAutoAim"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "stopContinuousFire"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "pivotIntake"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intake"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right to Line2"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startAutoAim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startShooter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Line2 to Right"
           }
         },
         {

@@ -3,8 +3,9 @@
   "robotLength": 0.8636,
   "holonomicMode": true,
   "pathFolders": [
-    "Week 0",
-    "Testing"
+    "Three Piece",
+    "Testing",
+    "Week 0"
   ],
   "autoFolders": [
     "Week 0",
