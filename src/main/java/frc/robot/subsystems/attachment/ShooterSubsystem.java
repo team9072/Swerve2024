@@ -49,10 +49,10 @@ public class ShooterSubsystem extends SubsystemBase {
             case kStopped -> 0;
             case kSpinning -> m_speed;
             case kShooting -> m_speed;
-            case kAmp -> .08;
+            case kAmp -> .08 * 1.2;
         };
 
-        m_motor1.set(m_state == ShooterState.kAmp ? .4 : actualSpeed);
+        m_motor1.set(m_state == ShooterState.kAmp ? .4 * 1.2 : actualSpeed);
         m_motor2.set(actualSpeed);
     }
 

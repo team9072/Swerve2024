@@ -54,8 +54,6 @@ public class PivotSubsystem extends SubsystemBase {
         m_pivotEncoder = m_leftPivotMotor.getAbsoluteEncoder();
         m_pivotEncoder.setPositionConversionFactor(125);
         m_pivotEncoder.setVelocityConversionFactor(125);
-        System.out.print("POSITION: ");
-        System.out.println(m_pivotEncoder.getPosition());
         m_pivotPID.setFeedbackDevice(m_pivotEncoder);
 
         m_pivotPID.setPositionPIDWrappingMaxInput(125);
@@ -73,10 +71,12 @@ public class PivotSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        m_pivotPID.setReference(m_setpoint, CANSparkMax.ControlType.kPosition);
+        if (m_setpoint < PivotConstants.kAmpPos && m_setpoint > 0) {
+           m_pivotPID.setReference(m_setpoint, CANSparkMax.ControlType.kPosition);
+        }
 
-        SmartDashboard.putNumber("pivot setpoint", m_setpoint);
-        SmartDashboard.putNumber("pivot position", m_pivotEncoder.getPosition());
+        SmartDashboard.putNumber("Pivot Setpoint", m_setpoint);
+        SmartDashboard.putNumber("Pivot Position", m_pivotEncoder.getPosition());
     }
 
     /**

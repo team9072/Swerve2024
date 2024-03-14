@@ -78,7 +78,7 @@ public final class Constants {
     public static final double kSubwooferPos = 23; // left (good)
     public static final double kPodiumPos = 12; // up (good)
     public static final double kIntakePos = 11; // down (good) 11
-    public static final double kAmpPos = 30;
+    public static final double kAmpPos = 61;
 
     // Distance before pivot is considered ready
     public static final double kPositionDeadzone = 2.0;

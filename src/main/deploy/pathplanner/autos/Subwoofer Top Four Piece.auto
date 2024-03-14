@@ -56,7 +56,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top to W1"
+            "pathName": "Top to W1 Four Piece"
           }
         },
         {
@@ -68,7 +68,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "W1 to W2"
+            "pathName": "W1 to W2 Four Piece"
           }
         },
         {
@@ -80,7 +80,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "W2 to W3"
+            "pathName": "W2 to W3 Four Piece"
           }
         },
         {
@@ -108,7 +108,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "W3 to Line"
+                  "pathName": "W3 to Line Four Piece"
                 }
               },
               {

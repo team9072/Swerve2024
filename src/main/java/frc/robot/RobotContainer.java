@@ -187,9 +187,10 @@ public class RobotContainer {
 
     m_attachmentController.povDown().onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kIntakePosition));
 
-        //m_attachmentController.povLeft().onTrue(m_attatchment.getStartAmpCommand());
-        //.onFalse(m_attatchment.getStopAmpCommand());
-  }
+        m_attachmentController.povLeft().onTrue(m_attatchment.getStartAmpPositionCommand());
+         m_attachmentController.rightBumper().onTrue(m_attatchment.getStartAmpShootCommand())
+         .onFalse(m_attatchment.getStopAmpShootCommand());
+      }
 
   public void autoAimPivot() {
     double angle = 15;
@@ -241,9 +242,8 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    SmartDashboard.putNumber("auto aim distance", m_targetDistance);
-    SmartDashboard.putBoolean("has note", m_attatchment.getBeamBreakState());
-    SmartDashboard.putBoolean("auto aim", m_autoAim);
+    SmartDashboard.putNumber("Auto Aim Distance", m_targetDistance);
+    SmartDashboard.putBoolean("Beam Break", m_attatchment.getBeamBreakState());
 
     m_field.setRobotPose(m_robotDrive.getPose());
 

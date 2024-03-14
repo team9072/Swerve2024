@@ -87,9 +87,9 @@
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "wait",
                       "data": {
-                        "pathName": "Line Scramble"
+                        "waitTime": 1.0
                       }
                     }
                   ]

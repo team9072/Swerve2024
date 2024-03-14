@@ -14,12 +14,6 @@
         {
           "type": "named",
           "data": {
-            "name": "zeroGyro"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "pivotSubwoofer"
           }
         },
@@ -56,7 +50,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Subwoofer to W1"
+            "pathName": "Subwoofer to W1 Four Piece"
           }
         },
         {
@@ -68,7 +62,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "W1 to W2"
+            "pathName": "W1 to W2 Four Piece"
           }
         },
         {
@@ -80,7 +74,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "W2 to W3"
+            "pathName": "W2 to W3 Four Piece"
           }
         }
       ]
