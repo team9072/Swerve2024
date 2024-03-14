@@ -43,8 +43,7 @@ public class RobotContainer {
   public final SendableChooser<Command> autoChooser;
 
   // Other (tests)
-  double m_targetDistance = 0;
-  boolean m_autoAim = false;
+  private boolean m_autoAim = false;
 
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem(() -> {
@@ -194,10 +193,11 @@ public class RobotContainer {
 
   public void autoAimPivot() {
     double angle = 15;
+    double targetDistance = getAimingVector(getTarget()).getNorm();
     if (isBlueAlliance()) {
-      angle = (35.8266 * Math.pow(.7037, m_targetDistance));
+      angle = (35.8266 * Math.pow(.7037, targetDistance));
     } else {
-      angle = (35.8266 * Math.pow(.7037, m_targetDistance));
+      angle = (35.8266 * Math.pow(.7037, targetDistance));
     }
 
     if (angle < 30 && angle > 0) {
@@ -242,7 +242,7 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    SmartDashboard.putNumber("Auto Aim Distance", m_targetDistance);
+    SmartDashboard.putNumber("Auto Aim Distance", getAimingVector(getTarget()).getNorm());
     SmartDashboard.putBoolean("Beam Break", m_attatchment.getBeamBreakState());
 
     m_field.setRobotPose(m_robotDrive.getPose());
@@ -255,8 +255,6 @@ public class RobotContainer {
 
       m_estimationField.setRobotPose(estimatedPose);
       m_robotDrive.updateOdometryWithVision(estimatedPose, timestamp);
-
-      m_targetDistance = getAimingVector(getTarget()).getNorm();
     } else {
       m_estimationField.setRobotPose(new Pose2d());
     }
