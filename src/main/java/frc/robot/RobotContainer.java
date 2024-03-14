@@ -185,11 +185,7 @@ public class RobotContainer {
     m_attachmentController.povUp().onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
 
     m_attachmentController.povDown().onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kIntakePosition));
-
-        m_attachmentController.povLeft().onTrue(m_attatchment.getStartAmpPositionCommand());
-         m_attachmentController.rightBumper().onTrue(m_attatchment.getStartAmpShootCommand())
-         .onFalse(m_attatchment.getStopAmpShootCommand());
-      }
+  }
 
   public void autoAimPivot() {
     double angle = 15;
