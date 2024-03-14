@@ -1,7 +1,7 @@
 // !!!! Ignore any errors from here, it'll still build properly. Most likely a bug
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2024.1.1"
+    id "edu.wpi.first.GradleRIO" version "2024.3.1"
 }
 
 java {
