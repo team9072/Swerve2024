@@ -205,6 +205,42 @@
               }
             ]
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startAutoAim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startShooter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Line2 to Right"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.3
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startFeeders"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
         }
       ]
     }
