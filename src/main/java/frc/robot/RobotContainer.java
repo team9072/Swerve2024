@@ -196,6 +196,8 @@ public class RobotContainer {
       angle = (35.8266 * Math.pow(.7037, targetDistance));
     }
 
+    angle -= targetDistance; // adjustment
+
     if (angle < 30 && angle > 2) {
       m_attatchment.setCustomPosition(angle);
     }
