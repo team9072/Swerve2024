@@ -8,33 +8,27 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9473669857228548,
-        "y": 5.53
+        "x": 1.3351518646165252,
+        "y": 5.524739769858686
       },
       "isLocked": false,
       "linkedName": "Subwoofer"
     },
     {
       "anchor": {
-        "x": 2.8488289558032753,
-        "y": 6.882229704309033
+        "x": 2.77,
+        "y": 5.51401363454356
       },
       "prevControl": {
-        "x": 2.4694864752065673,
-        "y": 6.804430870960437
+        "x": 2.7844233887519914,
+        "y": 5.515013115334288
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "W1"
+      "linkedName": "W2"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.45,
-      "rotationDegrees": 52.43,
-      "rotateFast": true
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -45,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 52.43,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
