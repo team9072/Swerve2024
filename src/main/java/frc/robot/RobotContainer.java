@@ -150,6 +150,10 @@ public class RobotContainer {
       autoAimPivot();
     }));
 
+    m_attachmentController.leftTrigger().whileTrue(Commands.run(() -> {
+
+    }));
+
     // Reset field oriented
     m_driverController.x().onTrue(Commands.runOnce(() -> {
       m_robotDrive.resetGyro();

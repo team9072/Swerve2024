@@ -164,15 +164,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "stopAutoAim"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.02
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "stopAutoAim"
-                }
-              },
               {
                 "type": "named",
                 "data": {
