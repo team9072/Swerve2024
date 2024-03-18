@@ -56,19 +56,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top to W1"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "W1 to W2"
+            "pathName": "Top to W2"
           }
         },
         {
@@ -216,6 +204,36 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startAutoAim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startShooter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Line2 to Right"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startFeeders"
           }
         }
       ]

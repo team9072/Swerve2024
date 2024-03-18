@@ -102,6 +102,12 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "stopAutoAim"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
                   "name": "pivotIntake"
                 }
               },

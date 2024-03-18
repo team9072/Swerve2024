@@ -71,9 +71,7 @@ public class PivotSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (m_setpoint < PivotConstants.kAmpPos && m_setpoint > 0) {
-           m_pivotPID.setReference(m_setpoint, CANSparkMax.ControlType.kPosition);
-        }
+        m_pivotPID.setReference(m_setpoint, CANSparkMax.ControlType.kPosition);
 
         SmartDashboard.putNumber("Pivot Setpoint", m_setpoint);
         SmartDashboard.putNumber("Pivot Position", m_pivotEncoder.getPosition());
