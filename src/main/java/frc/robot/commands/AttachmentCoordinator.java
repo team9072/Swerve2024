@@ -154,6 +154,7 @@ public class AttachmentCoordinator {
 
     /**
      * Intake untul the returned command is canceled
+     * If you want to intake based on a joystick button or other trigger, use {@link #bindIntakeTrigger() bindIntakeTrigger}
      * 
      * @return a command to intake
      */
@@ -165,10 +166,25 @@ public class AttachmentCoordinator {
                     m_feeder.setState(FeederState.kAlignReverse);
                 }, m_UTBIntaker, m_feeder),
                 Commands.race(Commands.waitUntil(m_beamBreak.negate()),
-                        Commands.waitSeconds(FeederConstants.kNotePullbackMaxTime)),
+                        Commands.waitSeconds(FeederConstants.kNotePullbackMaxTime))
+        ).finallyDo(() -> stopIntaking());
+    }
+
+    /**
+     * Bind intaking to a trigger so it can cancel intaking but not note alignment
+     * This should only be called once, for multiple triggers use the trigger composing methods.
+     */
+    public void bindIntakeTrigger(Trigger intakeTrgger) {
+        // TODO: bind command to trigger onTrue
+        Command intakeCommand = Commands.sequence(
+            Commands.runOnce(() -> startIntaking(), m_UTBIntaker, m_feeder),
+            // TODO: if trigger false before beam break, cancel
+                Commands.waitUntil(m_beamBreak),
                 Commands.runOnce(() -> {
-                    m_feeder.setState(FeederState.kStopped);
-                }, m_UTBIntaker, m_feeder)
+                    m_feeder.setState(FeederState.kAlignReverse);
+                }, m_UTBIntaker, m_feeder),
+                Commands.race(Commands.waitUntil(m_beamBreak.negate()),
+                        Commands.waitSeconds(FeederConstants.kNotePullbackMaxTime))
         ).finallyDo(() -> stopIntaking());
     }
 
