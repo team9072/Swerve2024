@@ -34,7 +34,6 @@ public class AttachmentCoordinator {
     private AttatchmentState m_state = AttatchmentState.kAiming;
     private AimingTarget m_target = AimingTarget.kSpeaker;
 
-
     public AttachmentCoordinator(UTBIntakerSubsystem utbIntaker, FeederSubsystem feeder, ShooterSubsystem shooter,
             PivotSubsystem pivot) {
         m_UTBIntaker = utbIntaker;
@@ -47,21 +46,18 @@ public class AttachmentCoordinator {
 
     // Starts the beam break trigger for teleop
     public void bindControllerRumble(CommandXboxController driveController) {
-        // Rumble on intake (this mess makes it so it doesn't rumble while shooting and only for intaking)
+        // Rumble on intake (this mess makes it so it doesn't rumble while shooting and
+        // only for intaking)
         m_beamBreak.onTrue(
-            Commands.parallel(
-                Commands.either(                
-                    Commands.sequence(
-                    Commands.runOnce(() -> {
-                        driveController.getHID().setRumble(RumbleType.kBothRumble, 1);
-                    }),
-                    Commands.waitSeconds(1),
-                    Commands.runOnce(() -> {
-                        driveController.getHID().setRumble(RumbleType.kBothRumble, 0);
-                    })
-                ),
-                Commands.none(), () -> m_state == AttatchmentState.kAiming))
-        );
+                Commands.parallel(
+                        Commands.either(
+                                Commands.sequence(
+                                        Commands.runOnce(
+                                                () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 1)),
+                                        Commands.waitSeconds(1),
+                                        Commands.runOnce(
+                                                () -> driveController.getHID().setRumble(RumbleType.kBothRumble, 0))),
+                                Commands.none(), () -> m_state == AttatchmentState.kAiming)));
     }
 
     private void setState(AttatchmentState state) {
@@ -136,6 +132,15 @@ public class AttachmentCoordinator {
         m_shooter.setState(state);
     }
 
+    private Command getAlignNoteCommand() {
+        return Commands.sequence(
+                Commands.runOnce(() -> m_feeder.setState(FeederState.kAlignReverse), m_UTBIntaker, m_feeder),
+                Commands.race(
+                        Commands.waitUntil(m_beamBreak.negate()),
+                        Commands.waitSeconds(FeederConstants.kNotePullbackMaxTime)),
+                Commands.runOnce(this::stopIntaking, m_UTBIntaker, m_feeder));
+    }
+
     /**
      * Set the target for auto aiming This should be the same target that the
      * drivebase is targeting
@@ -154,26 +159,38 @@ public class AttachmentCoordinator {
 
     /**
      * Intake untul the returned command is canceled
+     * If you want to intake based on a joystick button or other trigger, use
+     * {@link #bindIntakeTrigger() bindIntakeTrigger}
      * 
      * @return a command to intake
      */
     public Command getIntakeCommand() {
         return Commands.sequence(
-            Commands.runOnce(() -> startIntaking(), m_UTBIntaker, m_feeder),
+                Commands.runOnce(this::startIntaking, m_UTBIntaker, m_feeder),
                 Commands.waitUntil(m_beamBreak),
-                Commands.runOnce(() -> {
-                    m_feeder.setState(FeederState.kAlignReverse);
-                }, m_UTBIntaker, m_feeder),
-                Commands.race(Commands.waitUntil(m_beamBreak.negate()),
-                        Commands.waitSeconds(FeederConstants.kNotePullbackMaxTime)),
-                Commands.runOnce(() -> {
-                    m_feeder.setState(FeederState.kStopped);
-                }, m_UTBIntaker, m_feeder)
-        ).finallyDo(() -> stopIntaking());
+                getAlignNoteCommand()).finallyDo(this::stopIntaking);
+    }
+
+    /**
+     * Bind intaking to a trigger so it can cancel intaking but not note alignment
+     * This should only be called once. For multiple triggers use the trigger
+     * composition methods.
+     */
+    public void bindIntakeTrigger(Trigger intakeTrgger) {
+        Command intakeCommand = Commands.sequence(
+                Commands.runOnce(this::startIntaking, m_UTBIntaker, m_feeder),
+                // Run until beam break datects note or intake trigger becomes false
+                Commands.waitUntil(m_beamBreak.or(intakeTrgger.negate())),
+                // If the intake trigger is true, then the previous command
+                // stopped due to the beam break sensor
+                Commands.either(getAlignNoteCommand(), Commands.none(), intakeTrgger::getAsBoolean))
+                .finallyDo(this::stopIntaking);
+
+        intakeTrgger.onTrue(intakeCommand);
     }
 
     public Command getIntakeAutoCommand() {
-        return Commands.runOnce(() -> startIntaking(), m_UTBIntaker, m_feeder);
+        return Commands.runOnce(this::startIntaking, m_UTBIntaker, m_feeder);
     }
 
     /**
@@ -182,7 +199,7 @@ public class AttachmentCoordinator {
      * @return a command to unjam
      */
     public Command getUnjamIntakersCommand() {
-        return Commands.startEnd(() -> unjamIntakers(), () -> stopIntaking(), m_UTBIntaker, m_feeder);
+        return Commands.startEnd(this::unjamIntakers, this::stopIntaking, m_UTBIntaker, m_feeder);
     }
 
     /**
@@ -205,11 +222,11 @@ public class AttachmentCoordinator {
             setState(AttatchmentState.kShooting);
             m_feeder.setState(FeederState.kShooting);
         },
-        () -> {
-            setState(AttatchmentState.kAiming);
-            m_feeder.setState(FeederState.kStopped);
-            m_pivot.setPosition(PivotPosition.kIntakePosition);
-        });
+                () -> {
+                    setState(AttatchmentState.kAiming);
+                    m_feeder.setState(FeederState.kStopped);
+                    m_pivot.setPosition(PivotPosition.kIntakePosition);
+                });
     }
 
     // Starts shooting without stopping
@@ -223,14 +240,14 @@ public class AttachmentCoordinator {
     // Stops shooting
     public Command getStopShootCommand() {
         return Commands.sequence(
-        Commands.waitSeconds(0.2),   
-        Commands.runOnce(() -> {
-            setState(AttatchmentState.kAiming);
-            m_feeder.setState(FeederState.kStopped);
-            if (m_pivot.getPrecisePosition() != PivotConstants.kAmpPos) {
-                m_pivot.setPosition(PivotPosition.kIntakePosition);
-            }
-        }));
+                Commands.waitSeconds(0.2),
+                Commands.runOnce(() -> {
+                    setState(AttatchmentState.kAiming);
+                    m_feeder.setState(FeederState.kStopped);
+                    if (m_pivot.getPrecisePosition() != PivotConstants.kAmpPos) {
+                        m_pivot.setPosition(PivotPosition.kIntakePosition);
+                    }
+                }));
     }
 
     // Starts continuous fire without stopping
@@ -245,10 +262,10 @@ public class AttachmentCoordinator {
 
     public void stopContinuousFire() {
         setState(AttatchmentState.kAiming);
-            m_pivot.setPosition(PivotPosition.kIntakePosition);
-            m_shooter.setState(ShooterState.kStopped);
-            m_feeder.setState(FeederState.kStopped);
-            m_UTBIntaker.setState(IntakerState.kStopped);
+        m_pivot.setPosition(PivotPosition.kIntakePosition);
+        m_shooter.setState(ShooterState.kStopped);
+        m_feeder.setState(FeederState.kStopped);
+        m_UTBIntaker.setState(IntakerState.kStopped);
     }
 
     // Stops continuous fire
@@ -265,9 +282,7 @@ public class AttachmentCoordinator {
      * @return a command to set the pivot position
      */
     public Command getSetPivotPositionCommand(PivotPosition position) {
-        return Commands.runOnce(() -> {
-            m_pivot.setPosition(position);
-        }, m_pivot);
+        return Commands.runOnce(() -> m_pivot.setPosition(position), m_pivot);
     }
 
     /**
