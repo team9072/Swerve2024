@@ -102,17 +102,11 @@ public class RobotContainer {
 
     // TODO: maybe find a cleaner way to implement this. also includes running the
     // pivot function constantly during auto
-    NamedCommands.registerCommand("startAutoAim", Commands.runOnce(() -> {
-      m_autoAim = true;
-    }).asProxy());
+    NamedCommands.registerCommand("startAutoAim", Commands.runOnce(() -> m_autoAim = true).asProxy());
 
-    NamedCommands.registerCommand("stopAutoAim", Commands.runOnce(() -> {
-      m_autoAim = false;
-    }).asProxy());
+    NamedCommands.registerCommand("stopAutoAim", Commands.runOnce(() -> m_autoAim = false).asProxy());
 
-    NamedCommands.registerCommand("zeroGyro", Commands.runOnce(() -> {
-      m_robotDrive.resetGyro();
-    }).asProxy());
+    NamedCommands.registerCommand("zeroGyro", Commands.runOnce(m_robotDrive::resetGyro).asProxy());
 
     NamedCommands.registerCommand("pivotSubwoofer",
         m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
@@ -141,7 +135,7 @@ public class RobotContainer {
 
     // Set X wheels
     m_driverController.rightBumper().whileTrue(Commands.run(
-        () -> m_robotDrive.setX(),
+        m_robotDrive::setX,
         m_robotDrive));
 
     // Auto aiming
@@ -151,18 +145,20 @@ public class RobotContainer {
     }));
 
     // Reset field oriented
-    m_driverController.x().onTrue(Commands.runOnce(() -> {
-      m_robotDrive.resetGyro();
-    }));
+    m_driverController.x().onTrue(Commands.runOnce(m_robotDrive::resetGyro));
 
     // D-pad turning
-    m_driverController.povUp().whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(0, 180))), m_robotDrive));
+    m_driverController.povUp()
+        .whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(0, 180))), m_robotDrive));
 
-    m_driverController.povRight().whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(-90, 90))), m_robotDrive));
+    m_driverController.povRight()
+        .whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(-90, 90))), m_robotDrive));
 
-    m_driverController.povDown().whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(180, 0))), m_robotDrive));
+    m_driverController.povDown()
+        .whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(180, 0))), m_robotDrive));
 
-    m_driverController.povLeft().whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(90, -90))), m_robotDrive));
+    m_driverController.povLeft()
+        .whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(90, -90))), m_robotDrive));
 
     // Attatchment controls
 
@@ -221,7 +217,7 @@ public class RobotContainer {
   }
 
   public double invertIfRed(double num) {
-     return num * getFromAlliance(1, -1);
+    return num * getFromAlliance(1, -1);
   }
 
   public Translation2d getTarget() {
@@ -259,8 +255,8 @@ public class RobotContainer {
   }
 
   public void prepareTeleop() {
-      m_attatchment.stopContinuousFire();
-      m_autoAim = false;
+    m_attatchment.stopContinuousFire();
+    m_autoAim = false;
   }
 
   /**
@@ -272,8 +268,8 @@ public class RobotContainer {
     // Stop continuous fire and auto aim after auto ends
     return autoChooser.getSelected().finallyDo(() -> {
       // shooter stops too early for the third note sometimes
-      //m_attatchment.stopContinuousFire();
-     // m_autoAim = false;
+      // m_attatchment.stopContinuousFire();
+      // m_autoAim = false;
     });
   }
 }
