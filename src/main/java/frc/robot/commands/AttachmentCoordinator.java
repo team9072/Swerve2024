@@ -173,7 +173,7 @@ public class AttachmentCoordinator {
 
     /**
      * Bind intaking to a trigger so it can cancel intaking but not note alignment
-     * This should only be called once, for multiple triggers use the trigger
+     * This should only be called once. For multiple triggers use the trigger
      * composition methods.
      */
     public void bindIntakeTrigger(Trigger intakeTrgger) {

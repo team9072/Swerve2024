@@ -163,7 +163,7 @@ public class RobotContainer {
     // Attatchment controls
 
     // Intake
-    m_attachmentController.b().whileTrue(m_attatchment.getIntakeCommand());
+    m_attatchment.bindIntakeTrigger(m_attachmentController.b());
 
     // Unjam
     m_attachmentController.y().whileTrue(m_attatchment.getUnjamIntakersCommand());
