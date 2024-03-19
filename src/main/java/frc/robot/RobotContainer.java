@@ -200,7 +200,7 @@ public class RobotContainer {
       angle = (35.8266 * Math.pow(.7037, targetDistance));
     }
 
-    angle -= targetDistance; // adjustment
+    //angle -= targetDistance; // adjustment
 
     if (angle < 30 && angle > 2) {
       m_attatchment.setCustomPosition(angle);
@@ -246,6 +246,7 @@ public class RobotContainer {
   public void periodic() {
     SmartDashboard.putNumber("Auto Aim Distance", getAimingVector(getTarget()).getNorm());
     SmartDashboard.putBoolean("Beam Break", m_attatchment.getBeamBreakState());
+    SmartDashboard.putBoolean("Vision", VisionConstants.rearCam.isConnected());
 
     m_field.setRobotPose(m_robotDrive.getPose());
 

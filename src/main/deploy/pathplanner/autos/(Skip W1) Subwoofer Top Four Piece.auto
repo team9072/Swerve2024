@@ -96,7 +96,7 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -119,9 +119,22 @@
                 }
               },
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "W3 to Line"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "W3 to Line"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.333
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -170,21 +183,9 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.02
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "stopFeeders"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopShooter"
+            "name": "stopContinuousFire"
           }
         },
         {
@@ -229,7 +230,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 0.33
                       }
                     }
                   ]
@@ -241,7 +242,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.01
           }
         },
         {
