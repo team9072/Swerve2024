@@ -3,43 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.871963279471583,
-        "y": 4.124101518345216
+        "x": 8.6,
+        "y": 3.65
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.120391175475245,
-        "y": 7.1740893721555095
+        "x": 5.443900256046959,
+        "y": 3.730935155235238
       },
       "isLocked": false,
-      "linkedName": "W3"
+      "linkedName": "LineSP"
     },
     {
       "anchor": {
-        "x": 8.517152673403093,
-        "y": 3.9297634484993287
+        "x": 2.77,
+        "y": 5.51401363454356
       },
       "prevControl": {
-        "x": 5.7201150577739766,
-        "y": 3.3128612425144657
+        "x": 2.774696734227591,
+        "y": 5.505286460809889
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Line"
+      "linkedName": "W2"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.25,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 8.0,
+    "maxAcceleration": 8.0,
     "maxAngularVelocity": 200.0,
     "maxAngularAcceleration": 100.0
   },
@@ -49,9 +43,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Four Piece",
+  "folder": "Six Piece",
   "previewStartingState": {
-    "rotation": -40.311498017004915,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": false

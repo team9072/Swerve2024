@@ -176,6 +176,10 @@ public class AttachmentCoordinator {
         return Commands.runOnce(() -> startIntaking(), m_UTBIntaker, m_feeder);
     }
 
+    public Command getStopIntakeAutoCommand() {
+        return Commands.runOnce(() -> stopIntaking(), m_UTBIntaker, m_feeder);
+    }
+
     /**
      * Reverse the intakers to unjam, until the command is cancelled
      * 

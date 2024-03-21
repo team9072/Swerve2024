@@ -32,7 +32,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.375
+            "waitTime": 0.2
           }
         },
         {
@@ -44,7 +44,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.1
           }
         },
         {
@@ -56,37 +56,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top to W1"
+            "pathName": "Top to W3 Six Piece"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.3
+            "waitTime": 0.1
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "W1 to W2"
+            "pathName": "W3 to W2 Six Piece"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.3
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "W2 to W3"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.3
+            "waitTime": 0.1
           }
         },
         {
@@ -137,13 +125,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "W3 to Line"
+                        "pathName": "W2 to Line Six Piece"
                       }
                     },
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 0.5
                       }
                     }
                   ]
@@ -161,25 +149,19 @@
         {
           "type": "named",
           "data": {
+            "name": "startAutoAim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "startShooter"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Line to W1"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.3
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startFeeders"
+            "pathName": "Line to W2 Six Piece"
           }
         },
         {
@@ -191,7 +173,25 @@
         {
           "type": "named",
           "data": {
-            "name": "stopAutoAim"
+            "name": "startContinuousFire"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "W2 to W1 Six Piece"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
           }
         },
         {
@@ -203,26 +203,106 @@
         {
           "type": "named",
           "data": {
+            "name": "stopAutoAim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "pivotIntake"
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "Middle to Line2"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intake"
+                      }
+                    }
+                  ]
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "intake"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "W1 to Line3 Six Piece"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    }
+                  ]
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startAutoAim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startAutoAim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startShooter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Line3 to W2 Six Piece"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startContinuousFire"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopContinuousFire"
           }
         }
       ]
