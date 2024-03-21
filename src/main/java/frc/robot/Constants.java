@@ -67,7 +67,7 @@ public final class Constants {
     public static final double kPivotSpeed = 0.5;
 
     // Pivot range is 0-60
-    public static final double kGlobalMin = 0;
+    public static final double kGlobalMin = 2;
     public static final double kGlobalMax = 30;
 
     // Shooting is from the entire range
