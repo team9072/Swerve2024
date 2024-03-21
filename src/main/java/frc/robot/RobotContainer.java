@@ -193,8 +193,10 @@ public class RobotContainer {
     m_attachmentController.povUp().onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
 
     m_attachmentController.povDown().onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kIntakePosition));
-    SmartDashboard.putNumber("custom angle", 11);
-    m_attachmentController.povDown().onTrue(m_attatchment.getSetCustomPivotPositionCommand(SmartDashboard.getNumber("custom angle", 11)));
+
+    m_attachmentController.povLeft().onTrue(m_attatchment.getSetCustomPivotPositionCommand(23));
+
+    m_attachmentController.povRight().onTrue(m_attatchment.getSetCustomPivotPositionCommand(17));
   }
 
   public void autoAimPivot() {
