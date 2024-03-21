@@ -123,6 +123,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("startShooter", m_attatchment.getSpinShooterAutoCommand());
     NamedCommands.registerCommand("stopShooter", m_attatchment.getStopShootCommand());
     NamedCommands.registerCommand("startIntakers", m_attatchment.getIntakeAutoCommand().asProxy());
+
+    NamedCommands.registerCommand("startIntaker", m_attatchment.getIntakeAutoCommand());
+    NamedCommands.registerCommand("stopIntaker", m_attatchment.getStopIntakeAutoCommand());
+
     // will not stop
     NamedCommands.registerCommand("intake", m_attatchment.getIntakeCommand());
 
@@ -148,6 +152,10 @@ public class RobotContainer {
     m_attachmentController.rightTrigger().whileTrue(Commands.run(() -> {
       autoAimDrive(getAimingVector(getTarget()).getAngle());
       autoAimPivot();
+    }));
+
+    m_attachmentController.leftTrigger().whileTrue(Commands.run(() -> {
+
     }));
 
     // Reset field oriented
@@ -196,7 +204,7 @@ public class RobotContainer {
       angle = (35.8266 * Math.pow(.7037, targetDistance));
     }
 
-    angle -= targetDistance; // adjustment
+    //angle -= targetDistance; // adjustment
 
     if (angle < 30 && angle > 2) {
       m_attatchment.setCustomPosition(angle);
@@ -242,6 +250,7 @@ public class RobotContainer {
   public void periodic() {
     SmartDashboard.putNumber("Auto Aim Distance", getAimingVector(getTarget()).getNorm());
     SmartDashboard.putBoolean("Beam Break", m_attatchment.getBeamBreakState());
+    SmartDashboard.putBoolean("Vision", VisionConstants.rearCam.isConnected());
 
     m_field.setRobotPose(m_robotDrive.getPose());
 
