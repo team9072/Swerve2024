@@ -89,7 +89,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.33
+                        "waitTime": 0.7
                       }
                     }
                   ]
@@ -105,15 +105,35 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "startShooter"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Line to Right"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Line to Right"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "startShooter"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
@@ -135,6 +155,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "stopAutoAim"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
@@ -142,12 +168,6 @@
                 "type": "sequential",
                 "data": {
                   "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "stopAutoAim"
-                      }
-                    },
                     {
                       "type": "named",
                       "data": {
@@ -188,7 +208,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 0.5
                       }
                     }
                   ]
@@ -204,15 +224,41 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "startShooter"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Line2 to Right"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "startShooter"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Line2 to Right"
+            "name": "startAutoAim"
           }
         },
         {
@@ -225,6 +271,18 @@
           "type": "named",
           "data": {
             "name": "startFeeders"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopContinuousFire"
           }
         }
       ]

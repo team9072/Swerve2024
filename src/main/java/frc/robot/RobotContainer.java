@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -208,7 +209,7 @@ public class RobotContainer {
       angle = (35.8266 * Math.pow(.7037, targetDistance));
     }
 
-    //angle -= targetDistance; // adjustment
+    angle -= 1.5; // adjustment
 
     if (angle < 30 && angle > 2) {
       m_attatchment.setCustomPosition(angle);
@@ -273,6 +274,8 @@ public class RobotContainer {
 
   public void prepareTeleop() {
       m_attatchment.stopContinuousFire();
+      m_driverController.getHID().setRumble(RumbleType.kBothRumble, 0);    
+      m_attachmentController.getHID().setRumble(RumbleType.kBothRumble, 0);
       m_autoAim = false;
   }
 
