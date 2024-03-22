@@ -12,9 +12,14 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -66,7 +71,9 @@ public class RobotContainer {
 
   // Fields for visualization and testing
   private final Field2d m_field = new Field2d();
-  private final Field2d m_estimationField = new Field2d();
+  private final Field2d m_estimationField = new Field2d();  
+  private final Field2d m_calibrationField = new Field2d();
+
 
   public RobotContainer() {
     registerPathplannerCommands();
@@ -75,7 +82,11 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putData("Field", m_field);
-    SmartDashboard.putData("Pose Estimation", m_estimationField);
+    SmartDashboard.putData("Pose Estimation", m_estimationField);    
+    SmartDashboard.putData("Calibration Testing", m_calibrationField);
+    SmartDashboard.putNumber("Cali X", 0);
+    SmartDashboard.putNumber("Cali Y", 0);
+
 
     // Configure the button bindings
     configureButtonBindings();
@@ -151,12 +162,14 @@ public class RobotContainer {
     // Auto aiming
     m_attachmentController.rightTrigger().whileTrue(Commands.run(() -> {
       autoAimDrive(getAimingVector(getTarget()).getAngle());
-      autoAimPivot();
+      autoAimPivot(0);
     }));
-
-    m_attachmentController.leftTrigger().whileTrue(Commands.run(() -> {
-
-    }));
+    
+    // adjusted vision
+    /* m_attachmentController.leftTrigger().whileTrue(Commands.run(() -> {
+      autoAimDrive(getAimingVector(getTarget()).getAngle());
+      autoAimPivot(5);
+    })); */
 
     // Reset field oriented
     m_driverController.x().onTrue(Commands.runOnce(() -> {
@@ -193,9 +206,13 @@ public class RobotContainer {
     m_attachmentController.povUp().onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
 
     m_attachmentController.povDown().onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kIntakePosition));
+
+    m_attachmentController.povLeft().onTrue(m_attatchment.getSetCustomPivotPositionCommand(20));
+
+    m_attachmentController.povRight().onTrue(m_attatchment.getSetCustomPivotPositionCommand(17));
   }
 
-  public void autoAimPivot() {
+  public void autoAimPivot(float adjustment) {
     double angle = 15;
     double targetDistance = getAimingVector(getTarget()).getNorm();
     if (isBlueAlliance()) {
@@ -204,7 +221,8 @@ public class RobotContainer {
       angle = (35.8266 * Math.pow(.7037, targetDistance));
     }
 
-    //angle -= targetDistance; // adjustment
+    angle -= 2.5; // adjustment
+    angle += adjustment; // other adjustment
 
     if (angle < 30 && angle > 2) {
       m_attatchment.setCustomPosition(angle);
@@ -242,7 +260,7 @@ public class RobotContainer {
 
   public Translation2d getTargetVector() {
     if (m_autoAim) {
-      autoAimPivot();
+      autoAimPivot(0);
     }
     return getAimingVector(getTarget());
   }
@@ -265,11 +283,35 @@ public class RobotContainer {
     } else {
       m_estimationField.setRobotPose(new Pose2d());
     }
+
+    // CALIBRATION TESTING START
+    double caliX = SmartDashboard.getNumber("Cali X", 0);   
+    double caliY = SmartDashboard.getNumber("Cali Y", 0);
+
+    VisionConstants.calibrationPoseEstimator.setRobotToCameraTransform(
+      new Transform3d(
+        new Translation3d(Units.inchesToMeters(caliX), Units.inchesToMeters(caliY), -Units.inchesToMeters(-11)),
+        new Rotation3d(0, Units.degreesToRadians(-35.5), Math.PI))
+    );
+
+    var caliPose = VisionConstants.calibrationPoseEstimator.update();
+
+    if (caliPose.isPresent()) {
+      m_calibrationField.setRobotPose(caliPose.get().estimatedPose.toPose2d());
+    } else {
+      m_calibrationField.setRobotPose(new Pose2d());
+    }
+    // CALIBRATION TESTING END
   }
 
   public void prepareTeleop() {
       m_attatchment.stopContinuousFire();
+      m_driverController.getHID().setRumble(RumbleType.kBothRumble, 0);    
+      m_attachmentController.getHID().setRumble(RumbleType.kBothRumble, 0);
       m_autoAim = false;
+
+      SmartDashboard.putNumber("Cali X", 0);
+      SmartDashboard.putNumber("Cali Y", 0);
   }
 
   /**
