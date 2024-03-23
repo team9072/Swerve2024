@@ -246,7 +246,7 @@ public final class Constants {
     // TODO: make adjustments into one number
     // x=-9.55 y=-6.5
     public static final Transform3d rearCamOffset = new Transform3d(
-        new Translation3d(Units.inchesToMeters(-6.5-7.55-5-7.5+17), Units.inchesToMeters(8.25-16+1.25), -Units.inchesToMeters(-11)),
+        new Translation3d(Units.inchesToMeters(-7), Units.inchesToMeters(8.25-16+1.25), -Units.inchesToMeters(-11)),
         new Rotation3d(0, Units.degreesToRadians(-35.5), Math.PI));
     public static final PhotonPoseEstimator rearCamPoseEstimator = new PhotonPoseEstimator(aprilTagLayout,
         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, rearCam, rearCamOffset);

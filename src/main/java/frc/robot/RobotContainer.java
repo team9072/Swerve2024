@@ -285,6 +285,7 @@ public class RobotContainer {
     }
 
     // CALIBRATION TESTING START
+    /* 
     double caliX = SmartDashboard.getNumber("Cali X", 0);   
     double caliY = SmartDashboard.getNumber("Cali Y", 0);
 
@@ -301,7 +302,7 @@ public class RobotContainer {
     } else {
       m_calibrationField.setRobotPose(new Pose2d());
     }
-    // CALIBRATION TESTING END
+    // CALIBRATION TESTING END */
   }
 
   public void prepareTeleop() {
