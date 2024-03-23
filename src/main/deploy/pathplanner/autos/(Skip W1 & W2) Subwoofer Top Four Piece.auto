@@ -56,19 +56,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top to W2"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "W2 to W3"
+            "pathName": "Top to W3"
           }
         },
         {
@@ -125,7 +113,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "W3 to Line"
+                        "pathName": "W3 to Line Mirror"
                       }
                     },
                     {
@@ -155,7 +143,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Line to W1"
+            "pathName": "Line to Right Farther"
           }
         },
         {
@@ -224,13 +212,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Middle to Line2"
+                        "pathName": "Right Farther to Line2"
                       }
                     },
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.35
+                        "waitTime": 0.33
                       }
                     }
                   ]
@@ -260,7 +248,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Line2 to Right"
+            "pathName": "Line2 to Right Farther"
           }
         },
         {
