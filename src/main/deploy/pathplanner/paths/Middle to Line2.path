@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5739157031058486,
-        "y": 4.907499437633661
+        "x": 3.795264131881648,
+        "y": 5.411140245839389
       },
       "isLocked": false,
       "linkedName": "Middle FP"
@@ -31,7 +31,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.2,
-      "rotationDegrees": -44.02999999999997,
+      "rotationDegrees": -26.77819093497944,
       "rotateFast": true
     }
   ],
