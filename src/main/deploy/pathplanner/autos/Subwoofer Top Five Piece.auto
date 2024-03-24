@@ -50,6 +50,12 @@
         {
           "type": "named",
           "data": {
+            "name": "adjustYes"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "startAutoAim"
           }
         },
@@ -66,6 +72,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "adjustNo"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "W1 to W2"
@@ -78,6 +90,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "adjustYes"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "W2 to W3"
@@ -87,6 +105,12 @@
           "type": "wait",
           "data": {
             "waitTime": 0.3
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "adjustNo"
           }
         },
         {
@@ -213,7 +237,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Middle to Line2"
+                  "pathName": "Middle to Line4"
                 }
               },
               {

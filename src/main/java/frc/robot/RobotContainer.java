@@ -49,6 +49,7 @@ public class RobotContainer {
 
   // Other (tests)
   private boolean m_autoAim = false;
+  private double m_adjust = 0;
 
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem(() -> {
@@ -117,8 +118,12 @@ public class RobotContainer {
       m_autoAim = true;
     }).asProxy());
 
-    NamedCommands.registerCommand("stopAutoAim", Commands.runOnce(() -> {
-      m_autoAim = false;
+    NamedCommands.registerCommand("adjustYes", Commands.runOnce(() -> {
+      m_adjust = 1;
+    }).asProxy());
+
+    NamedCommands.registerCommand("adjustNo", Commands.runOnce(() -> {
+      m_adjust = 0;
     }).asProxy());
 
     NamedCommands.registerCommand("zeroGyro", Commands.runOnce(() -> {
@@ -219,6 +224,7 @@ public class RobotContainer {
       angle = (35.8266 * Math.pow(.7037, targetDistance));
     } else {
       angle = (35.8266 * Math.pow(.7037, targetDistance));
+      angle += m_adjust;
     }
 
     angle -= 2.5; // adjustment
