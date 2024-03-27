@@ -153,7 +153,7 @@ public class AttachmentCoordinator {
     }
 
     /**
-     * Intake untul the returned command is canceled
+     * Intake until the returned command is canceled
      * 
      * @return a command to intake
      */

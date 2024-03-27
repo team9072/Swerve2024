@@ -76,9 +76,9 @@ public final class Constants {
 
     // Speaker positions
     public static final double kSubwooferPos = 23; // left (good)
-    public static final double kPodiumPos = 12; // up (good)
-    public static final double kIntakePos = 11; // down (good) 11
-    public static final double kAmpPos = 11;
+    public static final double kPodiumPos = 7; // up (good)
+    public static final double kIntakePos = 6.5; // down (good) 11
+    public static final double kAmpPos = 6.5;
 
     // Distance before pivot is considered ready
     public static final double kPositionDeadzone = 2.0;
@@ -125,7 +125,7 @@ public final class Constants {
     // Chassis configuration (24x24)
     public static final double kTrackWidth = Units.inchesToMeters(22);
     // Distance between centers of right and left wheels on robot (24*24)
-    public static final double kWheelBase = Units.inchesToMeters(22);
+    public static final double kWheelBase = Units.inchesToMeters(18.5); // 18.5?
     // Distance from center to furthest wheel (*diagonal*)
     public static final double kCenterToWheel = Units.inchesToMeters(Math.sqrt(121 + 121)); // 11^2 + 11^2 PT
     // Distance between front and back wheels on robot
@@ -175,7 +175,7 @@ public final class Constants {
 
     // Calculations required for driving motor conversion factors and feed forward
     public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(3.875);
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(3.365);
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
     // teeth on the bevel pinion

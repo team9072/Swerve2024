@@ -1,8 +1,9 @@
 {
-  "robotWidth": 0.7493,
-  "robotLength": 0.8636,
+  "robotWidth": 0.7366,
+  "robotLength": 0.85,
   "holonomicMode": true,
   "pathFolders": [
+    "CL",
     "Five Piece",
     "Four Piece",
     "Six Piece",
