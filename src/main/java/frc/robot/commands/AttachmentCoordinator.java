@@ -17,6 +17,7 @@ import frc.robot.subsystems.attachment.UTBIntakerSubsystem;
 import frc.robot.subsystems.attachment.PivotSubsystem.PivotPosition;
 import frc.robot.subsystems.attachment.ShooterSubsystem.ShooterState;
 import frc.robot.subsystems.attachment.FeederSubsystem.FeederState;
+import frc.robot.subsystems.attachment.Intaker.IntakerPosition;
 import frc.robot.subsystems.attachment.Intaker.IntakerState;
 import frc.robot.subsystems.attachment.PivotSubsystem;
 
@@ -227,6 +228,7 @@ public class AttachmentCoordinator {
         return Commands.runOnce(() -> {
             setState(AttatchmentState.kShooting);
             m_feeder.setState(FeederState.kShooting);
+            m_UTBIntaker.setState(IntakerState.kIntaking);
         });
     }
 
@@ -236,6 +238,7 @@ public class AttachmentCoordinator {
         Commands.waitSeconds(0.2),   
         Commands.runOnce(() -> {
             setState(AttatchmentState.kAiming);
+            m_UTBIntaker.setState(IntakerState.kStopped);
             m_feeder.setState(FeederState.kStopped);
             if (m_pivot.getPrecisePosition() != PivotConstants.kAmpPos) {
                 m_pivot.setPosition(PivotPosition.kIntakePosition);
