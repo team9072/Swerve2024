@@ -13,6 +13,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -202,6 +203,9 @@ public class RobotContainer {
         .whileTrue(m_attatchment.getStartShootCommand())
         .whileFalse(m_attatchment.getStopShootCommand());
 
+        // Amp
+        m_attachmentController.a().whileTrue(m_attatchment.getToggleAmpCommand());
+
     // Arm/pivot positioning
 
     m_attachmentController.povUp().onTrue(m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
@@ -269,6 +273,8 @@ public class RobotContainer {
 
   public void periodic() {
     SmartDashboard.putNumber("Auto Aim Distance", getAimingVector(getTarget()).getNorm());
+    SmartDashboard.putNumber("Bumper to Sub (In)", Units.metersToInches(getAimingVector(getTarget()).getNorm()) - 35.25 - (33/2));
+
     SmartDashboard.putBoolean("Beam Break", m_attatchment.getBeamBreakState());
     SmartDashboard.putBoolean("Vision", VisionConstants.rearCam.isConnected());
 

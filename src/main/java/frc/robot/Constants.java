@@ -76,9 +76,9 @@ public final class Constants {
 
     // Speaker positions
     public static final double kSubwooferPos = 23; // left (good)
-    public static final double kPodiumPos = 7; // up (good)
-    public static final double kIntakePos = 6.5; // down (good) 11
-    public static final double kAmpPos = 6.5;
+    public static final double kPodiumPos = 11; // up (good)
+    public static final double kIntakePos = 7; // down (good) 11
+    public static final double kAmpPos = 17;
 
     // Distance before pivot is considered ready
     public static final double kPositionDeadzone = 2.0;
@@ -98,6 +98,7 @@ public final class Constants {
     // Constants for shooter
     public static final int kRightShooterMotorCANId = 11;
     public static final int kLeftShooterMotorCANId = 12;
+    public static final int kAmpShooterMotorCANID = 16;
 
     // Shooting speed 0-1
     public static final double kShootSpeed = 1;

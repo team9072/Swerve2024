@@ -3,6 +3,9 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.FeederConstants;
@@ -161,6 +164,9 @@ public class AttachmentCoordinator {
         return Commands.sequence(
             Commands.runOnce(() -> startIntaking(), m_UTBIntaker, m_feeder),
                 Commands.waitUntil(m_beamBreak),
+                new InstantCommand(() -> {
+                     m_UTBIntaker.setState(IntakerState.kReversed);
+                }),
                 Commands.runOnce(() -> {
                     m_feeder.setState(FeederState.kAlignReverse);
                 }, m_UTBIntaker, m_feeder),
@@ -292,4 +298,40 @@ public class AttachmentCoordinator {
         m_pivot.setPosition(PivotPosition.kCustomSpeakerPosition);
         m_pivot.setPrecisePosition(rotations);
     }
+
+    public Command getToggleAmpCommand() {
+        // return Commands.startEnd(() -> {
+        //     m_pivot.setPosition(PivotPosition.kAmpPosition);
+        //     m_shooter.setState(ShooterState.kAmp);
+        //     m_feeder.setState(FeederState.kShooting);
+        // },
+        // () -> {
+        //     m_shooter.setState(ShooterState.kStopped);
+        //     m_feeder.setState(FeederState.kStopped);
+        // });
+
+        return new InstantCommand(() -> {
+            m_pivot.setPosition(PivotPosition.kAmpPosition);
+            m_shooter.setState(ShooterState.kPreAmp);
+        }).andThen(new WaitCommand(.5), new InstantCommand(() -> {
+            m_pivot.setPosition(PivotPosition.kAmpPosition);
+            m_shooter.setState(ShooterState.kAmp);
+        }), new WaitCommand(0.4),
+                   new InstantCommand(() -> m_feeder.setState(FeederState.kShooting)),
+                   new WaitCommand(1),
+                   new RunCommand(() -> {
+                    m_shooter.setState(ShooterState.kPostAmp);
+                   }),
+                   new WaitCommand(0.75),
+                   new InstantCommand(() -> {
+                        m_shooter.setState(ShooterState.kStopped);
+                        m_feeder.setState(FeederState.kStopped);
+                   })
+          ).finallyDo(() -> {
+            m_shooter.setState(ShooterState.kStopped);
+            m_feeder.setState(FeederState.kStopped);
+        });
+    }
+
+    
 }
