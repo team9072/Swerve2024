@@ -59,17 +59,16 @@ public class ShooterSubsystem extends SubsystemBase {
             setAmpSpeed(0);
         }
 
-        setSpeed(m_speed);
+        setSpeakerSpeed(m_speed);
     }
 
-    public void setSpeed(double speed) {
+    public void setSpeakerSpeed(double speed) {
         m_speed = speed;
 
         double actualSpeed = switch(m_state) {
             case kStopped -> 0;
-            case kSpinning -> m_speed;
-            case kShooting -> m_speed;
-            case kAmp, kPreAmp, kPostAmp  -> 0.4;
+            case kSpinning, kShooting -> m_speed;
+            case kAmp, kPreAmp, kPostAmp  -> ShooterConstants.kAmpShotSpeed;
         };
 
         m_motor1.set(actualSpeed);

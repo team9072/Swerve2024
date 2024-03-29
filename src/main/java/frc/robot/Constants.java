@@ -102,6 +102,7 @@ public final class Constants {
 
     // Shooting speed 0-1
     public static final double kShootSpeed = 1;
+    public static final double kAmpShotSpeed = 0.4;
 
     // Shooting speed for subwoofer side
     public static final double kSubwooferSideShootSpeed = 1;
