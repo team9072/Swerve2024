@@ -17,7 +17,6 @@ import frc.robot.subsystems.attachment.UTBIntakerSubsystem;
 import frc.robot.subsystems.attachment.PivotSubsystem.PivotPosition;
 import frc.robot.subsystems.attachment.ShooterSubsystem.ShooterState;
 import frc.robot.subsystems.attachment.FeederSubsystem.FeederState;
-import frc.robot.subsystems.attachment.Intaker.IntakerPosition;
 import frc.robot.subsystems.attachment.Intaker.IntakerState;
 import frc.robot.subsystems.attachment.PivotSubsystem;
 
