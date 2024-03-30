@@ -3,38 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9710752407286805,
-        "y": 5.116220279833924
+        "x": 8.288745946861262,
+        "y": 0.7673103634495558
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.907223077936635,
-        "y": 4.704726725017243
+        "x": 6.245666545387144,
+        "y": 0.832023285668194
       },
       "isLocked": false,
-      "linkedName": "Right Farther"
+      "linkedName": "C5"
     },
     {
       "anchor": {
-        "x": 8.288745946861262,
-        "y": 2.4406016379600333
+        "x": 2.0257443358488607,
+        "y": 3.3848757744908844
       },
       "prevControl": {
-        "x": 5.399929553114729,
-        "y": 4.220579415925069
+        "x": 2.1872418519611814,
+        "y": 3.226401407757771
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Line2"
+      "linkedName": "Right"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.35,
-      "rotationDegrees": -33.31,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -45,11 +39,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -33.31,
+    "rotation": -48.712187476035226,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Three Piece",
+  "folder": "Runners",
   "previewStartingState": {
     "rotation": 0.0,
     "velocity": 0

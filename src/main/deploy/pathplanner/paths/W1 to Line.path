@@ -3,37 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.93,
-        "y": 5.56
+        "x": 2.715093550487853,
+        "y": 6.830793009956947
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.956366578522185,
-        "y": 5.56
+        "x": 2.725380889358271,
+        "y": 6.830793009956947
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "W1"
     },
     {
       "anchor": {
-        "x": 8.0,
-        "y": 0.7921250930221164
+        "x": 8.54260286720112,
+        "y": 4.104648209291554
       },
       "prevControl": {
-        "x": 1.0000797571338254,
-        "y": 0.8255405611821521
+        "x": 2.8427833159032496,
+        "y": 4.094921554767155
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Line"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.0,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.333,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 200.0,
     "maxAngularAcceleration": 100.0
   },
@@ -43,10 +49,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Week 0",
+  "folder": "Runners",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 43.152389734005425,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7913611817198578,
-      "y": 6.6250462325486055
+      "x": 0.7904592112501756,
+      "y": 4.464534426699184
     },
-    "rotation": 59.93141717813758
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
@@ -44,31 +44,13 @@
         {
           "type": "named",
           "data": {
-            "name": "startAutoAim"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Subwoofer to W1"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "stopContinuousFire"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stopAutoAim"
+            "name": "adjustYes"
           }
         },
         {
@@ -82,7 +64,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "W1 to C1"
+                        "pathName": "Subwoofer Right to C4"
                       }
                     },
                     {
@@ -94,7 +76,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "C1 to W1"
+                        "pathName": "C4 to Right Farther"
                       }
                     }
                   ]
@@ -123,9 +105,15 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "setX"
+          }
+        },
+        {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.2
           }
         },
         {
@@ -137,7 +125,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.2
           }
         },
         {
@@ -163,7 +151,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "W1 to C2"
+                        "pathName": "Right Farther to Line"
                       }
                     },
                     {
@@ -175,7 +163,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "C2 to W1"
+                        "pathName": "Line to Right Farther Runner"
                       }
                     }
                   ]
@@ -204,9 +192,15 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "setX"
+          }
+        },
+        {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.2
           }
         },
         {
@@ -218,13 +212,38 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.2
           }
         },
         {
           "type": "named",
           "data": {
             "name": "stopContinuousFire"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopAutoAim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "adjustNo"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right Farther to Line"
+                }
+              }
+            ]
           }
         }
       ]

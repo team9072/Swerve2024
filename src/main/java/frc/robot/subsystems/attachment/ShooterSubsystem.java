@@ -38,6 +38,10 @@ public class ShooterSubsystem extends SubsystemBase {
         m_motor2.setIdleMode(IdleMode.kBrake);
     }
 
+    public double getAmpSpeed() {
+        return m_amp.get();
+    }
+
     public void setAmpSpeed(double speed) {
         m_amp.set(speed);
     }

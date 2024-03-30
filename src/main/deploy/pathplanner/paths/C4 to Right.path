@@ -3,55 +3,49 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2234294142773756,
-        "y": 6.47073614949235
+        "x": 8.299436504086279,
+        "y": 2.4219369765753735
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.433079141847506,
-        "y": 5.812346461785655
+        "x": 5.137748018547145,
+        "y": 0.44357049731989173
       },
       "isLocked": false,
-      "linkedName": "Subwoofer Top Shot"
+      "linkedName": "C4"
     },
     {
       "anchor": {
-        "x": 7.987370953949141,
-        "y": 7.448127797913619
+        "x": 2.0257443358488607,
+        "y": 3.3848757744908844
       },
       "prevControl": {
-        "x": 5.657249339408116,
-        "y": 7.448127797913619
+        "x": 2.1872418519611814,
+        "y": 3.226401407757771
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "M1"
+      "linkedName": "Right"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 0,
-      "rotateFast": true
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.333,
+    "maxAcceleration": 3.33,
     "maxAngularVelocity": 200.0,
     "maxAngularAcceleration": 100.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -48.712187476035226,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Week 0",
+  "folder": "Runners",
   "previewStartingState": {
-    "rotation": 40.0,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

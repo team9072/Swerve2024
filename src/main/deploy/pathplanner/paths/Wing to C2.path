@@ -3,40 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.48274101560734506,
-        "y": 6.933666398661118
+        "x": 3.869777829645749,
+        "y": 6.369600486948722
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.6679131152720261,
-        "y": 7.4994700365294005
+        "x": 6.56923115648033,
+        "y": 6.942772083742366
       },
       "isLocked": false,
-      "linkedName": "Subwoofer Top"
+      "linkedName": "Wing"
     },
     {
       "anchor": {
-        "x": 1.2234294142773756,
-        "y": 6.47073614949235
+        "x": 8.301118557124333,
+        "y": 5.771197106303988
       },
       "prevControl": {
-        "x": 2.180151929226165,
-        "y": 7.2422865647736305
+        "x": 6.624699375524877,
+        "y": 5.389661950495073
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Subwoofer Top Shot"
+      "linkedName": "C2"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.2,
       "rotationDegrees": 0,
-      "rotateFast": true
-    },
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 40.0,
       "rotateFast": true
     }
   ],
@@ -44,19 +39,19 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.333,
+    "maxAcceleration": 3.33,
     "maxAngularVelocity": 200.0,
     "maxAngularAcceleration": 100.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 40.0,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Week 0",
+  "folder": "Runners",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 43.152389734005425,
     "velocity": 0
   },
   "useDefaultConstraints": true

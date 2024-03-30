@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.49302835447776205,
-        "y": 4.20752159800059
+        "x": 8.299436504086279,
+        "y": 2.4219369765753735
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3241746734120037,
-        "y": 4.269245631223093
+        "x": 5.060942498811689,
+        "y": 4.425934504915419
       },
       "isLocked": false,
-      "linkedName": "Subwoofer Bottom"
+      "linkedName": "C4"
     },
     {
       "anchor": {
-        "x": 1.93,
-        "y": 5.555162990025228
+        "x": 3.9710752407286805,
+        "y": 5.116220279833924
       },
       "prevControl": {
-        "x": 1.8929084722146365,
-        "y": 5.555162990025228
+        "x": 4.2239682583630564,
+        "y": 4.989773771016735
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Right Farther"
     }
   ],
   "rotationTargets": [],
@@ -33,17 +33,17 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.333,
+    "maxAcceleration": 3.33,
     "maxAngularVelocity": 200.0,
     "maxAngularAcceleration": 100.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": -24.943905263424483,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Week 0",
+  "folder": "Runners",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0

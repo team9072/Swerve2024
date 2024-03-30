@@ -12,7 +12,10 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -127,6 +130,10 @@ public class RobotContainer {
       m_robotDrive.resetGyro();
     }).asProxy());
 
+    NamedCommands.registerCommand("setX", Commands.runOnce(() -> {
+      m_robotDrive.setX();
+    }).asProxy());
+
     NamedCommands.registerCommand("pivotSubwoofer",
         m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
     NamedCommands.registerCommand("pivotIntake",
@@ -203,8 +210,9 @@ public class RobotContainer {
         .whileTrue(m_attatchment.getStartShootCommand())
         .whileFalse(m_attatchment.getStopShootCommand());
 
-        // Amp
-        m_attachmentController.a().whileTrue(m_attatchment.getToggleAmpCommand());
+    // Amp
+    m_attachmentController.a().whileTrue(m_attatchment.getToggleAmpCommand())
+    .onFalse(m_attatchment.getCancelAmpCommand());
 
     // Arm/pivot positioning
 
@@ -227,7 +235,7 @@ public class RobotContainer {
       angle += m_adjust;
     }
 
-    angle -= 5; // adjustment
+    angle -= 4; // adjustment
     angle += adjustment; // other adjustment
 
     if (angle < 30 && angle > 2) {
@@ -293,7 +301,7 @@ public class RobotContainer {
     }
 
     // CALIBRATION TESTING START
-    /* 
+    
     double caliX = SmartDashboard.getNumber("Cali X", 0);   
     double caliY = SmartDashboard.getNumber("Cali Y", 0);
 
