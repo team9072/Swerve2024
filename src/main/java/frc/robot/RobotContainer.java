@@ -211,7 +211,7 @@ public class RobotContainer {
         .whileFalse(m_attatchment.getStopShootCommand());
 
     // Amp
-    m_attachmentController.a().whileTrue(m_attatchment.getToggleAmpCommand())
+    m_attachmentController.a().whileTrue(m_attatchment.getAmpCommand())
     .onFalse(m_attatchment.getCancelAmpCommand());
 
     // Arm/pivot positioning
@@ -225,6 +225,7 @@ public class RobotContainer {
     m_attachmentController.povRight().onTrue(m_attatchment.getSetCustomPivotPositionCommand(17));
   }
 
+  // TODO: try this adjustment if long shots are bad (distance^(1.161))-4
   public void autoAimPivot(float adjustment) {
     double angle = 15;
     double targetDistance = getAimingVector(getTarget()).getNorm();
@@ -237,6 +238,10 @@ public class RobotContainer {
 
     angle -= 4; // adjustment
     angle += adjustment; // other adjustment
+    
+    /*if (targetDistance >= 4) {
+      angle += Math.pow(targetDistance, 1.05) - 4;
+    }*/
 
     if (angle < 30 && angle > 2) {
       m_attatchment.setCustomPosition(angle);

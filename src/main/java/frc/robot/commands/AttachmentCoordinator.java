@@ -310,7 +310,7 @@ public class AttachmentCoordinator {
                 }));
     }
 
-    public Command getToggleAmpCommand() {
+    public Command getAmpCommand() {
         return new InstantCommand(() -> {
             m_pivot.setPosition(PivotPosition.kAmpPosition);
             m_shooter.setState(ShooterState.kPreAmp);
