@@ -208,6 +208,8 @@ public class RobotContainer {
 
     m_driverController.povLeft().whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(90, -90))), m_robotDrive));
 
+    m_driverController.leftTrigger().whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(-90, -90))), m_robotDrive));
+
     // Attatchment controls
 
     // Intake
