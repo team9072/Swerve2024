@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.425883012903467,
-        "y": 2.392757013002176
+        "x": 0.7904592112501756,
+        "y": 4.464534426699184
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.187389007628878,
-        "y": 4.39675454134222
+        "x": 0.8001858657745748,
+        "y": 4.464534426699184
       },
       "isLocked": false,
-      "linkedName": "C4"
+      "linkedName": "Right Subwoofer"
     },
     {
       "anchor": {
-        "x": 3.9710752407286805,
-        "y": 5.116220279833924
+        "x": 2.715093550487853,
+        "y": 4.217808936871006
       },
       "prevControl": {
-        "x": 4.2239682583630564,
-        "y": 4.989773771016735
+        "x": 1.8798445179828744,
+        "y": 5.04813369816313
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Right Farther"
+      "linkedName": "W3"
     }
   ],
   "rotationTargets": [],
@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -24.943905263424483,
+    "rotation": -32.193689801823396,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Runners",
+  "folder": null,
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -60.4612177404418,
     "velocity": 0
   },
   "useDefaultConstraints": true

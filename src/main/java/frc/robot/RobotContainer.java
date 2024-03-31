@@ -50,6 +50,7 @@ public class RobotContainer {
   // Other (tests)
   private boolean m_autoAim = false;
   private double m_adjust = 0;
+  private boolean m_vision = true;
 
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem(() -> {
@@ -116,6 +117,19 @@ public class RobotContainer {
     // pivot function constantly during auto
     NamedCommands.registerCommand("startAutoAim", Commands.runOnce(() -> {
       m_autoAim = true;
+    }).asProxy());
+
+    NamedCommands.registerCommand("stopAutoAim", Commands.runOnce(() -> {
+      m_autoAim = false;
+    }).asProxy());
+
+    
+    NamedCommands.registerCommand("enableVision", Commands.runOnce(() -> {
+      m_vision = true;
+    }).asProxy());
+
+    NamedCommands.registerCommand("disableVision", Commands.runOnce(() -> {
+      m_vision = false;
     }).asProxy());
 
     NamedCommands.registerCommand("adjustYes", Commands.runOnce(() -> {
@@ -295,7 +309,7 @@ public class RobotContainer {
 
     var pose = VisionConstants.rearCamPoseEstimator.update();
 
-    if (pose.isPresent()) {
+    if (pose.isPresent() && m_vision) {
       Pose2d estimatedPose = pose.get().estimatedPose.toPose2d();
       double timestamp = pose.get().timestampSeconds;
 
@@ -331,6 +345,7 @@ public class RobotContainer {
       m_driverController.getHID().setRumble(RumbleType.kBothRumble, 0);    
       m_attachmentController.getHID().setRumble(RumbleType.kBothRumble, 0);
       m_autoAim = false;
+      m_vision = true;
 
       SmartDashboard.putNumber("Cali X", 0);
       SmartDashboard.putNumber("Cali Y", 0);

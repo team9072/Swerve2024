@@ -2,21 +2,15 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.336590141851963,
-      "y": 5.53
+      "x": 0.7904592112501756,
+      "y": 4.464534426699184
     },
-    "rotation": 0.0
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "zeroGyro"
-          }
-        },
         {
           "type": "named",
           "data": {
@@ -32,7 +26,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.25
           }
         },
         {
@@ -50,160 +44,13 @@
         {
           "type": "named",
           "data": {
-            "name": "adjustNo"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "startAutoAim"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Top to W1"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.3
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "adjustNo"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "W1 to W2"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.3
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "adjustNo"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "W2 to W3"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.3
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "adjustNo"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopContinuousFire"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopAutoAim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pivotIntake"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "intake"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "W3 to Line"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.0
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startAutoAim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startShooter"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Line to W1"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.3
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startFeeders"
+            "pathName": "Subwoofer Right to W3"
           }
         },
         {
@@ -215,7 +62,82 @@
         {
           "type": "named",
           "data": {
+            "name": "stopContinuousFire"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "stopAutoAim"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "W3 to C4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "startAutoAim"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "C4 to Right Farther"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "startShooter"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.3
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startContinuousFire"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
           }
         },
         {
@@ -227,26 +149,88 @@
         {
           "type": "named",
           "data": {
-            "name": "pivotIntake"
+            "name": "stopAutoAim"
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "Middle to Line4"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Right Farther to Line"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "startAutoAim"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Line to Right Farther Runner"
+                      }
+                    }
+                  ]
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "intake"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "startShooter"
+                      }
+                    }
+                  ]
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.3
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startContinuousFire"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopContinuousFire"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopAutoAim"
           }
         }
       ]

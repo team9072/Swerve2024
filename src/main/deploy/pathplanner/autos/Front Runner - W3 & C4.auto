@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.336590141851963,
-      "y": 5.534588312284395
+      "x": 0.7904592112501756,
+      "y": 4.464534426699184
     },
-    "rotation": 0
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,19 @@
         {
           "type": "named",
           "data": {
-            "name": "startAutoAim"
+            "name": "pivotSubwoofer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startShooter"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
           }
         },
         {
@@ -24,9 +36,21 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startAutoAim"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Odo Top to W2"
+            "pathName": "Top to W3"
           }
         },
         {
@@ -58,13 +82,19 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Odo W2 to C1"
+                        "pathName": "W3 to C4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "startAutoAim"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Odo C1 to W2"
+                        "pathName": "C4 to Right Farther"
                       }
                     }
                   ]
@@ -93,15 +123,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "startAutoAim"
-          }
-        },
-        {
           "type": "wait",
           "data": {
-            "waitTime": 0.3
+            "waitTime": 0.2
           }
         },
         {
@@ -113,7 +137,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.2
           }
         },
         {
@@ -129,46 +153,84 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "Odo W2 to C2"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Right Farther to Line"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "startAutoAim"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Line to Right Farther Runner"
+                      }
+                    }
+                  ]
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "intake"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "startShooter"
+                      }
+                    }
+                  ]
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "startAutoAim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startShooter"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "C2 to W2"
+            "waitTime": 0.2
           }
         },
         {
           "type": "named",
           "data": {
             "name": "startContinuousFire"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopContinuousFire"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopAutoAim"
           }
         }
       ]

@@ -44,7 +44,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.1
+            "waitTime": 0.0
           }
         },
         {
@@ -161,7 +161,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "W3 to Line"
+                        "pathName": "W3 to C2"
                       }
                     },
                     {
@@ -191,7 +191,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Line to W1"
+            "pathName": "C2 to W1"
           }
         },
         {

@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.715093550487853,
-        "y": 6.830793009956947
+        "x": 2.7066101525567983,
+        "y": 7.16
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.725380889358271,
-        "y": 6.830793009956947
+        "x": 2.716897491427216,
+        "y": 7.16
       },
       "isLocked": false,
-      "linkedName": "W1"
+      "linkedName": "W1 Runner"
     },
     {
       "anchor": {
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0.7,
       "rotationDegrees": 0,
       "rotateFast": true
     }

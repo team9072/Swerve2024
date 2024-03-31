@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7913611817198578,
-      "y": 6.6250462325486055
+      "x": 1.336590141851963,
+      "y": 5.53
     },
     "rotation": 59.93141717813758
   },
@@ -80,9 +80,21 @@
                 "data": {
                   "commands": [
                     {
+                      "type": "named",
+                      "data": {
+                        "name": "disableVision"
+                      }
+                    },
+                    {
                       "type": "path",
                       "data": {
                         "pathName": "W1 to C1"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "enableVision"
                       }
                     },
                     {

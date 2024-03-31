@@ -113,7 +113,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.6
           }
         },
         {
@@ -125,7 +125,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.1
           }
         },
         {
@@ -200,7 +200,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.6
           }
         },
         {
@@ -212,7 +212,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.1
           }
         },
         {
@@ -240,7 +240,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right Farther to Line"
+                  "pathName": "Right Farther to C2"
                 }
               }
             ]
