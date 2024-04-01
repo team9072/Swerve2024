@@ -10,7 +10,9 @@
     "Testing",
     "Three Piece"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "New Folder"
+  ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.33,
   "defaultMaxAngVel": 200.0,

@@ -227,7 +227,7 @@ public class RobotContainer {
         .whileFalse(m_attatchment.getStopShootCommand());
 
     // Amp
-    m_attachmentController.a().whileTrue(m_attatchment.getAmpCommand())
+    m_driverController.leftBumper().or(m_attachmentController.a()).whileTrue(m_attatchment.getAmpCommand())
     .onFalse(m_attatchment.getCancelAmpCommand());
 
     // Arm/pivot positioning

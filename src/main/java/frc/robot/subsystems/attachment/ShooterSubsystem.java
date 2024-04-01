@@ -73,7 +73,7 @@ public class ShooterSubsystem extends SubsystemBase {
             case kStopped -> 0;
             case kSpinning -> m_speed;
             case kShooting -> m_speed;
-            case kAmp, kPreAmp, kPostAmp  -> 0.4;
+            case kAmp, kPreAmp, kPostAmp  -> 0.5;
         };
 
         m_motor1.set(actualSpeed);

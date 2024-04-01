@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2767919374701306,
-      "y": 5.680366242249072
+      "x": 0.7913611817198578,
+      "y": 6.6250462325486055
     },
-    "rotation": 0.0
+    "rotation": 59.05925722502877
   },
   "command": {
     "type": "sequential",
@@ -44,7 +44,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.0
+            "waitTime": 0.01
           }
         },
         {
@@ -62,7 +62,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top to W1"
+            "pathName": "Subwoofer to W1"
           }
         },
         {
@@ -80,7 +80,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "W1 to W2"
+            "pathName": "W1 R to W2"
           }
         },
         {
@@ -161,7 +161,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "W3 to C2"
+                        "pathName": "W3 to C4"
                       }
                     },
                     {
@@ -191,7 +191,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "C2 to W1"
+            "pathName": "C4 to Right Fast"
           }
         },
         {
@@ -237,7 +237,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Middle to Line4"
+                  "pathName": "Right to C5"
                 }
               },
               {
