@@ -78,7 +78,7 @@ public final class Constants {
     public static final double kSubwooferPos = 21; // left (good)
     public static final double kPodiumPos = 11; // up (good)
     public static final double kIntakePos = 7; // down (good) 11
-    public static final double kAmpPos = 19; // 17
+    public static final double kAmpPos = 17; // 17
 
     // Distance before pivot is considered ready
     public static final double kPositionDeadzone = 2.0;
@@ -247,7 +247,7 @@ public final class Constants {
     // TODO: make adjustments into one number
     // x=-9.55 y=-6.5
     public static final Transform3d rearCamOffset = new Transform3d(
-        new Translation3d(Units.inchesToMeters(-11), Units.inchesToMeters(8.25-16+1.25-3), -Units.inchesToMeters(-11)),
+        new Translation3d(Units.inchesToMeters(-6), Units.inchesToMeters(-5.5), -Units.inchesToMeters(-11)),
         new Rotation3d(0, Units.degreesToRadians(-35.5), Math.PI));
     public static final PhotonPoseEstimator rearCamPoseEstimator = new PhotonPoseEstimator(aprilTagLayout,
         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, rearCam, rearCamOffset);

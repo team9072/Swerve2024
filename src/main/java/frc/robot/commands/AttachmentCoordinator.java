@@ -106,6 +106,8 @@ public class AttachmentCoordinator {
      * Acts as an unjam feature
      */
     private void unjamIntakers() {
+        m_pivot.setPosition(PivotPosition.kIntakePosition);
+
         if (m_pivot.getPosition() == PivotPosition.kIntakePosition) {
             m_UTBIntaker.setState(IntakerState.kReversed);
             m_feeder.setState(FeederState.kReversed);
