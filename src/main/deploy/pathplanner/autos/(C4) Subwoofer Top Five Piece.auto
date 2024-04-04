@@ -14,12 +14,6 @@
         {
           "type": "named",
           "data": {
-            "name": "zeroGyro"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "pivotSubwoofer"
           }
         },

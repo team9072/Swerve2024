@@ -311,18 +311,23 @@ public class RobotContainer {
 
     var pose = VisionConstants.rearCamPoseEstimator.update();
 
-    if (pose.isPresent() && m_vision) {
+    if (pose.isPresent()) {
       Pose2d estimatedPose = pose.get().estimatedPose.toPose2d();
       double timestamp = pose.get().timestampSeconds;
 
       m_estimationField.setRobotPose(estimatedPose);
       m_robotDrive.updateOdometryWithVision(estimatedPose, timestamp);
+
+      SmartDashboard.putBoolean("Tag", true);
+      //System.out.println("[vision] I see a tag");
     } else {
+      SmartDashboard.putBoolean("Tag", false);
       m_estimationField.setRobotPose(new Pose2d());
+      //System.out.println("[vision] I do NOT see a tag");
     }
 
     // CALIBRATION TESTING START
-    
+    /*
     double caliX = SmartDashboard.getNumber("Cali X", 0);   
     double caliY = SmartDashboard.getNumber("Cali Y", 0);
 
