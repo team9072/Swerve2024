@@ -197,7 +197,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.3
+            "waitTime": 0.5
           }
         },
         {
@@ -237,7 +237,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Middle to Line4"
+                  "pathName": "Middle to Stage"
                 }
               },
               {
