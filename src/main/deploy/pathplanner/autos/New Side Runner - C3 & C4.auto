@@ -2,21 +2,15 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.336590141851963,
-      "y": 5.53
+      "x": 0.7904592112501756,
+      "y": 4.464534426699184
     },
-    "rotation": 0.0
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "zeroGyro"
-          }
-        },
         {
           "type": "named",
           "data": {
@@ -32,7 +26,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.25
           }
         },
         {
@@ -50,89 +44,17 @@
         {
           "type": "named",
           "data": {
-            "name": "adjustNo"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startAutoAim"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Top to W1"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.6
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "adjustNo"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "W1 to W2"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.3
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "adjustNo"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "W2 to W3"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.3
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "adjustNo"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "stopContinuousFire"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stopAutoAim"
+            "name": "adjustNo"
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "pivotIntake"
-          }
-        },
-        {
-          "type": "race",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -140,15 +62,21 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "wait",
+                      "type": "path",
                       "data": {
-                        "waitTime": 1.0
+                        "pathName": "Subwoofer Right to C4 Align"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "intake"
+                        "name": "startAutoAim"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "C4 to Right Farther Fast"
                       }
                     }
                   ]
@@ -159,15 +87,15 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "W3 to Line"
+                        "name": "intake"
                       }
                     },
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "waitTime": 1.0
+                        "name": "startShooter"
                       }
                     }
                   ]
@@ -179,43 +107,25 @@
         {
           "type": "named",
           "data": {
-            "name": "startAutoAim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startShooter"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Line to W1"
+            "name": "setX"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.4
+            "waitTime": 0.6
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "startFeeders"
+            "name": "startContinuousFire"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopAutoAim"
+            "waitTime": 0.1
           }
         },
         {
@@ -227,7 +137,100 @@
         {
           "type": "named",
           "data": {
-            "name": "pivotIntake"
+            "name": "stopAutoAim"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Right Farther to Line"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "startAutoAim"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Line to Right Farther Fast"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "startShooter"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setX"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.6
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startContinuousFire"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopContinuousFire"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopAutoAim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "adjustNo"
           }
         },
         {
@@ -237,13 +240,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Middle to Stage"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
+                  "pathName": "Right Farther to C2"
                 }
               }
             ]

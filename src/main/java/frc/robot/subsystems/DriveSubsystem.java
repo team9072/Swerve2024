@@ -334,6 +334,8 @@ public class DriveSubsystem extends SubsystemBase {
    * @param speeds The robot relative ChasisSpeeds
    */
   private void driveRobotRelative(ChassisSpeeds speeds) {
+    //ChassisSpeeds limitedSpeeds = limitSlewRate(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
+
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);

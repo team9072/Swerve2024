@@ -148,6 +148,8 @@ public class RobotContainer {
       m_robotDrive.setX();
     }).asProxy());
 
+    NamedCommands.registerCommand("beamBreak", m_attatchment.getBeamBreakCommand());
+
     NamedCommands.registerCommand("pivotSubwoofer",
         m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
     NamedCommands.registerCommand("pivotIntake",

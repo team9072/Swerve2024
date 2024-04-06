@@ -1,0 +1,100 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.33,
+        "y": 5.53
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.329999999999999,
+        "y": 5.53
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.1287152348740794,
+        "y": 7.489182697663641
+      },
+      "prevControl": {
+        "x": 2.6945188727470213,
+        "y": 7.504613705969267
+      },
+      "nextControl": {
+        "x": 1.27462480335838,
+        "y": 7.465889322258667
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.521762241519471,
+        "y": 6.264989372084008
+      },
+      "prevControl": {
+        "x": 0.8585525007747916,
+        "y": 6.257710192269953
+      },
+      "nextControl": {
+        "x": 2.1849719822641482,
+        "y": 6.272268551898063
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.8591162946736923,
+        "y": 5.53
+      },
+      "prevControl": {
+        "x": 2.8835251393212418,
+        "y": 5.132215605815227
+      },
+      "nextControl": {
+        "x": 2.8347074500261424,
+        "y": 5.927784394184774
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.521762241519471,
+        "y": 6.882229704309033
+      },
+      "prevControl": {
+        "x": 0.5217622415194709,
+        "y": 6.882229704309033
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.33,
+    "maxAngularVelocity": 200.0,
+    "maxAngularAcceleration": 100.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Testing",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

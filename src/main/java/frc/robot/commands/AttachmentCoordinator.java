@@ -176,6 +176,10 @@ public class AttachmentCoordinator {
                 }, m_UTBIntaker, m_feeder)).finallyDo(() -> stopIntaking());
     }
 
+    public Command getBeamBreakCommand() {
+        return Commands.waitUntil(m_beamBreak);
+    }
+
     public Command getIntakeAutoCommand() {
         return Commands.runOnce(() -> startIntaking(), m_UTBIntaker, m_feeder);
     }
