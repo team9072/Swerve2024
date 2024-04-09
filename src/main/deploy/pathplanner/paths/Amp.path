@@ -3,49 +3,49 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.301118557124333,
-        "y": 5.771197106303988
+        "x": 1.85,
+        "y": 6.67
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.210051197353581,
-        "y": 7.0226445666161466
+        "x": 1.85,
+        "y": 6.67
       },
       "isLocked": false,
-      "linkedName": "C2"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.6968834980323986,
-        "y": 6.88647140327456
+        "x": 1.85,
+        "y": 7.674330419750887
       },
       "prevControl": {
-        "x": 2.6968834980323986,
-        "y": 6.88647140327456
+        "x": 1.85,
+        "y": 7.674330419750887
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "W1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 200.0,
     "maxAngularAcceleration": 100.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 42.08553089439733,
+    "rotation": 90.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Runners",
+  "folder": null,
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 91.3639275316029,
     "velocity": 0
   },
   "useDefaultConstraints": false

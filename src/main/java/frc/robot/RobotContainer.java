@@ -4,10 +4,18 @@
 
 package frc.robot;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathfindHolonomic;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,6 +24,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -104,6 +113,16 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true, false),
             m_robotDrive));
+
+             new PathfindHolonomic(
+            new Pose2d(15.0, 4.0, Rotation2d.fromDegrees(180)),
+            new PathConstraints(4, 3, 4, 4),
+            () -> new Pose2d(1.5, 4, new Rotation2d()),
+            ChassisSpeeds::new,
+            (speeds) -> {},
+            new HolonomicPathFollowerConfig(4.5, 0.4, new ReplanningConfig()))
+        .andThen(Commands.print("[PathPlanner] PathfindingCommand finished warmup"))
+        .ignoringDisable(true).schedule();
   }
 
   /**
@@ -146,6 +165,18 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("setX", Commands.runOnce(() -> {
       m_robotDrive.setX();
+    }).asProxy());
+
+    NamedCommands.registerCommand("pivotW1", Commands.runOnce(() -> {
+      m_attatchment.setCustomPosition(7.7);
+    }).asProxy());
+
+    NamedCommands.registerCommand("pivotW2", Commands.runOnce(() -> {
+      m_attatchment.setCustomPosition(9.27);
+    }).asProxy());
+
+    NamedCommands.registerCommand("pivotW3", Commands.runOnce(() -> {
+      m_attatchment.setCustomPosition(6.95);
     }).asProxy());
 
     NamedCommands.registerCommand("beamBreak", m_attatchment.getBeamBreakCommand());
@@ -227,7 +258,32 @@ public class RobotContainer {
     m_driverController.rightTrigger()
         .whileTrue(m_attatchment.getStartShootCommand())
         .whileFalse(m_attatchment.getStopShootCommand());
+       
+// Pose2d targetPose = new Pose2d(2.21, 7.82, Rotation2d.fromDegrees(-88.767));
 
+   /*  m_driverController.y().onTrue(
+      AutoBuilder.pathfindThenFollowPath(
+        new PathPlannerPath(
+          PathPlannerPath.bezierFromPoses(
+      m_robotDrive.getPose(),
+        new Pose2d(2.411, 8.133, Rotation2d.fromDegrees(-90.0))),
+          new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI), // The constraints for this path. If using a differential drivetrain, the angular constraints have no effect.
+          new GoalEndState(0.0, Rotation2d.fromDegrees(-90)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+  ),
+        new PathConstraints(
+        3.0, 4.0,
+        Units.degreesToRadians(540), Units.degreesToRadians(720))
+    ));*/
+
+    m_driverController.y().onTrue(
+      AutoBuilder.followPath(PathPlannerPath.fromPathFile("Amp"))
+    );
+
+    String x = """
+        
+        """;
+
+    
     // Amp
     m_attachmentController.a().whileTrue(m_attatchment.getAmpCommand())
     .onFalse(m_attatchment.getCancelAmpCommand());
@@ -313,7 +369,11 @@ public class RobotContainer {
 
     var pose = VisionConstants.rearCamPoseEstimator.update();
 
-    if (pose.isPresent()) {
+    SmartDashboard.putNumber("x", m_robotDrive.getPose().getX());
+        SmartDashboard.putNumber("y", m_robotDrive.getPose().getY());
+
+
+    if (pose.isPresent() && m_vision) {
       Pose2d estimatedPose = pose.get().estimatedPose.toPose2d();
       double timestamp = pose.get().timestampSeconds;
 
