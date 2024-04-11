@@ -306,13 +306,12 @@ public class AttachmentCoordinator {
     public Command getCancelAmpCommand() {
         return Commands.sequence(
                 Commands.runOnce(() -> {
-                    m_shooter.setState(ShooterState.kStopped);
+                    m_shooter.setState(ShooterState.kPostAmp);
                     m_feeder.setState(FeederState.kStopped);
-                    m_shooter.setAmpSpeed(0.3);
                 }),
                 new WaitCommand(0.75),
                 Commands.runOnce(() -> {
-                    m_shooter.setAmpSpeed(0);
+                    m_shooter.setState(ShooterState.kStopped);
                 }));
     }
 

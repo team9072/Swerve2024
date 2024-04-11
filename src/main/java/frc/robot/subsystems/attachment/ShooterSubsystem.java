@@ -21,14 +21,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private CANSparkFlex m_motor1;
     private CANSparkFlex m_motor2;
-    private CANSparkMax m_amp;
+    private CANSparkMax m_ampArmMotor;
     private ShooterState m_state = ShooterState.kStopped;
     private double m_speed = ShooterConstants.kShootSpeed;
 
     public ShooterSubsystem() {
         m_motor1 = new CANSparkFlex(ShooterConstants.kRightShooterMotorCANId, MotorType.kBrushless);
         m_motor2 = new CANSparkFlex(ShooterConstants.kLeftShooterMotorCANId, MotorType.kBrushless);
-        m_amp = new CANSparkMax(ShooterConstants.kAmpShooterMotorCANID, MotorType.kBrushless);
+        m_ampArmMotor = new CANSparkMax(ShooterConstants.kAmpShooterMotorCANID, MotorType.kBrushless);
 
         m_motor1.restoreFactoryDefaults();
         m_motor2.restoreFactoryDefaults();
@@ -39,11 +39,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double getAmpSpeed() {
-        return m_amp.get();
-    }
-
-    public void setAmpSpeed(double speed) {
-        m_amp.set(speed);
+        return m_ampArmMotor.get();
     }
 
     /**
@@ -53,15 +49,14 @@ public class ShooterSubsystem extends SubsystemBase {
     public void setState(ShooterState state) {
         m_state = state;
 
-        if (state == ShooterState.kAmp) {
-            setAmpSpeed(-0.2);
-        } else if (state == ShooterState.kPreAmp) {
-            setAmpSpeed(-1);
-        } else if (state == ShooterState.kPostAmp) {
-            setAmpSpeed(0.3);
-        } else {
-            setAmpSpeed(0);
-        }
+        double armSpeed = switch(m_state) {
+            case kPreAmp -> -1;
+            case kAmp -> -0.2;
+            case kPostAmp -> 0.3;
+            default -> 0;
+        };
+
+        m_ampArmMotor.set(armSpeed);
 
         setSpeed(m_speed);
     }
@@ -71,9 +66,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
         double actualSpeed = switch(m_state) {
             case kStopped -> 0;
-            case kSpinning -> m_speed;
-            case kShooting -> m_speed;
-            case kAmp, kPreAmp, kPostAmp  -> 0.5;
+            case kSpinning, kShooting -> m_speed;
+            case kAmp, kPreAmp, kPostAmp  -> ShooterConstants.kAmpShotSpeed;
         };
 
         m_motor1.set(actualSpeed);
