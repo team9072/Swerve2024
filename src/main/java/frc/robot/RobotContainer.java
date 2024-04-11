@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -60,6 +62,8 @@ public class RobotContainer {
   private boolean m_autoAim = false;
   private double m_adjust = 0;
   private boolean m_vision = true;
+  // 4/10 hashmap for angles
+  private static final Map<String, String> m_lookupTable = new HashMap<>();
 
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem(() -> {
@@ -114,6 +118,8 @@ public class RobotContainer {
                 true, false),
             m_robotDrive));
 
+
+// DELETE BELOW WHEN DONE TESTING
              new PathfindHolonomic(
             new Pose2d(15.0, 4.0, Rotation2d.fromDegrees(180)),
             new PathConstraints(4, 3, 4, 4),
@@ -123,6 +129,49 @@ public class RobotContainer {
             new HolonomicPathFollowerConfig(4.5, 0.4, new ReplanningConfig()))
         .andThen(Commands.print("[PathPlanner] PathfindingCommand finished warmup"))
         .ignoringDisable(true).schedule();
+
+// hmm... this is a bit of a mess (copilot said this)
+        m_lookupTable.put(1.00, 25.21);
+        m_lookupTable.put(1.10, 24.34);
+        m_lookupTable.put(1.20, 23.50);
+        m_lookupTable.put(1.30, 22.69);
+        m_lookupTable.put(1.40, 21.91);
+        m_lookupTable.put(1.50, 21.15);
+        m_lookupTable.put(1.60, 20.42);
+        m_lookupTable.put(1.70, 19.71);
+        m_lookupTable.put(1.80, 19.03);
+        m_lookupTable.put(1.90, 18.38);
+        m_lookupTable.put(2.00, 17.74);
+        m_lookupTable.put(2.10, 17.13);
+        m_lookupTable.put(2.20, 16.54);
+        m_lookupTable.put(2.30, 15.97);
+        m_lookupTable.put(2.40, 15.41);
+        m_lookupTable.put(2.50, 14.88);
+        m_lookupTable.put(2.60, 14.37);
+        m_lookupTable.put(2.70, 13.87);
+        m_lookupTable.put(2.80, 13.39);
+        m_lookupTable.put(2.90, 12.93);
+        m_lookupTable.put(3.00, 12.48);
+        m_lookupTable.put(3.10, 12.05);
+        m_lookupTable.put(3.20, 11.64);
+        m_lookupTable.put(3.30, 11.24);
+        m_lookupTable.put(3.40, 10.85);
+        m_lookupTable.put(3.50, 10.47);
+        m_lookupTable.put(3.60, 10.11);
+        m_lookupTable.put(3.70, 9.76);
+        m_lookupTable.put(3.80, 9.42);
+        m_lookupTable.put(3.90, 9.10);
+        m_lookupTable.put(4.00, 8.79);
+        m_lookupTable.put(4.10, 8.48);
+        m_lookupTable.put(4.20, 8.19);
+        m_lookupTable.put(4.30, 7.91);
+        m_lookupTable.put(4.40, 7.63);
+        m_lookupTable.put(4.50, 7.37);
+        m_lookupTable.put(4.60, 7.12);
+        m_lookupTable.put(4.70, 6.87);
+        m_lookupTable.put(4.80, 6.63);
+        m_lookupTable.put(4.90, 6.40);
+        m_lookupTable.put(5.00, 6.18);
   }
 
   /**
@@ -275,13 +324,10 @@ public class RobotContainer {
         Units.degreesToRadians(540), Units.degreesToRadians(720))
     ));*/
 
+// testing loading pathplanner jsons for auto amp positioning
     m_driverController.y().onTrue(
-      AutoBuilder.followPath(PathPlannerPath.fromPathFile("Amp"))
+      AutoBuilder.followPath(pathFromJson())
     );
-
-    String x = """
-        
-        """;
 
     
     // Amp
@@ -312,10 +358,10 @@ public class RobotContainer {
 
     angle -= 4; // adjustment
     angle += adjustment; // other adjustment
-    
-    /*if (targetDistance >= 4) {
-      angle += Math.pow(targetDistance, 1.05) - 4;
-    }*/
+
+    // Testing lookup table
+    double tableAngle = lookupTable.getOrDefault(Math.round(targetDistance * 100.0) / 100.0, 5);
+    SmartDashboard.putNumber("Lookup Table Angle", tableAngle);
 
     if (angle < 30 && angle > 2) {
       m_attatchment.setCustomPosition(angle);
@@ -432,5 +478,110 @@ public class RobotContainer {
       //m_attatchment.stopContinuousFire();
      // m_autoAim = false;
     });
+  }
+
+// testing loading pathplanner jsons for auto amp positioning
+  public void autoAmp() {
+    String jsonPath = String.format("""
+      {
+        "version": 1.0,
+        "waypoints": [
+          {
+            "anchor": {
+              "x": %d,
+              "y": %d
+            },
+            "prevControl": null,
+            "nextControl": {
+              "x": %d,
+              "y": %d
+            },
+            "isLocked": false,
+            "linkedName": null
+          },
+          {
+            "anchor": {
+              "x": 1.85,
+              "y": 7.674330419750887
+            },
+            "prevControl": {
+              "x": 1.85,
+              "y": 7.674330419750887
+            },
+            "nextControl": null,
+            "isLocked": false,
+            "linkedName": null
+          }
+        ],
+        "rotationTargets": [],
+        "constraintZones": [],
+        "eventMarkers": [],
+        "globalConstraints": {
+          "maxVelocity": 2.0,
+          "maxAcceleration": 2.0,
+          "maxAngularVelocity": 200.0,
+          "maxAngularAcceleration": 100.0
+        },
+        "goalEndState": {
+          "velocity": 0,
+          "rotation": 90.0,
+          "rotateFast": false
+        },
+        "reversed": false,
+        "folder": null,
+        "previewStartingState": {
+          "rotation": %d,
+          "velocity": 0
+        },
+        "useDefaultConstraints": false
+      }
+    """, m_robotDrive.getPose().getX(), m_robotDrive.getPose().getY(), m_robotDrive.getPose().getX(), m_robotDrive.getPose().getY(), m_robotDrive.getHeading().getDegrees());
+  }
+
+// testing loading pathplanner jsons for auto amp positioning
+  public  PathPlannerPath pathFromJson(String jsonString) {
+    JSONObject pathJson = (JSONObject) new JSONParser().parse(jsonString);
+
+    List<Translation2d> bezierPoints =
+        bezierPointsFromWaypointsJson((JSONArray) pathJson.get("waypoints"));
+    PathConstraints globalConstraints =
+        PathConstraints.fromJson((JSONObject) pathJson.get("globalConstraints"));
+    GoalEndState goalEndState = GoalEndState.fromJson((JSONObject) pathJson.get("goalEndState"));
+    boolean reversed = (boolean) pathJson.get("reversed");
+    List<RotationTarget> rotationTargets = new ArrayList<>();
+    List<ConstraintsZone> constraintZones = new ArrayList<>();
+    List<EventMarker> eventMarkers = new ArrayList<>();
+
+    for (var rotJson : (JSONArray) pathJson.get("rotationTargets")) {
+      rotationTargets.add(RotationTarget.fromJson((JSONObject) rotJson));
+    }
+
+    for (var zoneJson : (JSONArray) pathJson.get("constraintZones")) {
+      constraintZones.add(ConstraintsZone.fromJson((JSONObject) zoneJson));
+    }
+
+    for (var markerJson : (JSONArray) pathJson.get("eventMarkers")) {
+      eventMarkers.add(EventMarker.fromJson((JSONObject) markerJson));
+    }
+
+    Rotation2d previewStartingRotation = Rotation2d.fromDegrees(0);
+    if (pathJson.containsKey("previewStartingState")) {
+      JSONObject previewStartingStateJson = (JSONObject) pathJson.get("previewStartingState");
+      if (previewStartingStateJson != null) {
+        previewStartingRotation =
+            Rotation2d.fromDegrees(
+                ((Number) previewStartingStateJson.get("rotation")).doubleValue());
+      }
+    }
+
+    return new PathPlannerPath(
+        bezierPoints,
+        rotationTargets,
+        constraintZones,
+        eventMarkers,
+        globalConstraints,
+        goalEndState,
+        reversed,
+        previewStartingRotation);
   }
 }
