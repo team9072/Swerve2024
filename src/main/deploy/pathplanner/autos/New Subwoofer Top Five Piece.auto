@@ -225,45 +225,59 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "setX"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startFeeders"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.2
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopAutoAim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopContinuousFire"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pivotIntake"
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "startContinuousFire"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.2
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "stopContinuousFire"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "stopAutoAim"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "pivotIntake"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Middle Stay"
+                }
+              }
+            ]
           }
         },
         {

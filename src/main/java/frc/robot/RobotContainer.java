@@ -4,15 +4,20 @@
 
 package frc.robot;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+
+import org.littletonrobotics.junction.Logger;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathfindHolonomic;
-import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -28,6 +33,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -63,10 +69,12 @@ public class RobotContainer {
   private double m_adjust = 0;
   private boolean m_vision = true;
   // 4/10 hashmap for angles
-  private static final Map<String, String> m_lookupTable = new HashMap<>();
+  private static final Map<Double, Double> m_lookupTable = new HashMap<>();
 
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem(() -> {
+    System.out.println("[auto] updated angle as " + getTargetVector().getAngle());
+
     if (m_autoAim) {
       return Optional.of(getTargetVector().getAngle());
     } else {
@@ -106,6 +114,8 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
+    DataLogManager.start();
+
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
@@ -131,16 +141,16 @@ public class RobotContainer {
         .ignoringDisable(true).schedule();
 
 // hmm... this is a bit of a mess (copilot said this)
-        m_lookupTable.put(1.00, 25.21);
-        m_lookupTable.put(1.10, 24.34);
-        m_lookupTable.put(1.20, 23.50);
-        m_lookupTable.put(1.30, 22.69);
-        m_lookupTable.put(1.40, 21.91);
-        m_lookupTable.put(1.50, 21.15);
-        m_lookupTable.put(1.60, 20.42);
-        m_lookupTable.put(1.70, 19.71);
-        m_lookupTable.put(1.80, 19.03);
-        m_lookupTable.put(1.90, 18.38);
+        m_lookupTable.put(1.00, 26.21);
+        m_lookupTable.put(1.10, 25.34);
+        m_lookupTable.put(1.20, 24.50);
+        m_lookupTable.put(1.30, 23.69);
+        m_lookupTable.put(1.40, 22.91);
+        m_lookupTable.put(1.50, 22.15);
+        m_lookupTable.put(1.60, 21.42);
+        m_lookupTable.put(1.70, 20.71);
+        m_lookupTable.put(1.80, 20.03);
+        m_lookupTable.put(1.90, 19.38);
         m_lookupTable.put(2.00, 17.74);
         m_lookupTable.put(2.10, 17.13);
         m_lookupTable.put(2.20, 16.54);
@@ -155,23 +165,23 @@ public class RobotContainer {
         m_lookupTable.put(3.10, 12.05);
         m_lookupTable.put(3.20, 11.64);
         m_lookupTable.put(3.30, 11.24);
-        m_lookupTable.put(3.40, 10.85);
-        m_lookupTable.put(3.50, 10.47);
-        m_lookupTable.put(3.60, 10.11);
-        m_lookupTable.put(3.70, 9.76);
-        m_lookupTable.put(3.80, 9.42);
-        m_lookupTable.put(3.90, 9.10);
-        m_lookupTable.put(4.00, 8.79);
-        m_lookupTable.put(4.10, 8.48);
-        m_lookupTable.put(4.20, 8.19);
-        m_lookupTable.put(4.30, 7.91);
-        m_lookupTable.put(4.40, 7.63);
+        m_lookupTable.put(3.40, 11.85);
+        m_lookupTable.put(3.50, 11.47);
+        m_lookupTable.put(3.60, 11.11);
+        m_lookupTable.put(3.70, 11.76);
+        m_lookupTable.put(3.80, 10.42);
+        m_lookupTable.put(3.90, 10.10);
+        m_lookupTable.put(4.00, 9.79);
+        m_lookupTable.put(4.10, 9.48);
+        m_lookupTable.put(4.20, 9.19);
+        m_lookupTable.put(4.30, 8.91);
+        m_lookupTable.put(4.40, 8.63);
         m_lookupTable.put(4.50, 7.37);
         m_lookupTable.put(4.60, 7.12);
-        m_lookupTable.put(4.70, 6.87);
-        m_lookupTable.put(4.80, 6.63);
-        m_lookupTable.put(4.90, 6.40);
-        m_lookupTable.put(5.00, 6.18);
+        m_lookupTable.put(4.70, 7.87);
+        m_lookupTable.put(4.80, 8.63);
+        m_lookupTable.put(4.90, 8.40);
+        m_lookupTable.put(5.00, 8.18);
   }
 
   /**
@@ -217,15 +227,15 @@ public class RobotContainer {
     }).asProxy());
 
     NamedCommands.registerCommand("pivotW1", Commands.runOnce(() -> {
-      m_attatchment.setCustomPosition(7.7);
+      m_attatchment.setCustomPosition(7.7+2);
     }).asProxy());
 
     NamedCommands.registerCommand("pivotW2", Commands.runOnce(() -> {
-      m_attatchment.setCustomPosition(9.27);
+      m_attatchment.setCustomPosition(9.27+2);
     }).asProxy());
 
     NamedCommands.registerCommand("pivotW3", Commands.runOnce(() -> {
-      m_attatchment.setCustomPosition(6.95);
+      m_attatchment.setCustomPosition(6.95+2);
     }).asProxy());
 
     NamedCommands.registerCommand("beamBreak", m_attatchment.getBeamBreakCommand());
@@ -310,24 +320,26 @@ public class RobotContainer {
        
 // Pose2d targetPose = new Pose2d(2.21, 7.82, Rotation2d.fromDegrees(-88.767));
 
-   /*  m_driverController.y().onTrue(
-      AutoBuilder.pathfindThenFollowPath(
+   m_driverController.y().onTrue(
+      Commands.runOnce(() -> {
+        AutoBuilder.pathfindThenFollowPath(
         new PathPlannerPath(
           PathPlannerPath.bezierFromPoses(
-      m_robotDrive.getPose(),
-        new Pose2d(2.411, 8.133, Rotation2d.fromDegrees(-90.0))),
-          new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI), // The constraints for this path. If using a differential drivetrain, the angular constraints have no effect.
+      new Pose2d(1.85, 7.67, Rotation2d.fromDegrees(-90.0)),
+        new Pose2d(1.85, 7.67, Rotation2d.fromDegrees(-90.0))),
+          new PathConstraints(3.0, 2.0, 2 * Math.PI, 4 * Math.PI), // The constraints for this path. If using a differential drivetrain, the angular constraints have no effect.
           new GoalEndState(0.0, Rotation2d.fromDegrees(-90)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
   ),
         new PathConstraints(
         3.0, 4.0,
         Units.degreesToRadians(540), Units.degreesToRadians(720))
-    ));*/
+    ).schedule();
+      }));
 
 // testing loading pathplanner jsons for auto amp positioning
-    m_driverController.y().onTrue(
-      AutoBuilder.followPath(pathFromJson())
-    );
+    /*m_driverController.y().onTrue(
+      AutoBuilder.followPath(PathPlannerPath.fromPathFile(autoAmp()))
+    );*/
 
     
     // Amp
@@ -360,11 +372,16 @@ public class RobotContainer {
     angle += adjustment; // other adjustment
 
     // Testing lookup table
-    double tableAngle = lookupTable.getOrDefault(Math.round(targetDistance * 100.0) / 100.0, 5);
-    SmartDashboard.putNumber("Lookup Table Angle", tableAngle);
+    double tableAngle = m_lookupTable.getOrDefault(Math.round(targetDistance * 10.0) / 10.0, (35.8266 * Math.pow(.7037, targetDistance)));
+    tableAngle -= 4;
+    tableAngle += adjustment;
 
-    if (angle < 30 && angle > 2) {
-      m_attatchment.setCustomPosition(angle);
+    SmartDashboard.putNumber("Lookup Table Distance", Math.round(targetDistance * 10.0) / 10.0);
+    SmartDashboard.putNumber("Lookup Table Angle",  tableAngle);
+
+
+    if (tableAngle < 30 && tableAngle > 2) {
+      m_attatchment.setCustomPosition(tableAngle);
     }
   }
 
@@ -427,12 +444,13 @@ public class RobotContainer {
       m_robotDrive.updateOdometryWithVision(estimatedPose, timestamp);
 
       SmartDashboard.putBoolean("Tag", true);
-      //System.out.println("[vision] I see a tag");
     } else {
       SmartDashboard.putBoolean("Tag", false);
       m_estimationField.setRobotPose(new Pose2d());
-      //System.out.println("[vision] I do NOT see a tag");
     }
+
+    Logger.recordOutput("MyPose", m_robotDrive.getPose());
+
 
     // CALIBRATION TESTING START
     /*
@@ -472,29 +490,24 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Stop continuous fire and auto aim after auto ends
-    return autoChooser.getSelected().finallyDo(() -> {
-      // shooter stops too early for the third note sometimes
-      //m_attatchment.stopContinuousFire();
-     // m_autoAim = false;
-    });
+    return autoChooser.getSelected();
   }
 
 // testing loading pathplanner jsons for auto amp positioning
-  public void autoAmp() {
+  public String autoAmp() {
     String jsonPath = String.format("""
       {
         "version": 1.0,
         "waypoints": [
           {
             "anchor": {
-              "x": %d,
-              "y": %d
+              "x": %f,
+              "y": %f
             },
             "prevControl": null,
             "nextControl": {
-              "x": %d,
-              "y": %d
+              "x": %f,
+              "y": %f
             },
             "isLocked": false,
             "linkedName": null
@@ -530,58 +543,23 @@ public class RobotContainer {
         "reversed": false,
         "folder": null,
         "previewStartingState": {
-          "rotation": %d,
+          "rotation": %f,
           "velocity": 0
         },
         "useDefaultConstraints": false
       }
     """, m_robotDrive.getPose().getX(), m_robotDrive.getPose().getY(), m_robotDrive.getPose().getX(), m_robotDrive.getPose().getY(), m_robotDrive.getHeading().getDegrees());
-  }
 
-// testing loading pathplanner jsons for auto amp positioning
-  public  PathPlannerPath pathFromJson(String jsonString) {
-    JSONObject pathJson = (JSONObject) new JSONParser().parse(jsonString);
+    // Generate a random 4-digit number
+        Random rand = new Random();
+        String randomNumber = String.format("%04d", rand.nextInt(10000));
 
-    List<Translation2d> bezierPoints =
-        bezierPointsFromWaypointsJson((JSONArray) pathJson.get("waypoints"));
-    PathConstraints globalConstraints =
-        PathConstraints.fromJson((JSONObject) pathJson.get("globalConstraints"));
-    GoalEndState goalEndState = GoalEndState.fromJson((JSONObject) pathJson.get("goalEndState"));
-    boolean reversed = (boolean) pathJson.get("reversed");
-    List<RotationTarget> rotationTargets = new ArrayList<>();
-    List<ConstraintsZone> constraintZones = new ArrayList<>();
-    List<EventMarker> eventMarkers = new ArrayList<>();
+         try {
+            Files.write(Paths.get("/home/lvuser/" + randomNumber + ".path"), jsonPath.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-    for (var rotJson : (JSONArray) pathJson.get("rotationTargets")) {
-      rotationTargets.add(RotationTarget.fromJson((JSONObject) rotJson));
-    }
-
-    for (var zoneJson : (JSONArray) pathJson.get("constraintZones")) {
-      constraintZones.add(ConstraintsZone.fromJson((JSONObject) zoneJson));
-    }
-
-    for (var markerJson : (JSONArray) pathJson.get("eventMarkers")) {
-      eventMarkers.add(EventMarker.fromJson((JSONObject) markerJson));
-    }
-
-    Rotation2d previewStartingRotation = Rotation2d.fromDegrees(0);
-    if (pathJson.containsKey("previewStartingState")) {
-      JSONObject previewStartingStateJson = (JSONObject) pathJson.get("previewStartingState");
-      if (previewStartingStateJson != null) {
-        previewStartingRotation =
-            Rotation2d.fromDegrees(
-                ((Number) previewStartingStateJson.get("rotation")).doubleValue());
+        return randomNumber;
       }
-    }
-
-    return new PathPlannerPath(
-        bezierPoints,
-        rotationTargets,
-        constraintZones,
-        eventMarkers,
-        globalConstraints,
-        goalEndState,
-        reversed,
-        previewStartingRotation);
-  }
 }

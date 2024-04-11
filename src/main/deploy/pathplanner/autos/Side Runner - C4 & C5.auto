@@ -73,12 +73,12 @@
                         "pathName": "Subwoofer Right to C5"
                       }
                     },
-        {
-          "type": "named",
-          "data": {
-            "name": "enableVision"
-          }
-        },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "enableVision"
+                      }
+                    },
                     {
                       "type": "named",
                       "data": {
