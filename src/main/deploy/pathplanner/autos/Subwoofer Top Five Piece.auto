@@ -32,7 +32,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.375
+            "waitTime": 0.2
           }
         },
         {
@@ -44,7 +44,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.2
+            "waitTime": 0.1
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "adjustNo"
           }
         },
         {
@@ -62,7 +68,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.3
+            "waitTime": 0.6
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "adjustNo"
           }
         },
         {
@@ -78,6 +90,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "adjustNo"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "W2 to W3"
@@ -87,6 +105,12 @@
           "type": "wait",
           "data": {
             "waitTime": 0.3
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "adjustNo"
           }
         },
         {
@@ -173,7 +197,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.3
+            "waitTime": 0.4
           }
         },
         {
@@ -213,7 +237,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Middle to Line2"
+                  "pathName": "Middle to Stage"
                 }
               },
               {

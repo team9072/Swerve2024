@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.47317044397122,
-        "y": 5.524739769858686
+        "x": 2.716336807081197,
+        "y": 5.553919733431884
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5739157031058486,
-        "y": 4.907499437633661
+        "x": 4.0384304949916245,
+        "y": 5.440320209412587
       },
       "isLocked": false,
       "linkedName": "Middle FP"
     },
     {
       "anchor": {
-        "x": 8.31140589599475,
-        "y": 2.4072372956775996
+        "x": 8.288745946861262,
+        "y": 2.4406016379600333
       },
       "prevControl": {
-        "x": 7.344396042175544,
-        "y": 3.045052305643458
+        "x": 7.2771738763237535,
+        "y": 3.024200909423979
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.2,
-      "rotationDegrees": -44.02999999999997,
+      "rotationDegrees": -26.77819093497944,
       "rotateFast": true
     }
   ],
@@ -45,7 +45,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -44.02999999999997,
+    "rotation": -32.275644314577825,
     "rotateFast": false
   },
   "reversed": false,

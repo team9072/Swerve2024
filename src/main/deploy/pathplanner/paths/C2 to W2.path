@@ -3,50 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.49302835447776205,
-        "y": 4.20752159800059
+        "x": 8.301118557124333,
+        "y": 5.771197106303988
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3241746734120037,
-        "y": 4.269245631223093
+        "x": 5.513249723241301,
+        "y": 7.746366169424069
       },
       "isLocked": false,
-      "linkedName": "Subwoofer Bottom"
+      "linkedName": "C2"
     },
     {
       "anchor": {
-        "x": 1.93,
-        "y": 5.555162990025228
+        "x": 2.715093550487853,
+        "y": 5.53
       },
       "prevControl": {
-        "x": 1.8929084722146365,
-        "y": 5.555162990025228
+        "x": 2.715093550487853,
+        "y": 5.493438956802725
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "W2"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.5,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 200.0,
     "maxAngularAcceleration": 100.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0,
+    "velocity": 0.0,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Week 0",
+  "folder": "Testing",
   "previewStartingState": {
     "rotation": 0,
-    "velocity": 0
+    "velocity": 0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

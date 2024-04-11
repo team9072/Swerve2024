@@ -3,6 +3,8 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.FeederConstants;
@@ -34,7 +36,6 @@ public class AttachmentCoordinator {
     private AttatchmentState m_state = AttatchmentState.kAiming;
     private AimingTarget m_target = AimingTarget.kSpeaker;
 
-
     public AttachmentCoordinator(UTBIntakerSubsystem utbIntaker, FeederSubsystem feeder, ShooterSubsystem shooter,
             PivotSubsystem pivot) {
         m_UTBIntaker = utbIntaker;
@@ -47,21 +48,20 @@ public class AttachmentCoordinator {
 
     // Starts the beam break trigger for teleop
     public void bindControllerRumble(CommandXboxController driveController) {
-        // Rumble on intake (this mess makes it so it doesn't rumble while shooting and only for intaking)
+        // Rumble on intake (this mess makes it so it doesn't rumble while shooting and
+        // only for intaking)
         m_beamBreak.onTrue(
-            Commands.parallel(
-                Commands.either(                
-                    Commands.sequence(
-                    Commands.runOnce(() -> {
-                        driveController.getHID().setRumble(RumbleType.kBothRumble, 1);
-                    }),
-                    Commands.waitSeconds(1),
-                    Commands.runOnce(() -> {
-                        driveController.getHID().setRumble(RumbleType.kBothRumble, 0);
-                    })
-                ),
-                Commands.none(), () -> m_state == AttatchmentState.kAiming))
-        );
+                Commands.parallel(
+                        Commands.either(
+                                Commands.sequence(
+                                        Commands.runOnce(() -> {
+                                            driveController.getHID().setRumble(RumbleType.kBothRumble, 1);
+                                        }),
+                                        Commands.waitSeconds(1),
+                                        Commands.runOnce(() -> {
+                                            driveController.getHID().setRumble(RumbleType.kBothRumble, 0);
+                                        })),
+                                Commands.none(), () -> m_state == AttatchmentState.kAiming)));
     }
 
     private void setState(AttatchmentState state) {
@@ -106,6 +106,8 @@ public class AttachmentCoordinator {
      * Acts as an unjam feature
      */
     private void unjamIntakers() {
+        m_pivot.setPosition(PivotPosition.kIntakePosition);
+
         if (m_pivot.getPosition() == PivotPosition.kIntakePosition) {
             m_UTBIntaker.setState(IntakerState.kReversed);
             m_feeder.setState(FeederState.kReversed);
@@ -153,14 +155,17 @@ public class AttachmentCoordinator {
     }
 
     /**
-     * Intake untul the returned command is canceled
+     * Intake until the returned command is canceled
      * 
      * @return a command to intake
      */
     public Command getIntakeCommand() {
         return Commands.sequence(
-            Commands.runOnce(() -> startIntaking(), m_UTBIntaker, m_feeder),
+                Commands.runOnce(() -> startIntaking(), m_UTBIntaker, m_feeder),
                 Commands.waitUntil(m_beamBreak),
+                new InstantCommand(() -> {
+                    m_UTBIntaker.setState(IntakerState.kReversed);
+                }),
                 Commands.runOnce(() -> {
                     m_feeder.setState(FeederState.kAlignReverse);
                 }, m_UTBIntaker, m_feeder),
@@ -168,8 +173,11 @@ public class AttachmentCoordinator {
                         Commands.waitSeconds(FeederConstants.kNotePullbackMaxTime)),
                 Commands.runOnce(() -> {
                     m_feeder.setState(FeederState.kStopped);
-                }, m_UTBIntaker, m_feeder)
-        ).finallyDo(() -> stopIntaking());
+                }, m_UTBIntaker, m_feeder)).finallyDo(() -> stopIntaking());
+    }
+
+    public Command getBeamBreakCommand() {
+        return Commands.waitUntil(m_beamBreak);
     }
 
     public Command getIntakeAutoCommand() {
@@ -209,11 +217,11 @@ public class AttachmentCoordinator {
             setState(AttatchmentState.kShooting);
             m_feeder.setState(FeederState.kShooting);
         },
-        () -> {
-            setState(AttatchmentState.kAiming);
-            m_feeder.setState(FeederState.kStopped);
-            m_pivot.setPosition(PivotPosition.kIntakePosition);
-        });
+                () -> {
+                    setState(AttatchmentState.kAiming);
+                    m_feeder.setState(FeederState.kStopped);
+                    m_pivot.setPosition(PivotPosition.kIntakePosition);
+                });
     }
 
     // Starts shooting without stopping
@@ -221,20 +229,22 @@ public class AttachmentCoordinator {
         return Commands.runOnce(() -> {
             setState(AttatchmentState.kShooting);
             m_feeder.setState(FeederState.kShooting);
+            m_UTBIntaker.setState(IntakerState.kIntaking);
         });
     }
 
     // Stops shooting
     public Command getStopShootCommand() {
         return Commands.sequence(
-        Commands.waitSeconds(0.2),   
-        Commands.runOnce(() -> {
-            setState(AttatchmentState.kAiming);
-            m_feeder.setState(FeederState.kStopped);
-            if (m_pivot.getPrecisePosition() != PivotConstants.kAmpPos) {
-                m_pivot.setPosition(PivotPosition.kIntakePosition);
-            }
-        }));
+                Commands.waitSeconds(0.2),
+                Commands.runOnce(() -> {
+                    setState(AttatchmentState.kAiming);
+                    m_UTBIntaker.setState(IntakerState.kStopped);
+                    m_feeder.setState(FeederState.kStopped);
+                    if (m_pivot.getPrecisePosition() != PivotConstants.kAmpPos) {
+                        m_pivot.setPosition(PivotPosition.kIntakePosition);
+                    }
+                }));
     }
 
     // Starts continuous fire without stopping
@@ -249,10 +259,10 @@ public class AttachmentCoordinator {
 
     public void stopContinuousFire() {
         setState(AttatchmentState.kAiming);
-            m_pivot.setPosition(PivotPosition.kIntakePosition);
-            m_shooter.setState(ShooterState.kStopped);
-            m_feeder.setState(FeederState.kStopped);
-            m_UTBIntaker.setState(IntakerState.kStopped);
+        m_pivot.setPosition(PivotPosition.kIntakePosition);
+        m_shooter.setState(ShooterState.kStopped);
+        m_feeder.setState(FeederState.kStopped);
+        m_UTBIntaker.setState(IntakerState.kStopped);
     }
 
     // Stops continuous fire
@@ -292,4 +302,40 @@ public class AttachmentCoordinator {
         m_pivot.setPosition(PivotPosition.kCustomSpeakerPosition);
         m_pivot.setPrecisePosition(rotations);
     }
+
+    public Command getCancelAmpCommand() {
+        return Commands.sequence(
+                Commands.runOnce(() -> {
+                    m_shooter.setState(ShooterState.kPostAmp);
+                    m_feeder.setState(FeederState.kStopped);
+                }),
+                new WaitCommand(0.75),
+                Commands.runOnce(() -> {
+                    m_shooter.setState(ShooterState.kStopped);
+                }));
+    }
+
+    public Command getAmpCommand() {
+        return new InstantCommand(() -> {
+            m_pivot.setPosition(PivotPosition.kAmpPosition);
+            m_shooter.setState(ShooterState.kPreAmp);
+        }).andThen(new WaitCommand(0.5), new InstantCommand(() -> {
+            m_pivot.setPosition(PivotPosition.kAmpPosition);
+            m_shooter.setState(ShooterState.kAmp);
+        }), new WaitCommand(0.4),
+                new InstantCommand(() -> m_feeder.setState(FeederState.kShooting)),
+                new WaitCommand(1),
+                new InstantCommand(() -> {
+                    m_shooter.setState(ShooterState.kPostAmp);
+                }),
+                new WaitCommand(0.75),
+                new InstantCommand(() -> {
+                    m_shooter.setState(ShooterState.kStopped);
+                    m_feeder.setState(FeederState.kStopped);
+                })).finallyDo(() -> {
+                    m_shooter.setState(ShooterState.kStopped);
+                    m_feeder.setState(FeederState.kStopped);
+                });
+    }
+
 }

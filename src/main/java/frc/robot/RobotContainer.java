@@ -4,10 +4,18 @@
 
 package frc.robot;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathfindHolonomic;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,6 +24,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -49,6 +58,8 @@ public class RobotContainer {
 
   // Other (tests)
   private boolean m_autoAim = false;
+  private double m_adjust = 0;
+  private boolean m_vision = true;
 
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem(() -> {
@@ -102,6 +113,16 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true, false),
             m_robotDrive));
+
+             new PathfindHolonomic(
+            new Pose2d(15.0, 4.0, Rotation2d.fromDegrees(180)),
+            new PathConstraints(4, 3, 4, 4),
+            () -> new Pose2d(1.5, 4, new Rotation2d()),
+            ChassisSpeeds::new,
+            (speeds) -> {},
+            new HolonomicPathFollowerConfig(4.5, 0.4, new ReplanningConfig()))
+        .andThen(Commands.print("[PathPlanner] PathfindingCommand finished warmup"))
+        .ignoringDisable(true).schedule();
   }
 
   /**
@@ -121,9 +142,44 @@ public class RobotContainer {
       m_autoAim = false;
     }).asProxy());
 
+    
+    NamedCommands.registerCommand("enableVision", Commands.runOnce(() -> {
+      m_vision = true;
+    }).asProxy());
+
+    NamedCommands.registerCommand("disableVision", Commands.runOnce(() -> {
+      m_vision = false;
+    }).asProxy());
+
+    NamedCommands.registerCommand("adjustYes", Commands.runOnce(() -> {
+      m_adjust = 1;
+    }).asProxy());
+
+    NamedCommands.registerCommand("adjustNo", Commands.runOnce(() -> {
+      m_adjust = 0;
+    }).asProxy());
+
     NamedCommands.registerCommand("zeroGyro", Commands.runOnce(() -> {
       m_robotDrive.resetGyro();
     }).asProxy());
+
+    NamedCommands.registerCommand("setX", Commands.runOnce(() -> {
+      m_robotDrive.setX();
+    }).asProxy());
+
+    NamedCommands.registerCommand("pivotW1", Commands.runOnce(() -> {
+      m_attatchment.setCustomPosition(7.7);
+    }).asProxy());
+
+    NamedCommands.registerCommand("pivotW2", Commands.runOnce(() -> {
+      m_attatchment.setCustomPosition(9.27);
+    }).asProxy());
+
+    NamedCommands.registerCommand("pivotW3", Commands.runOnce(() -> {
+      m_attatchment.setCustomPosition(6.95);
+    }).asProxy());
+
+    NamedCommands.registerCommand("beamBreak", m_attatchment.getBeamBreakCommand());
 
     NamedCommands.registerCommand("pivotSubwoofer",
         m_attatchment.getSetPivotPositionCommand(PivotPosition.kSubwooferPosition));
@@ -185,6 +241,8 @@ public class RobotContainer {
 
     m_driverController.povLeft().whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(90, -90))), m_robotDrive));
 
+    m_driverController.leftTrigger().whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(-90, -90))), m_robotDrive));
+
     // Attatchment controls
 
     // Intake
@@ -200,6 +258,35 @@ public class RobotContainer {
     m_driverController.rightTrigger()
         .whileTrue(m_attatchment.getStartShootCommand())
         .whileFalse(m_attatchment.getStopShootCommand());
+       
+// Pose2d targetPose = new Pose2d(2.21, 7.82, Rotation2d.fromDegrees(-88.767));
+
+   /*  m_driverController.y().onTrue(
+      AutoBuilder.pathfindThenFollowPath(
+        new PathPlannerPath(
+          PathPlannerPath.bezierFromPoses(
+      m_robotDrive.getPose(),
+        new Pose2d(2.411, 8.133, Rotation2d.fromDegrees(-90.0))),
+          new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI), // The constraints for this path. If using a differential drivetrain, the angular constraints have no effect.
+          new GoalEndState(0.0, Rotation2d.fromDegrees(-90)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+  ),
+        new PathConstraints(
+        3.0, 4.0,
+        Units.degreesToRadians(540), Units.degreesToRadians(720))
+    ));*/
+
+    m_driverController.y().onTrue(
+      AutoBuilder.followPath(PathPlannerPath.fromPathFile("Amp"))
+    );
+
+    String x = """
+        
+        """;
+
+    
+    // Amp
+    m_attachmentController.a().whileTrue(m_attatchment.getAmpCommand())
+    .onFalse(m_attatchment.getCancelAmpCommand());
 
     // Arm/pivot positioning
 
@@ -212,6 +299,7 @@ public class RobotContainer {
     m_attachmentController.povRight().onTrue(m_attatchment.getSetCustomPivotPositionCommand(17));
   }
 
+  // TODO: try this adjustment if long shots are bad (distance^(1.161))-4
   public void autoAimPivot(float adjustment) {
     double angle = 15;
     double targetDistance = getAimingVector(getTarget()).getNorm();
@@ -219,10 +307,15 @@ public class RobotContainer {
       angle = (35.8266 * Math.pow(.7037, targetDistance));
     } else {
       angle = (35.8266 * Math.pow(.7037, targetDistance));
+      angle += m_adjust;
     }
 
-    angle -= 2.5; // adjustment
+    angle -= 4; // adjustment
     angle += adjustment; // other adjustment
+    
+    /*if (targetDistance >= 4) {
+      angle += Math.pow(targetDistance, 1.05) - 4;
+    }*/
 
     if (angle < 30 && angle > 2) {
       m_attatchment.setCustomPosition(angle);
@@ -267,6 +360,8 @@ public class RobotContainer {
 
   public void periodic() {
     SmartDashboard.putNumber("Auto Aim Distance", getAimingVector(getTarget()).getNorm());
+    SmartDashboard.putNumber("Bumper to Sub (In)", Units.metersToInches(getAimingVector(getTarget()).getNorm()) - 35.25 - (33/2));
+
     SmartDashboard.putBoolean("Beam Break", m_attatchment.getBeamBreakState());
     SmartDashboard.putBoolean("Vision", VisionConstants.rearCam.isConnected());
 
@@ -274,17 +369,27 @@ public class RobotContainer {
 
     var pose = VisionConstants.rearCamPoseEstimator.update();
 
-    if (pose.isPresent()) {
+    SmartDashboard.putNumber("x", m_robotDrive.getPose().getX());
+        SmartDashboard.putNumber("y", m_robotDrive.getPose().getY());
+
+
+    if (pose.isPresent() && m_vision) {
       Pose2d estimatedPose = pose.get().estimatedPose.toPose2d();
       double timestamp = pose.get().timestampSeconds;
 
       m_estimationField.setRobotPose(estimatedPose);
       m_robotDrive.updateOdometryWithVision(estimatedPose, timestamp);
+
+      SmartDashboard.putBoolean("Tag", true);
+      //System.out.println("[vision] I see a tag");
     } else {
+      SmartDashboard.putBoolean("Tag", false);
       m_estimationField.setRobotPose(new Pose2d());
+      //System.out.println("[vision] I do NOT see a tag");
     }
 
     // CALIBRATION TESTING START
+    /*
     double caliX = SmartDashboard.getNumber("Cali X", 0);   
     double caliY = SmartDashboard.getNumber("Cali Y", 0);
 
@@ -301,7 +406,7 @@ public class RobotContainer {
     } else {
       m_calibrationField.setRobotPose(new Pose2d());
     }
-    // CALIBRATION TESTING END
+    // CALIBRATION TESTING END */
   }
 
   public void prepareTeleop() {
@@ -309,6 +414,7 @@ public class RobotContainer {
       m_driverController.getHID().setRumble(RumbleType.kBothRumble, 0);    
       m_attachmentController.getHID().setRumble(RumbleType.kBothRumble, 0);
       m_autoAim = false;
+      m_vision = true;
 
       SmartDashboard.putNumber("Cali X", 0);
       SmartDashboard.putNumber("Cali Y", 0);

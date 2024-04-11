@@ -1,0 +1,58 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.716336807081197,
+        "y": 5.553919733431884
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.935859454657298,
+        "y": 7.333897511396919
+      },
+      "isLocked": false,
+      "linkedName": "Middle FP"
+    },
+    {
+      "anchor": {
+        "x": 8.299436504086279,
+        "y": 5.7679061329686645
+      },
+      "prevControl": {
+        "x": 6.36383225373086,
+        "y": 6.915651366847758
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Line4"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.3,
+      "rotationDegrees": -33.69,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 200.0,
+    "maxAngularAcceleration": 100.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -33.69,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Five Piece",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

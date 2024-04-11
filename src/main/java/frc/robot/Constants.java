@@ -75,10 +75,10 @@ public final class Constants {
     public static final double kSpeakerMax = kGlobalMax;
 
     // Speaker positions
-    public static final double kSubwooferPos = 23; // left (good)
-    public static final double kPodiumPos = 12; // up (good)
-    public static final double kIntakePos = 11; // down (good) 11
-    public static final double kAmpPos = 11;
+    public static final double kSubwooferPos = 21; // left (good)
+    public static final double kPodiumPos = 11; // up (good)
+    public static final double kIntakePos = 7; // down (good) 11
+    public static final double kAmpPos = 17; // 17
 
     // Distance before pivot is considered ready
     public static final double kPositionDeadzone = 2.0;
@@ -98,9 +98,11 @@ public final class Constants {
     // Constants for shooter
     public static final int kRightShooterMotorCANId = 11;
     public static final int kLeftShooterMotorCANId = 12;
+    public static final int kAmpShooterMotorCANID = 16;
 
     // Shooting speed 0-1
     public static final double kShootSpeed = 1;
+    public static final double kAmpShotSpeed = 0.5;
 
     // Shooting speed for subwoofer side
     public static final double kSubwooferSideShootSpeed = 1;
@@ -125,7 +127,7 @@ public final class Constants {
     // Chassis configuration (24x24)
     public static final double kTrackWidth = Units.inchesToMeters(22);
     // Distance between centers of right and left wheels on robot (24*24)
-    public static final double kWheelBase = Units.inchesToMeters(22);
+    public static final double kWheelBase = Units.inchesToMeters(18.5); // 18.5?
     // Distance from center to furthest wheel (*diagonal*)
     public static final double kCenterToWheel = Units.inchesToMeters(Math.sqrt(121 + 121)); // 11^2 + 11^2 PT
     // Distance between front and back wheels on robot
@@ -175,7 +177,7 @@ public final class Constants {
 
     // Calculations required for driving motor conversion factors and feed forward
     public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(3.875);
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(3.365 / 1); // 3.365
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
     // teeth on the bevel pinion
@@ -246,7 +248,7 @@ public final class Constants {
     // TODO: make adjustments into one number
     // x=-9.55 y=-6.5
     public static final Transform3d rearCamOffset = new Transform3d(
-        new Translation3d(Units.inchesToMeters(-6.5-7.55-5-7.5+17), Units.inchesToMeters(8.25-16+1.25), -Units.inchesToMeters(-11)),
+        new Translation3d(Units.inchesToMeters(-6), Units.inchesToMeters(-5.5), -Units.inchesToMeters(-11)),
         new Rotation3d(0, Units.degreesToRadians(-35.5), Math.PI));
     public static final PhotonPoseEstimator rearCamPoseEstimator = new PhotonPoseEstimator(aprilTagLayout,
         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, rearCam, rearCamOffset);
