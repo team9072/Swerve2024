@@ -243,12 +243,11 @@ public final class Constants {
     public static final AprilTagFieldLayout aprilTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
     public static final PhotonCamera rearCam = new PhotonCamera("BW3");
-    // Camera is backward and rotated 22 degrees up
+
     // Note: Negative shifts up and left (relative to field, not up on the field2d)
-    // TODO: make adjustments into one number
-    // x=-9.55 y=-6.5
+    // x=-8.55 y=-6.5 (OUR FIELD VALUES, revert back after comps)
     public static final Transform3d rearCamOffset = new Transform3d(
-        new Translation3d(Units.inchesToMeters(-9.55), Units.inchesToMeters(-6.5), -Units.inchesToMeters(-11)),
+        new Translation3d(Units.inchesToMeters(-8.55), Units.inchesToMeters(-6.5), -Units.inchesToMeters(-11)),
         new Rotation3d(0, Units.degreesToRadians(-35.5), Math.PI));
     public static final PhotonPoseEstimator rearCamPoseEstimator = new PhotonPoseEstimator(aprilTagLayout,
         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, rearCam, rearCamOffset);

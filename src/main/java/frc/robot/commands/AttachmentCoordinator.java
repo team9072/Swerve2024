@@ -297,7 +297,6 @@ public class AttachmentCoordinator {
         }, m_pivot);
     }
 
-    // TODO: testing
     public void setCustomPosition(double rotations) {
         m_pivot.setPosition(PivotPosition.kCustomSpeakerPosition);
         m_pivot.setPrecisePosition(rotations);
