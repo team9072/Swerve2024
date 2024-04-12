@@ -56,7 +56,7 @@
         {
           "type": "named",
           "data": {
-            "name": "pivotW1"
+            "name": "startAutoAim"
           }
         },
         {
@@ -68,25 +68,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.3
+            "waitTime": 0.6
           }
         },
         {
           "type": "named",
           "data": {
             "name": "adjustNo"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopAutoAim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pivotW2"
           }
         },
         {
@@ -105,12 +93,6 @@
           "type": "named",
           "data": {
             "name": "adjustNo"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pivotW3"
           }
         },
         {
@@ -141,12 +123,6 @@
           "type": "named",
           "data": {
             "name": "stopAutoAim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "disableVision"
           }
         },
         {
@@ -203,12 +179,6 @@
         {
           "type": "named",
           "data": {
-            "name": "enableVision"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "startAutoAim"
           }
         },
@@ -225,59 +195,39 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "wait",
           "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.4
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "startContinuousFire"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.2
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "stopContinuousFire"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "stopAutoAim"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "pivotIntake"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Middle Stay"
-                }
-              }
-            ]
+            "waitTime": 0.4
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startFeeders"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopAutoAim"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopContinuousFire"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pivotIntake"
           }
         },
         {
