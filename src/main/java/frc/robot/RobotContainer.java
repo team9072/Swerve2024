@@ -303,8 +303,8 @@ public class RobotContainer {
     m_driverController.povLeft()
         .whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(90, -90))), m_robotDrive));
 
-    m_driverController.leftTrigger()
-        .whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(-90, -90))), m_robotDrive));
+    /*m_driverController.leftTrigger()
+        .whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(-90, -90))), m_robotDrive).alongWith(m_attatchment.getAmpUpCommand())).onFalse(m_attatchment.getCancelAmpCommand());*/
 
     // Attatchment controls
 
@@ -344,8 +344,8 @@ public class RobotContainer {
         }));
 
     // Amp
-    m_attachmentController.a().whileTrue(m_attatchment.getAmpCommand())
-        .onFalse(m_attatchment.getCancelAmpCommand());
+m_attachmentController.a()
+        .whileTrue(Commands.run(() -> autoAimDrive(Rotation2d.fromDegrees(getFromAlliance(-90, -90))), m_robotDrive).alongWith(m_attatchment.getAmpUpCommand())).onFalse(m_attatchment.getShootAmpCommand().andThen(m_attatchment.getCancelAmpCommand()));
 
     // Arm/pivot positioning
 

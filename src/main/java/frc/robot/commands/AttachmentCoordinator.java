@@ -337,4 +337,31 @@ public class AttachmentCoordinator {
                 });
     }
 
+    public Command getAmpUpCommand() {
+        return new InstantCommand(() -> {
+            m_pivot.setPosition(PivotPosition.kAmpPosition);
+            m_shooter.setState(ShooterState.kPreAmp);
+        }).andThen(new WaitCommand(0.5), new InstantCommand(() -> {
+            m_pivot.setPosition(PivotPosition.kAmpPosition);
+            m_shooter.setState(ShooterState.kAmp);
+        }));
+    }
+
+    public Command getShootAmpCommand() {
+        return new InstantCommand(() -> m_feeder.setState(FeederState.kShooting)).andThen(
+                new WaitCommand(1),
+                new InstantCommand(() -> {
+                    m_shooter.setState(ShooterState.kPostAmp);
+                }),
+                new WaitCommand(0.75),
+                new InstantCommand(() -> {
+                    m_shooter.setState(ShooterState.kStopped);
+                    m_feeder.setState(FeederState.kStopped);
+                })).finallyDo(() -> {
+                    m_shooter.setState(ShooterState.kStopped);
+                    m_feeder.setState(FeederState.kStopped);
+                });
+    }
+
+
 }
